@@ -53,9 +53,7 @@ void TimeServiceTest::TearDown(void)
 */
 HWTEST_F(TimeServiceTest, SetTime001, TestSize.Level0)
 {
-    struct timeval getTime;
-    gettimeofday(&getTime, NULL);
-    int64_t time = (getTime.tv_sec + 100)*1000 + getTime.tv_usec/1000;
+    int64_t time = 1627307312000;
     bool result = TimeServiceManager::GetInstance()->SetTime(time);
     EXPECT_TRUE(result);
 }
