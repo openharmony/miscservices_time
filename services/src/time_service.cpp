@@ -120,7 +120,7 @@ void TimeService::InitServiceHandler()
 
 bool TimeService::SetTime(const int64_t time)
 {
-    TIME_HILOGI("Setting time of day to milliseconds: %{public}lld", time);
+    TIME_HILOGI("Setting time of day to milliseconds");
     if (time <= 0 || time / 1000LL >= INT_MAX) {
         TIME_HILOGE("SetTime input param error");
         return false;
