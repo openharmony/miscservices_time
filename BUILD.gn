@@ -20,7 +20,8 @@ group("time_native_packages") {
     deps = [
       "etc/init:timeservice.rc",
       "interfaces/kits/js/declaration:time",
-      "interfaces/kits/js/napi:systemtime",
+      "interfaces/kits/js/napi/system_time:systemtime",
+      "interfaces/kits/js/napi/system_timer:systemtimer",
       "profile:miscservices_time_sa_profiles",
       "services:time_service",
     ]

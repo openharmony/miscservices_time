@@ -22,7 +22,8 @@ The timing and time module provides APIs for managing the system time.
 ├── etc                      # Process configuration files
 ├── figures                  # Architecture diagram
 ├── interfaces               # APIs for external systems and applications
-│   └── kits                # APIs
+├   └── innerkits            # APIs between services
+│   └── kits                 # APIs
 ├── profile                  # System service configuration files
 └── services                 # Service implementation
 ```

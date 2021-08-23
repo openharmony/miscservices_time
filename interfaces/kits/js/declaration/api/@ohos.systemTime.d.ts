@@ -21,9 +21,30 @@ import { AsyncCallback, ErrorCallback } from './basic';
  * @since 6
  */
 declare namespace systemTime {
-    //  Sets the system time.
+    /**
+     * Sets the system time.
+     * @permission ohos.permission.SET_TIME
+     * @since 6
+     */
     function setTime(time : number, callback : AsyncCallback<boolean>) : void;
     function setTime(time : number) : Promise<boolean>;
+
+    /**
+     * Sets the system time.
+     * @permission ohos.permission.SET_TIME
+     * @since 7
+     */
+    function setDate(date: Date, callback: AsyncCallback<boolean>): void;
+    function setDate(date: Date): Promise<boolean>;
+
+    /**
+     * Sets the system time zone.
+     * @permission ohos.permission.SET_TIME_ZONE
+     * @since 7
+     */
+    function setTimezone(timezone: string, callback: AsyncCallback<boolean>): void;
+    function setTimezone(timezone: string): Promise<boolean>;
+    
 }
 
 export default systemTime;
