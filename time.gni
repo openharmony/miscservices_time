@@ -10,11 +10,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import("//build/ohos.gni")
 
-time_path = "//base/miscservices/time"
+time_root_path = "//base/miscservices/time"
 
-kits_path = "${time_path}/kits"
+kits_path = "${time_root_path}/interface/kits"
 
-innerkits_path = "${time_path}/interfaces/innerkits"
+innerkits_path = "${time_root_path}/interfaces/innerkits"
 
-adapter_path = "${time_path}/adapter"
+time_utils_path = "${time_root_path}/utils"
+
+adapter_path = "${time_root_path}/adapter"

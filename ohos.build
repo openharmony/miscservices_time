@@ -11,7 +11,7 @@
         "//base/miscservices/time:time_native_packages"
       ],
       "test_list": [
-        "//base/miscservices/time/services/test:TimeServiceTest"
+        "//base/miscservices/time/services/time_manager/test:TimeServiceTest"
       ]
     }
   }

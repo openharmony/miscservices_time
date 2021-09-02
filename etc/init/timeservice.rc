@@ -17,5 +17,5 @@ service time_service /system/bin/sa_main /system/profile/time_service.xml
     class z_core
     user system
     group system shell
-    capabilities SYS_TIME
+    capabilities SYS_TIME WAKE_ALARM
     seclabel u:r:time_service:s0
