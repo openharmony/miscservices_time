@@ -43,8 +43,8 @@ ohos_shared_library("systemtimer") {
   configs = [ ":native_module_config" ]
 
   sources = [
-    "src/timer_init.cpp",
     "src/system_timer.cpp",
+    "src/timer_init.cpp",
     "src/timer_type.cpp",
   ]
 
