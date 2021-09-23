@@ -12,16 +12,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-#include "js_systemtime.h"
-
 #include <string>
+#include <initializer_list>
+
 #include "time_service_client.h"
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
 #include "js_native_api.h"
 #include "time_common.h"
-#include <initializer_list>
+#include "js_systemtime.h"
 
 using namespace OHOS::MiscServices;
 
@@ -114,26 +113,20 @@ static napi_value JSSystemTimeSetTime(napi_env env, napi_callback_info info)
     return result;
 }
 
-static napi_value JSSystemTimeSetTimeZone(napi_env env, napi_callback_info info) 
+static napi_value JSSystemTimeSetTimeZone(napi_env env,napi_callback_info info)
 {
     TIME_HILOGI(TIME_MODULE_JS_NAPI, "JSSystemTimeSetTimeZone start");
     GET_PARAMS(env, info, TWO_PARAMETERS);
     NAPI_ASSERT(env, argc == ONE_PARAMETER || argc == TWO_PARAMETERS, "type mismatch");
-
     AsyncContext* asyncContext = new AsyncContext();
     asyncContext->env = env;
-
     for (size_t i = 0; i < argc; i++) {
         napi_valuetype valueType = napi_undefined;
         napi_typeof(env, argv[i], &valueType);
         if (i == 0 && valueType == napi_string) {
             char timeZoneChars[MAX_TIME_ZONE_ID];
             size_t timeZoneCharsSize;
-            if (napi_ok != napi_get_value_string_utf8(env,
-                                                      argv[i],
-                                                      timeZoneChars,
-                                                      MAX_TIME_ZONE_ID-1,
-                                                      &timeZoneCharsSize)) {
+            if (napi_ok != napi_get_value_string_utf8(env,argv[i],timeZoneChars,MAX_TIME_ZONE_ID-1,&timeZoneCharsSize)){
                 delete asyncContext;
                 NAPI_ASSERT(env, false, "input para invalid");
             }
@@ -194,9 +187,9 @@ static napi_value JSSystemTimeSetTimeZone(napi_env env, napi_callback_info info)
             napi_delete_async_work(env, asyncContext->work);
             delete asyncContext;
         },
-        (void*)asyncContext, 
+        (void*)asyncContext,
         &asyncContext->work);
-    napi_queue_async_work(env, asyncContext->work);
+    napi_queue_async_work(env,asyncContext->work);
     return result;
 }
 

@@ -12,7 +12,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 #ifndef TIMER_INIT_H
 #define TIMER_INIT_H
 
@@ -25,5 +24,4 @@ namespace MiscServicesNapi {
 
 } // OHOS
 } // MiscServicesNapi
-
 #endif // TIMER_INIT_H

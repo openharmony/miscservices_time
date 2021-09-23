@@ -12,8 +12,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "timer_info_test.h"
 #include "time_service_test.h"
-
 
 using namespace testing::ext;
 using namespace OHOS;
@@ -55,7 +55,7 @@ HWTEST_F(TimeServiceTest, SetTime001, TestSize.Level0)
     gettimeofday(&getTime, NULL);
     int64_t time = (getTime.tv_sec + 1000) * 1000 + getTime.tv_usec / 1000;
     if (time < 0) {
-        TIME_HILOGE(TIME_MODULE_CLIENT, "Time now invalid : %{public}" PRId64 "",time);
+        TIME_HILOGE(TIME_MODULE_CLIENT,"Time now invalid:%{public}" PRId64"",time);
         time = 1627307312000;
     }
     TIME_HILOGI(TIME_MODULE_CLIENT, "Time now : %{public}" PRId64 "",time);
@@ -69,7 +69,7 @@ HWTEST_F(TimeServiceTest, SetTime001, TestSize.Level0)
 * @tc.type: FUNC
 */
 HWTEST_F(TimeServiceTest, SetTimeZone001, TestSize.Level0)
-{   
+{
     struct timezone tz = {};
     gettimeofday(NULL, &tz);
     TIME_HILOGD(TIME_MODULE_CLIENT, "Before set timezone, GMT offset in kernel : %{public}d", tz.tz_minuteswest);
@@ -206,19 +206,6 @@ HWTEST_F(TimeServiceTest, GetTime008, TestSize.Level0)
     EXPECT_TRUE(time1 != -1);
     auto time2 = TimeServiceClient::GetInstance()->GetThreadTimeNs();
     EXPECT_TRUE(time2 >= time1);
-}
-
-std::atomic<int> g_data1(0);
-
-void TimeOutCallback1()
-{
-    g_data1 += 1;
-}
-
-std::atomic<int> g_data2(0);
-void TimeOutCallback2()
-{
-    g_data2 += 1;
 }
 
 /**

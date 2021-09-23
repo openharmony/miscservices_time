@@ -16,13 +16,13 @@
 #ifndef TIMER_HANDLER_H
 #define TIMER_HANDLER_H
 
-#include "time_common.h"
-
 #include <array>
 #include <cstdint>
 #include <string>
 #include <chrono>
 #include <memory>
+
+#include "time_common.h"
 
 namespace OHOS {
 namespace MiscServices {
@@ -32,12 +32,12 @@ typedef std::array<int, N_TIMER_FDS> TimerFds;
 
 class TimerHandler {
 public:
-    static std::shared_ptr<TimerHandler> Create ();
-    int Set (uint32_t type, std::chrono::nanoseconds when);
-    uint32_t WaitForAlarm ();
-    ~TimerHandler ();
+    static std::shared_ptr<TimerHandler> Create();
+    int Set(uint32_t type, std::chrono::nanoseconds when);
+    uint32_t WaitForAlarm();
+    ~TimerHandler();
 private:
-    TimerHandler (const TimerFds &fds, int epollfd);
+    TimerHandler(const TimerFds &fds,int epollfd);
     const TimerFds fds_;
     const int epollFd_;
 };

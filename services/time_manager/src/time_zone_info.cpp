@@ -50,12 +50,12 @@ TimeZoneInfo::TimeZoneInfo()
         {"Pacific/Tahiti", "PF", -10},
         {"Pacific/Port_Moresby", "PG", 10},
         {"Asia/Gaza", "PS", 3},
-		{"Europe/Lisbon", "PT", 1},
-		{"Europe/Moscow", "RU", 3}, 
-		{"Europe/Kiev", "UA", 3}, 
-		{"Pacific/Wake", "UM", 12},
-		{"America/New_York", "US", -4},
-		{"Asia/Tashkent", "UZ", 5}
+        {"Europe/Lisbon", "PT", 1},
+        {"Europe/Moscow", "RU", 3},
+        {"Europe/Kiev", "UA", 3},
+        {"Pacific/Wake", "UM", 12},
+        {"America/New_York", "US", -4},
+        {"Asia/Tashkent", "UZ", 5}
     };
 
     for (auto tz : timezoneList) {
@@ -68,7 +68,7 @@ TimeZoneInfo::~TimeZoneInfo()
     timezoneInfoMap_.clear();
 }
 
-void TimeZoneInfo::Init() 
+void TimeZoneInfo::Init()
 {
     TIME_HILOGD(TIME_MODULE_SERVICE, "start.");
     std::string timezoneId;
@@ -88,7 +88,7 @@ void TimeZoneInfo::Init()
     TIME_HILOGD(TIME_MODULE_SERVICE, "end.");
 }
 
-bool TimeZoneInfo::SetTimezone(std::string timezoneId) 
+bool TimeZoneInfo::SetTimezone(std::string timezoneId)
 {
     float gmtOffset;
     if (!GetOffsetById(timezoneId, gmtOffset)) {
@@ -108,26 +108,28 @@ bool TimeZoneInfo::SetTimezone(std::string timezoneId)
     return true;
 }
 
-bool TimeZoneInfo::GetTimezone(std::string &timezoneId) {
+bool TimeZoneInfo::GetTimezone(std::string &timezoneId)
+{
     timezoneId = curTimezoneId_;
     return true;
 }
 
-bool TimeZoneInfo::SetOffsetToKernel(float offsetHour) 
+bool TimeZoneInfo::SetOffsetToKernel(float offsetHour)
 {
     struct timezone tz{};
     tz.tz_minuteswest = static_cast<int>(offsetHour * HOURS_TO_MINUTES);
     tz.tz_dsttime = 0;
-    TIME_HILOGD(TIME_MODULE_SERVICE, "settimeofday, Offset hours :%{public}f , Offset minutes :%{public}d",  offsetHour, tz.tz_minuteswest);
+    TIME_HILOGD(TIME_MODULE_SERVICE,"settimeofday,Offset hours:%{public}f,Offset minutes:%{public}d",
+                offsetHour,tz.tz_minuteswest);
     int result = settimeofday(NULL, &tz);
     if (result < 0) {
-        TIME_HILOGE(TIME_MODULE_SERVICE, "settimeofday fail: %{public}d.",result);
+        TIME_HILOGE(TIME_MODULE_SERVICE,"settimeofday fail:%{public}d.",result);
         return false;
     }
     return true;
 }
 
-bool TimeZoneInfo::GetTimezoneFromFile(std::string &timezoneId) 
+bool TimeZoneInfo::GetTimezoneFromFile(std::string &timezoneId)
 {
     Json::Value root;
     std::ifstream ifs;
@@ -146,7 +148,7 @@ bool TimeZoneInfo::GetTimezoneFromFile(std::string &timezoneId)
     return true;
 }
 
-bool TimeZoneInfo::SaveTimezoneToFile(std::string timezoneId) 
+bool TimeZoneInfo::SaveTimezoneToFile(std::string timezoneId)
 {
     std::ofstream ofs;
     ofs.open(TIMEZONE_FILE_PATH);
@@ -160,10 +162,10 @@ bool TimeZoneInfo::SaveTimezoneToFile(std::string timezoneId)
     return true;
 }
 
-bool TimeZoneInfo::GetOffsetById(const std::string timezoneId, float &offset) 
+bool TimeZoneInfo::GetOffsetById(const std::string timezoneId, float &offset)
 {
     auto itEntry = timezoneInfoMap_.find(timezoneId);
-    if (itEntry != timezoneInfoMap_.end()) {
+    if (itEntry != timezoneInfoMap_.end()){
         auto zoneInfo = itEntry->second;
         offset = zoneInfo.utcOffsetHours;
         curTimezoneId_ = timezoneId;

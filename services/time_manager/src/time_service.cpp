@@ -12,23 +12,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-#include "time_service.h"
-#include "time_zone_info.h" 
-
-#include "time_common.h"
-
-#include "system_ability.h"
-#include "system_ability_definition.h"
-#include "iservice_registry.h"
-
 #include <ctime>
 #include <cstdio>
 #include <string>
 #include <unistd.h>
 #include <sys/time.h>
 #include <cerrno>
-#include "pthread.h"
 #include <mutex>
 #include <sys/ioctl.h>
 #include <linux/rtc.h>
@@ -40,10 +29,17 @@
 #include <fstream>
 #include <sstream>
 
+#include "pthread.h"
+#include "time_service.h"
+#include "time_zone_info.h" 
+#include "time_common.h"
+#include "system_ability.h"
+#include "system_ability_definition.h"
+#include "iservice_registry.h"
 
 namespace OHOS {
 namespace MiscServices {
-namespace{
+namespace {
 // Unit of measure conversion , BASE: second
 static const int MILLI_TO_BASE = 1000LL;
 static const int MICR_TO_BASE = 1000000LL;
@@ -74,8 +70,8 @@ TimeService::TimeService(int32_t systemAbilityId, bool runOnCreate)
     TIME_HILOGI(TIME_MODULE_SERVICE, " TimeService Start.");
 }
 
-TimeService::TimeService() 
-    : state_(ServiceRunningState::STATE_NOT_START), rtc_id(get_wall_clock_rtc_id())
+TimeService::TimeService()
+    :state_(ServiceRunningState::STATE_NOT_START),rtc_id(get_wall_clock_rtc_id())
 {
 }
 
@@ -83,9 +79,9 @@ TimeService::~TimeService() {};
 
 sptr<TimeService> TimeService::GetInstance()
 {
-    if (instance_ == nullptr) {
+    if (instance_ == nullptr){
         std::lock_guard<std::mutex> autoLock(instanceLock_);
-        if (instance_ == nullptr) {
+        if (instance_ == nullptr){
             instance_ = new TimeService;
         }
     }
@@ -103,7 +99,6 @@ void TimeService::OnStart()
     InitServiceHandler();
     InitTimerHandler();
     InitNotifyHandler();
-    // init timezone 
     DelayedSingleton<TimeZoneInfo>::GetInstance()->Init();
     if (Init() != ERR_OK) {
         auto callback = [=]() { Init(); };
@@ -140,7 +135,7 @@ void TimeService::OnStop()
     TIME_HILOGI(TIME_MODULE_SERVICE, "OnStop End.");
 }
 
-void TimeService::InitNotifyHandler() 
+void TimeService::InitNotifyHandler()
 {
     TIME_HILOGI(TIME_MODULE_SERVICE, "InitNotify started.");
     if (timeServiceNotify_ != nullptr) {
@@ -164,7 +159,7 @@ void TimeService::InitServiceHandler()
     TIME_HILOGI(TIME_MODULE_SERVICE, "InitServiceHandler Succeeded.");
 }
 
-void TimeService::InitTimerHandler() 
+void TimeService::InitTimerHandler()
 {
     TIME_HILOGI(TIME_MODULE_SERVICE, "Init Timer started.");
     if (timerManagerHandler_ != nullptr) {
@@ -178,26 +173,26 @@ void TimeService::PaserTimerPara(int32_t type, bool repeat, uint64_t interval, T
     bool isRealtime = false;
     bool isWakeup = false;
     paras.flag = 0;
-    if ((type & TIMER_TYPE_REALTIME_MASK) > 0 ) {
+    if ((type & TIMER_TYPE_REALTIME_MASK) > 0 ){
         isRealtime = true;
     }
-    if ((type & TIMER_TYPE_REALTIME_WAKEUP_MASK) > 0 ) {
+    if ((type & TIMER_TYPE_REALTIME_WAKEUP_MASK) > 0 ){
         isWakeup = true;
     }
-    if ((type & TIMER_TYPE_EXACT_MASK) > 0) {
+    if ((type & TIMER_TYPE_EXACT_MASK) > 0){
         paras.windowLength = 0;
     }else{
         paras.windowLength = -1;
     }
 
     if (isRealtime && isWakeup) {
-        paras.timerType = ITimerManager::TimerType::ELAPSED_REALTIME_WAKEUP; 
+        paras.timerType = ITimerManager::TimerType::ELAPSED_REALTIME_WAKEUP;
     }else if (isRealtime) {
         paras.timerType = ITimerManager::TimerType::ELAPSED_REALTIME;
     }else if (isWakeup) {
-        paras.timerType = ITimerManager::TimerType::RTC_WAKEUP; 
+        paras.timerType = ITimerManager::TimerType::RTC_WAKEUP;
     }else{
-        paras.timerType = ITimerManager::TimerType::RTC; 
+        paras.timerType = ITimerManager::TimerType::RTC;
     }
     if (repeat) {
         paras.interval =  (interval < FIVE_THOUSANDS) ? FIVE_THOUSANDS : interval;
@@ -234,8 +229,8 @@ uint64_t TimeService::CreateTimer(int32_t type, bool repeat, uint64_t interval,
             return 0;
         }
     }
-    return timerManagerHandler_->CreateTimer(paras.timerType, 
-        paras.windowLength, paras.interval, paras.flag, callbackFunc, 0);
+    return timerManagerHandler_->CreateTimer(paras.timerType,
+           paras.windowLength,paras.interval,paras.flag,callbackFunc,0);
 }
 
 bool TimeService::StartTimer(uint64_t timerId, uint64_t triggerTimes) 
@@ -371,7 +366,7 @@ int TimeService::set_rtc_time(time_t sec) {
     return res;
 }
 
-bool TimeService::check_rtc(std::string rtc_path, uint32_t rtc_id_t)
+bool TimeService::check_rtc(std::string rtc_path, uint64_t rtc_id_t)
 {
     std::stringstream strs;
     strs << rtc_path << "/rtc" << rtc_id_t << "/hctosys";
@@ -399,17 +394,22 @@ int TimeService::get_wall_clock_rtc_id()
     }
 
     struct dirent *dirent;
+    std::string s = "rtc";
     while (errno = 0, 
            dirent = readdir(dir.get())) {
-        unsigned int rtc_id_t;
-        int matched = sscanf_s(dirent->d_name, "rtc%u", &rtc_id_t, sizeof(int));
-        if (matched < 0) {
-            break;
-        } else if (matched != 1) {
+        
+        std::string name(dirent->d_name);
+        unsigned long rtc_id_t = 0 ;
+        auto index =  name.find(s);
+        if (index == std::string::npos) {
             continue;
+        } else {
+            auto rtc_id_str = name.substr(index+s.length());
+            rtc_id_t = std::stoul(rtc_id_str);
         }
+       
         if (check_rtc(rtc_path, rtc_id_t)) {
-            TIME_HILOGD(TIME_MODULE_SERVICE, "found wall clock rtc %{public}u", rtc_id_t);
+            TIME_HILOGD(TIME_MODULE_SERVICE, "found wall clock rtc %{public}ld", rtc_id_t);
             return rtc_id_t;
         }
     }
