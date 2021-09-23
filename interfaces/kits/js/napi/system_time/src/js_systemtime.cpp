@@ -20,30 +20,28 @@
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
 #include "js_native_api.h"
-
 #include "time_common.h"
 #include <initializer_list>
-
 
 using namespace OHOS::MiscServices;
 
 static napi_value JSSystemTimeSetTime(napi_env env, napi_callback_info info)
 {
-    TIME_HILOGI(TIME_MODULE_JS_NAPI,"JSSystemTimeSetTime start");
-    GET_PARAMS(env, info, 2);
-    NAPI_ASSERT(env, argc == ONE_PARAMETER || argc == TWO_PARAMETER, "type mismatch");
+    TIME_HILOGI(TIME_MODULE_JS_NAPI, "JSSystemTimeSetTime start");
+    GET_PARAMS(env, info, TWO_PARAMETERS);
+    NAPI_ASSERT(env, argc == ONE_PARAMETER || argc == TWO_PARAMETERS, "type mismatch");
 
     AsyncContext* asyncContext = new (std::nothrow)AsyncContext();
     asyncContext->env = env;
 
     for (size_t i = 0; i < argc; i++) {
-        napi_valuetype valueType;
+        napi_valuetype valueType = napi_undefined;
         napi_typeof(env, argv[i], &valueType);
         if (i == 0 && valueType == napi_number) {
             napi_get_value_int64(env, argv[i], &asyncContext->time);
-        } else if (i == 0 && valueType == napi_object){
+        } else if (i == 0 && valueType == napi_object) {
             bool hasProperty = false;
-            napi_valuetype resValueType;
+            napi_valuetype resValueType = napi_undefined;
             NAPI_CALL(env, napi_has_named_property(env, argv[i], "getTime", &hasProperty));
             NAPI_ASSERT(env, hasProperty, "type expected.");
             napi_value getTimeFunc = nullptr;
@@ -73,12 +71,9 @@ static napi_value JSSystemTimeSetTime(napi_env env, napi_callback_info info)
 
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "JSSystemTimeSetTime", NAPI_AUTO_LENGTH, &resource);
-
     napi_create_async_work(env, nullptr, resource,[](napi_env env, void* data) {
             AsyncContext* asyncContext = (AsyncContext*)data;
-            bool setTimeResult;
-            setTimeResult = TimeServiceClient::GetInstance()->SetTime(asyncContext->time);
-
+            auto setTimeResult = TimeServiceClient::GetInstance()->SetTime(asyncContext->time);
             if (setTimeResult) {
                 asyncContext->status = RESOLVED;
             } else {
@@ -119,23 +114,28 @@ static napi_value JSSystemTimeSetTime(napi_env env, napi_callback_info info)
     return result;
 }
 
-static napi_value JSSystemTimeSetTimeZone(napi_env env, napi_callback_info info){
-    TIME_HILOGI(TIME_MODULE_JS_NAPI,"JSSystemTimeSetTimeZone start");
-    GET_PARAMS(env, info, 2);
-    NAPI_ASSERT(env, argc == ONE_PARAMETER || argc == TWO_PARAMETER, "type mismatch");
+static napi_value JSSystemTimeSetTimeZone(napi_env env, napi_callback_info info) 
+{
+    TIME_HILOGI(TIME_MODULE_JS_NAPI, "JSSystemTimeSetTimeZone start");
+    GET_PARAMS(env, info, TWO_PARAMETERS);
+    NAPI_ASSERT(env, argc == ONE_PARAMETER || argc == TWO_PARAMETERS, "type mismatch");
 
     AsyncContext* asyncContext = new AsyncContext();
     asyncContext->env = env;
 
     for (size_t i = 0; i < argc; i++) {
-        napi_valuetype valueType;
+        napi_valuetype valueType = napi_undefined;
         napi_typeof(env, argv[i], &valueType);
         if (i == 0 && valueType == napi_string) {
             char timeZoneChars[MAX_TIME_ZONE_ID];
             size_t timeZoneCharsSize;
-            if (napi_ok !=  napi_get_value_string_utf8(env, argv[i], timeZoneChars, MAX_TIME_ZONE_ID-1, &timeZoneCharsSize)){
-               delete asyncContext;
-               NAPI_ASSERT(env, false, "input para invalid");
+            if (napi_ok != napi_get_value_string_utf8(env,
+                                                      argv[i],
+                                                      timeZoneChars,
+                                                      MAX_TIME_ZONE_ID-1,
+                                                      &timeZoneCharsSize)) {
+                delete asyncContext;
+                NAPI_ASSERT(env, false, "input para invalid");
             }
             std::string timeZoneStr(timeZoneChars, timeZoneCharsSize);
             asyncContext->timeZone = timeZoneStr;
@@ -156,7 +156,6 @@ static napi_value JSSystemTimeSetTimeZone(napi_env env, napi_callback_info info)
     }
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "JSSystemTimeSetTimeZone", NAPI_AUTO_LENGTH, &resource);
-
     napi_create_async_work(env, nullptr, resource,
         [](napi_env env, void* data) {
             AsyncContext* asyncContext = (AsyncContext*)data;

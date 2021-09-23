@@ -20,7 +20,6 @@
 
 namespace OHOS {
 namespace MiscServices {
-
 class ITimerCallback : public IRemoteBroker {
 public:
     DECLARE_INTERFACE_DESCRIPTOR(u"ohos.miscservices.time.ITimerCallback");
@@ -36,9 +35,7 @@ public:
     enum Message {
         NOTIFY_TIMER = 1
     };
-
 };
-
 }  // namespace MiscServices
 }  // namespace OHOS
 

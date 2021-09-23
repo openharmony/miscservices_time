@@ -14,84 +14,163 @@
  */
 
 #include "time_zone_info.h"
-#include "time_common.h"
 
-#include <vector>
 
 namespace OHOS{
 namespace MiscServices{
-
-std::mutex TimeZoneInfo::instanceLock_;
-sptr<TimeZoneInfo> TimeZoneInfo::instance_;
+namespace {
+static const int HOURS_TO_MINUTES = 60;
+}
 
 TimeZoneInfo::TimeZoneInfo()
 {
     std::vector<struct zoneInfoEntry> timezoneList = { 
-        {"Anadyr, Russia", "ANA", 12, "Anadyr Time"},
-        {"Honiara, SolomonIslands", "SBT", 11, "Solomon Islands Time"},
-        {"Melbourne, Australia", "AEST", 10, "Australian Eastern Standard Time"},
-        {"Tokyo, Japan", "JST", 9, "Japan Standard Time"},
-        {"Beijing, China", "CST", 8, "China Standard Time"},
-        {"Jakarta, Indonesia", "WIB", 7, "Western Indonesian Time"},
-        {"Dhaka, Bangladesh", "BST", 6, "Bangladesh Standard Time"},
-        {"Tashkent, Uzbekistan", "UZT", 5, "Uzbekistan Time"},
-        {"Dubai, U.A.E.", "GST", 4, "Gulf Standard Time"},
-        {"Moscow, Russia", "MSK", 3, "Moscow Standard Time"},
-        {"Brussels, Belgium", "CEST", 2, "Central European Summer Time"},
-        {"London, England", "BST", 1, "British Summer Time"},
-        {"Accra, Ghana", "GMT", 0, "Greenwich Mean Time"},
-        {"Accra, Ghana", "UTC", 0, "Universal Time Coordinated"},
-        {"Praia, CaboVerde", "CVT", -1, "Cabo Verde Time"},
-        {"Nuuk, Greenland", "WGS", -2, "Western Greenland Summer Time"},
-        {"Buenos Aires, Argentina", "ART", -3, "Argentina Time"},
-        {"New York, U.S.A.", "EDT", -4, "Eastern Daylight Time"},
-        {"Mexico City, Mexico", "CDT", -5, "Central Daylight Time"},
-        {"Guatemala City, Guatemala", "CST", -6, "Central Standard Time"},
-        {"Los Angeles, U.S.A.", "PDT", -7, "Pacific Daylight Time"},
-        {"Anchorage, U.S.A.", "AKD", -8, "Alaska Daylight Time"},
-        {"Adak, U.S.A.", "HDT", -9, "Hawaii-Aleutian Daylight Time"},
-        {"Honolulu, U.S.A.", "HST", -10, "Hawaii Standard Time"},
-        {"Alofi, Niue", "NUT", -11, "Niue Time"},
-        {"Baker Island, U.S.A.", "AoE", -12, "Anywhere on Earth"},
+        {"Antarctica/McMurdo", "AQ", 12},
+        {"America/Argentina/Buenos_Aires", "AR", -3},
+        {"Australia/Sydney", "AU", 10},
+        {"America/Noronha", "BR", -2},
+        {"America/St_Johns", "CA", -2.5},
+        {"Africa/Kinshasa", "CD", 1},
+        {"America/Santiago", "CL", -3},
+        {"Asia/Shanghai", "CN", 8},
+        {"Asia/Nicosia", "CY", 3},
+        {"Europe/Berlin", "DE", 2},
+        {"America/Guayaquil", "CEST", -5},
+        {"Europe/Madrid", "ES", 2},
+        {"Pacific/Pohnpei", "FM", 11},
+        {"America/Godthab", "GL", -2},
+        {"Asia/Jakarta", "ID", 7},
+        {"Pacific/Tarawa", "KI", 12},
+        {"Asia/Almaty", "KZ", 6},
+        {"Pacific/Majuro", "MH", 12},
+        {"Asia/Ulaanbaatar", "MN", 8},
+        {"America/Mexico_City", "MX", -5},
+        {"Asia/Kuala_Lumpur", "MY", 8},
+        {"Pacific/Auckland", "NZ", 12},
+        {"Pacific/Tahiti", "PF", -10},
+        {"Pacific/Port_Moresby", "PG", 10},
+        {"Asia/Gaza", "PS", 3},
+		{"Europe/Lisbon", "PT", 1},
+		{"Europe/Moscow", "RU", 3}, 
+		{"Europe/Kiev", "UA", 3}, 
+		{"Pacific/Wake", "UM", 12},
+		{"America/New_York", "US", -4},
+		{"Asia/Tashkent", "UZ", 5}
     };
 
     for (auto tz : timezoneList) {
         timezoneInfoMap_[tz.ID] = tz;
     }
-    
 }
 
-TimeZoneInfo::~TimeZoneInfo(){
+TimeZoneInfo::~TimeZoneInfo()
+{
     timezoneInfoMap_.clear();
 }
 
-int32_t TimeZoneInfo::GetOffset(const std::string timezoneId, int &offset){
+void TimeZoneInfo::Init() 
+{
+    TIME_HILOGD(TIME_MODULE_SERVICE, "start.");
+    std::string timezoneId;
+    float gmtOffset;
+    if (!GetTimezoneFromFile(timezoneId)) {
+        TIME_HILOGE(TIME_MODULE_SERVICE, "end, init timezone failed.");
+        return;
+    }
+    if (!GetOffsetById(timezoneId, gmtOffset)) {
+        TIME_HILOGE(TIME_MODULE_SERVICE, "end, init timezone failed.");
+        return;
+    }
+    if (!SetOffsetToKernel(gmtOffset)) {
+        TIME_HILOGE(TIME_MODULE_SERVICE, "end, init timezone failed.");
+        return;
+    }
+    TIME_HILOGD(TIME_MODULE_SERVICE, "end.");
+}
+
+bool TimeZoneInfo::SetTimezone(std::string timezoneId) 
+{
+    float gmtOffset;
+    if (!GetOffsetById(timezoneId, gmtOffset)) {
+        TIME_HILOGE(TIME_MODULE_SERVICE, "Timezone unsupport %{public}s.", timezoneId.c_str());
+        return false;
+    }
+    TIME_HILOGD(TIME_MODULE_SERVICE, "timezone :%{public}s , GMT Offset :%{public}f",  timezoneId.c_str(), gmtOffset);
+    if (!SetOffsetToKernel(gmtOffset)) {
+        TIME_HILOGE(TIME_MODULE_SERVICE, "Set kernel failed.");
+        return false;
+    }
+    if (!SaveTimezoneToFile(timezoneId)) {
+        TIME_HILOGE(TIME_MODULE_SERVICE, "Save file failed.");
+        return false;
+    }
+    curTimezoneId_ = timezoneId;
+    return true;
+}
+
+bool TimeZoneInfo::GetTimezone(std::string &timezoneId) {
+    timezoneId = curTimezoneId_;
+    return true;
+}
+
+bool TimeZoneInfo::SetOffsetToKernel(float offsetHour) 
+{
+    struct timezone tz{};
+    tz.tz_minuteswest = static_cast<int>(offsetHour * HOURS_TO_MINUTES);
+    tz.tz_dsttime = 0;
+    TIME_HILOGD(TIME_MODULE_SERVICE, "settimeofday, Offset hours :%{public}f , Offset minutes :%{public}d",  offsetHour, tz.tz_minuteswest);
+    int result = settimeofday(NULL, &tz);
+    if (result < 0) {
+        TIME_HILOGE(TIME_MODULE_SERVICE, "settimeofday fail: %{public}d.",result);
+        return false;
+    }
+    return true;
+}
+
+bool TimeZoneInfo::GetTimezoneFromFile(std::string &timezoneId) 
+{
+    Json::Value root;
+    std::ifstream ifs;
+    ifs.open(TIMEZONE_FILE_PATH);
+    Json::CharReaderBuilder builder;
+    builder["collectComments"] = true;
+    JSONCPP_STRING errs;
+    if (!parseFromStream(builder, ifs, &root, &errs)) {
+        ifs.close();
+        TIME_HILOGE(TIME_MODULE_SERVICE, "Read file failed %{public}s.", errs.c_str());
+        return false;
+    }
+    timezoneId = root["TimezoneId"].asString();
+    TIME_HILOGE(TIME_MODULE_SERVICE, "Read file %{public}s.", timezoneId.c_str());
+    ifs.close();
+    return true;
+}
+
+bool TimeZoneInfo::SaveTimezoneToFile(std::string timezoneId) 
+{
+    std::ofstream ofs;
+    ofs.open(TIMEZONE_FILE_PATH);
+    Json::Value root;
+    root["TimezoneId"] = timezoneId;
+    Json::StreamWriterBuilder builder;
+    const std::string json_file = Json::writeString(builder, root);
+    ofs << json_file;
+    ofs.close();
+    TIME_HILOGD(TIME_MODULE_SERVICE, "Write file %{public}s.", timezoneId.c_str());
+    return true;
+}
+
+bool TimeZoneInfo::GetOffsetById(const std::string timezoneId, float &offset) 
+{
     auto itEntry = timezoneInfoMap_.find(timezoneId);
     if (itEntry != timezoneInfoMap_.end()) {
         auto zoneInfo = itEntry->second;
         offset = zoneInfo.utcOffsetHours;
         curTimezoneId_ = timezoneId;
-        return ERR_OK;
+        return true;
     }
     TIME_HILOGE(TIME_MODULE_SERVICE, "TimezoneId not found.");
-    return E_TIME_NOT_FOUND;
+    return false;
 }
-
-int32_t TimeZoneInfo::GetTimezoneId( std::string &timezoneId ){
-    timezoneId = curTimezoneId_;
-    return ERR_OK;
-}
-
-sptr<TimeZoneInfo> TimeZoneInfo::GetInstance()
-{
-    if (instance_ == nullptr) {
-        std::lock_guard<std::mutex> autoLock(instanceLock_);
-        if (instance_ == nullptr) {
-            instance_ = new TimeZoneInfo;
-        }
-    }
-    return instance_;
-}
-
 }
 }

@@ -20,29 +20,24 @@
 #include "time_service_interface.h"
 #include "iremote_object.h"
 #include "timer_call_back.h"
-
 #include <mutex>
 
 namespace OHOS {
 namespace MiscServices {
-
 constexpr int64_t ERROR_OPREATION_FAILED = -1;
 
 class TimeSaDeathRecipient : public IRemoteObject::DeathRecipient {
 public:
-    
-     explicit TimeSaDeathRecipient();
+    explicit TimeSaDeathRecipient();
     ~TimeSaDeathRecipient() = default;
-
     void OnRemoteDied(const wptr<IRemoteObject> &object) override;
 private:
-        DISALLOW_COPY_AND_MOVE(TimeSaDeathRecipient);
+    DISALLOW_COPY_AND_MOVE(TimeSaDeathRecipient);
 };
 
-class TimeServiceClient : public RefBase{
+class TimeServiceClient : public RefBase {
 public:
     DISALLOW_COPY_AND_MOVE(TimeServiceClient);
-
     static sptr<TimeServiceClient> GetInstance();
     
     /**
@@ -172,15 +167,12 @@ public:
 private:
     TimeServiceClient();
     ~TimeServiceClient();
-
-
     static sptr<ITimeService> ConnectService();
 
     static std::mutex instanceLock_;
     static sptr<TimeServiceClient> instance_;
     static sptr<ITimeService> timeServiceProxy_;
     static sptr<TimeSaDeathRecipient> deathRecipient_;
-
 };
 } // MiscServices
 } // OHOS

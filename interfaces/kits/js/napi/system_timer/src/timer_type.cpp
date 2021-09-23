@@ -30,16 +30,15 @@ napi_value TimerTypeInit(napi_env env, napi_value exports)
     napi_value obj = nullptr;
     napi_create_object(env, &obj);
 
-    SetNamedPropertyByInteger(env, obj, 1 << 0, "TIMER_TYPE_REALTIME");
-    SetNamedPropertyByInteger(env, obj, 1 << 1, "TIMER_TYPE_WAKEUP");
-    SetNamedPropertyByInteger(env, obj, 1 << 2, "TIMER_TYPE_EXACT");
-    SetNamedPropertyByInteger(env, obj, 1 << 3, "TIMER_TYPE_IDLE");
+    SetNamedPropertyByInteger(env, obj, 1 << TIMER_TYPE_REALTIME, "TIMER_TYPE_REALTIME");
+    SetNamedPropertyByInteger(env, obj, 1 << TIMER_TYPE_WAKEUP, "TIMER_TYPE_WAKEUP");
+    SetNamedPropertyByInteger(env, obj, 1 << TIMER_TYPE_EXACT, "TIMER_TYPE_EXACT");
+    SetNamedPropertyByInteger(env, obj, 1 << TIMER_TYPE_IDLE, "TIMER_TYPE_IDLE");
 
     napi_property_descriptor exportFuncs[] = {DECLARE_NAPI_PROPERTY("systemTimer", obj)};
     napi_define_properties(env, exports, sizeof(exportFuncs) / sizeof(*exportFuncs), exportFuncs);
 
     return exports;
 }
-
 }  // namespace MiscServicesNapi
 }  // namespace OHOS

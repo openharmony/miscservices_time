@@ -27,9 +27,8 @@
 #include "batch.h"
 #include <inttypes.h>
 
-namespace OHOS{
-namespace MiscServices{
-
+namespace OHOS {
+namespace MiscServices {
 class TimerManager : public ITimerManager {
 public:
     static std::shared_ptr<TimerManager> Create();

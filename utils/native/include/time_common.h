@@ -19,20 +19,15 @@
 #include "errors.h"
 #include "time_hilog_wreapper.h"
 
-
 namespace OHOS {
 namespace MiscServices {
-
 #define TIME_SERVICE_NAME "TimeService"
 
 enum TimeModule {
     TIME_MODULE_SERVICE_ID = 0x04,
 };
-
-
 // time error offset, used only in this file.
 constexpr ErrCode TIME_ERR_OFFSET = ErrCodeOffset(SUBSYS_SMALLSERVICES, TIME_MODULE_SERVICE_ID);
-
 
 enum TimeError {
     E_TIME_OK = TIME_ERR_OFFSET,
@@ -47,7 +42,6 @@ enum TimeError {
     E_TIME_NOT_FOUND,
     E_TIME_NO_PERMISSION,
 };
-
 } // namespace MiscServices
 } // namespace OHOS
 #endif // SERVICES_INCLUDE_TIME_COMMON_H

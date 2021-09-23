@@ -22,7 +22,7 @@
 ├── etc                      # 组件包含的进程的配置文件
 ├── figures                  # 构架图
 ├── interfaces               # 组件对外提供的接口代码
-├   └── innerkits            # 服务间接口
+│   └── innerkits            # 服务间接口
 │   └── kits                 # 对应用提供的接口
 ├── profile                  # 组件包含的系统服务的配置文件
 └── services                 # 时间服务实现

@@ -20,7 +20,6 @@
 
 namespace OHOS {
 namespace MiscServices {
-
 // param of log interface, such as TIME_HILOGF.
 enum TimeSubModule {
     TIME_MODULE_INNERKIT = 0,
@@ -57,7 +56,6 @@ static constexpr OHOS::HiviewDFX::HiLogLabel TIME_MODULE_LABEL[TIME_MODULE_BUTT]
     {LOG_CORE, TIME_JS_NAPI, "TimeJSNAPI"},
 };
 
-
 #define __FILENAME__            (__builtin_strrchr(__FILE__, '/') ? __builtin_strrchr(__FILE__, '/') + 1 : __FILE__)
 #define __FORMATED(fmt, ...)    "[%{public}s] %{public}s# " fmt, __FILENAME__, __FUNCTION__, ##__VA_ARGS__
 
@@ -68,9 +66,6 @@ static constexpr OHOS::HiviewDFX::HiLogLabel TIME_MODULE_LABEL[TIME_MODULE_BUTT]
 #define TIME_HILOGW(module, ...) (void)OHOS::HiviewDFX::HiLog::Warn(TIME_MODULE_LABEL[module], __FORMATED(__VA_ARGS__))
 #define TIME_HILOGI(module, ...) (void)OHOS::HiviewDFX::HiLog::Info(TIME_MODULE_LABEL[module], __FORMATED(__VA_ARGS__))
 #define TIME_HILOGD(module, ...) (void)OHOS::HiviewDFX::HiLog::Debug(TIME_MODULE_LABEL[module], __FORMATED(__VA_ARGS__))
-
 } // namespace MiscServices
 } // namespace OHOS
-
-
 #endif // TIME_HILOG_WRAPPER_H

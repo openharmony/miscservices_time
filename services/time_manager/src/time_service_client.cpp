@@ -22,7 +22,6 @@
 
 namespace OHOS {
 namespace MiscServices {
-
 std::mutex TimeServiceClient::instanceLock_;
 sptr<TimeServiceClient> TimeServiceClient::instance_;
 sptr<ITimeService> TimeServiceClient::timeServiceProxy_;
@@ -34,6 +33,12 @@ TimeServiceClient::TimeServiceClient()
 
 TimeServiceClient::~TimeServiceClient()
 {
+    if (timeServiceProxy_ != nullptr) {
+        auto remoteObject = timeServiceProxy_->AsObject();
+        if (remoteObject != nullptr) {
+            remoteObject->RemoveDeathRecipient(deathRecipient_);
+        }
+    }
 }
 
 sptr<TimeServiceClient> TimeServiceClient::GetInstance()
@@ -63,14 +68,14 @@ sptr<ITimeService> TimeServiceClient::ConnectService()
     }
     deathRecipient_ = new TimeSaDeathRecipient();
     systemAbility->AddDeathRecipient(deathRecipient_);
-    sptr<ITimeService> timeServiceProxy = iface_cast<ITimeService>(systemAbility);
-    if (timeServiceProxy == nullptr) {
+    sptr<ITimeService> timeServiceProxy_ = iface_cast<ITimeService>(systemAbility);
+    if (timeServiceProxy_ == nullptr) {
         TIME_HILOGE(TIME_MODULE_CLIENT, "Get TimeServiceProxy from SA failed.");
         return nullptr;
     }
 
     TIME_HILOGD(TIME_MODULE_CLIENT, "Getting TimeServiceProxy succeeded.");
-    return timeServiceProxy;
+    return timeServiceProxy_;
 }
 
 bool TimeServiceClient::TimeServiceClient::SetTime(const int64_t time)
@@ -85,7 +90,7 @@ bool TimeServiceClient::TimeServiceClient::SetTime(const int64_t time)
         return false;
     }
 
-    if(timeServiceProxy_->SetTime(time) != ERR_OK){
+    if (timeServiceProxy_->SetTime(time) != ERR_OK) {
         return false;
     }
     return true;
@@ -103,16 +108,15 @@ bool TimeServiceClient::SetTimeZone(const std::string timezoneId)
         return false;
     }
 
-    if(timeServiceProxy_->SetTimeZone(timezoneId) != ERR_OK){
+    if (timeServiceProxy_->SetTimeZone(timezoneId) != ERR_OK) {
         return false;
     }
     return true;
 }
 
-
 uint64_t TimeServiceClient::CreateTimer(std::shared_ptr<ITimerInfo> TimerOptions)
 {
-    if (TimerOptions == nullptr){
+    if (TimerOptions == nullptr) {
         TIME_HILOGW(TIME_MODULE_CLIENT, "Input nullptr");
         return 0;
     }
@@ -132,16 +136,19 @@ uint64_t TimeServiceClient::CreateTimer(std::shared_ptr<ITimerInfo> TimerOptions
         return 0;
     }
 
-    auto timerId = timeServiceProxy_->CreateTimer(TimerOptions->type, TimerOptions->repeat, TimerOptions->interval, timerCallbackInfoObject);
+    auto timerId = timeServiceProxy_->CreateTimer(TimerOptions->type, 
+                                                  TimerOptions->repeat, 
+                                                  TimerOptions->interval, 
+                                                  timerCallbackInfoObject);
     
-    if (timerId == 0){
+    if (timerId == 0) {
         TIME_HILOGE(TIME_MODULE_CLIENT, "Create timer failed");
         return 0;
     }
-    TIME_HILOGI(TIME_MODULE_SERVICE,"CreateTimer id: %{public}" PRId64 "", timerId);
+    TIME_HILOGI(TIME_MODULE_SERVICE, "CreateTimer id: %{public}" PRId64 "", timerId);
     auto ret = TimerCallback::GetInstance()->InsertTimerCallbackInfo(timerId, TimerOptions);
     
-    if(!ret){
+    if (!ret) {
         return 0;
     }
     return timerId;
@@ -188,7 +195,7 @@ bool TimeServiceClient::DestroyTimer(uint64_t timerId)
         TIME_HILOGE(TIME_MODULE_CLIENT, "DestroyTimer quit because redoing ConnectService failed.");
         return false;
     }
-    if (timeServiceProxy_->DestroyTimer(timerId)){
+    if (timeServiceProxy_->DestroyTimer(timerId)) {
         TimerCallback::GetInstance()->RemoveTimerCallbackInfo(timerId);
         return true;
     }
@@ -208,7 +215,7 @@ std::string TimeServiceClient::GetTimeZone()
         return std::string("");
     }
 
-    if(timeServiceProxy_->GetTimeZone(timeZoneId) != ERR_OK){
+    if (timeServiceProxy_->GetTimeZone(timeZoneId) != ERR_OK) {
         TIME_HILOGE(TIME_MODULE_CLIENT, "get failed.");
         return std::string("");
     }
@@ -227,11 +234,11 @@ int64_t TimeServiceClient::GetWallTimeMs()
         TIME_HILOGE(TIME_MODULE_CLIENT, "GetWallTimeMs quit because redoing ConnectService failed.");
         return -1;
     }
-    if(timeServiceProxy_->GetWallTimeMs(times) != ERR_OK){
+    if (timeServiceProxy_->GetWallTimeMs(times) != ERR_OK) {
         TIME_HILOGE(TIME_MODULE_CLIENT, "get failed.");
         return -1;
     }
-    TIME_HILOGI(TIME_MODULE_SERVICE,"Result: %{public}" PRId64 "", times);
+    TIME_HILOGI(TIME_MODULE_SERVICE, "Result: %{public}" PRId64 "", times);
     return times;
 }
 
@@ -248,11 +255,11 @@ int64_t TimeServiceClient::GetWallTimeNs()
         return -1;
     }
 
-    if(timeServiceProxy_->GetWallTimeNs(times) != ERR_OK){
+    if (timeServiceProxy_->GetWallTimeNs(times) != ERR_OK) {
         TIME_HILOGE(TIME_MODULE_CLIENT, "get failed.");
         return -1;
     }
-    TIME_HILOGI(TIME_MODULE_SERVICE,"Result: %{public}" PRId64 "", times);
+    TIME_HILOGI(TIME_MODULE_SERVICE, "Result: %{public}" PRId64 "", times);
     return times;
 }
 
@@ -269,11 +276,11 @@ int64_t TimeServiceClient::GetBootTimeMs()
         return -1;
     }
 
-    if(timeServiceProxy_->GetBootTimeMs(times) != ERR_OK){
+    if (timeServiceProxy_->GetBootTimeMs(times) != ERR_OK) {
         TIME_HILOGE(TIME_MODULE_CLIENT, "get failed.");
         return -1;
     }
-    TIME_HILOGI(TIME_MODULE_SERVICE,"Result: %{public}" PRId64 "", times);
+    TIME_HILOGI(TIME_MODULE_SERVICE, "Result: %{public}" PRId64 "", times);
     return times;
 }
 
@@ -290,11 +297,11 @@ int64_t TimeServiceClient::GetBootTimeNs()
         return -1;
     }
 
-    if(timeServiceProxy_->GetBootTimeNs(times) != ERR_OK){
+    if (timeServiceProxy_->GetBootTimeNs(times) != ERR_OK) {
         TIME_HILOGE(TIME_MODULE_CLIENT, "get failed.");
         return -1;
     }
-    TIME_HILOGI(TIME_MODULE_SERVICE,"Result: %{public}" PRId64 "", times);
+    TIME_HILOGI(TIME_MODULE_SERVICE, "Result: %{public}" PRId64 "", times);
     return times;
 }
 
@@ -311,11 +318,11 @@ int64_t TimeServiceClient::GetMonotonicTimeMs()
         return -1;
     }
 
-    if(timeServiceProxy_->GetMonotonicTimeMs(times) != ERR_OK){
+    if (timeServiceProxy_->GetMonotonicTimeMs(times) != ERR_OK) {
         TIME_HILOGE(TIME_MODULE_CLIENT, "get failed.");
         return -1;
     }
-    TIME_HILOGI(TIME_MODULE_SERVICE,"Result: %{public}" PRId64 "", times);
+    TIME_HILOGI(TIME_MODULE_SERVICE, "Result: %{public}" PRId64 "", times);
     return times;
 }
 
@@ -332,11 +339,11 @@ int64_t TimeServiceClient::GetMonotonicTimeNs()
         return -1;
     }
 
-    if(timeServiceProxy_->GetMonotonicTimeNs(times) != ERR_OK){
+    if (timeServiceProxy_->GetMonotonicTimeNs(times) != ERR_OK) {
         TIME_HILOGE(TIME_MODULE_CLIENT, "get failed.");
         return -1;
     }
-    TIME_HILOGI(TIME_MODULE_SERVICE,"Result: %{public}" PRId64 "", times);
+    TIME_HILOGI(TIME_MODULE_SERVICE, "Result: %{public}" PRId64 "", times);
     return times;
 }
 
@@ -353,11 +360,11 @@ int64_t TimeServiceClient::GetThreadTimeMs()
         return -1;
     }
 
-    if(timeServiceProxy_->GetThreadTimeMs(times) != ERR_OK){
+    if (timeServiceProxy_->GetThreadTimeMs(times) != ERR_OK) {
         TIME_HILOGE(TIME_MODULE_CLIENT, "get failed.");
         return -1;
     }
-    TIME_HILOGI(TIME_MODULE_SERVICE,"Result: %{public}" PRId64 "", times);
+    TIME_HILOGI(TIME_MODULE_SERVICE, "Result: %{public}" PRId64 "", times);
     return times;
 }
 
@@ -373,11 +380,11 @@ int64_t TimeServiceClient::GetThreadTimeNs()
         TIME_HILOGE(TIME_MODULE_CLIENT, "GetThreadTimeNs quit because redoing ConnectService failed.");
         return -1;
     }
-    if(timeServiceProxy_->GetThreadTimeNs(times) != ERR_OK){
+    if (timeServiceProxy_->GetThreadTimeNs(times) != ERR_OK) {
         TIME_HILOGE(TIME_MODULE_CLIENT, "get failed.");
         return -1;
     }
-    TIME_HILOGI(TIME_MODULE_SERVICE,"Result: %{public}" PRId64 "", times);
+    TIME_HILOGI(TIME_MODULE_SERVICE, "Result: %{public}" PRId64 "", times);
     return times;
 }
 
@@ -396,6 +403,5 @@ void TimeSaDeathRecipient::OnRemoteDied(const wptr<IRemoteObject> &object)
     TIME_HILOGE(TIME_MODULE_CLIENT, "TimeSaDeathRecipient on remote systemAbility died.");
     TimeServiceClient::GetInstance()->OnRemoteSaDied(object);
 }
-
 } // namespace MiscServices
 } // namespace OHOS

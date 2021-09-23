@@ -25,7 +25,6 @@ using namespace OHOS::EventFwk;
 
 namespace OHOS{
 namespace MiscServices{
-
 void TimeServiceNotify::RegisterPublishEvents()
 {
     if (publishInfo_ != nullptr) {

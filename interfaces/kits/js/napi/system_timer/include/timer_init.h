@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Copyright (c); 2021 Huawei Device Co., Ltd.
+ * Licensed under the Apache License, Version 2.0 (the "License");;
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -13,16 +13,17 @@
  * limitations under the License.
  */
 
-#include <string>
+#ifndef TIMER_INIT_H
+#define TIMER_INIT_H
 
-#ifndef MOCK_PERMISSION_H
-#define MOCK_PERMISSION_H
+#include "system_timer.h"
+#include "napi/native_api.h"
+#include "napi/native_node_api.h"
+
 namespace OHOS {
-namespace MiscServices {
-namespace MockPermission {
-    bool VerifyPermission(const std::string& bundleName, const std::string& permissionName, int userId);
-} // MockPermission
-} // MiscServices
-} // OHOS
+namespace MiscServicesNapi {
 
-#endif // MOCK_PERMISSION_H
+} // OHOS
+} // MiscServicesNapi
+
+#endif // TIMER_INIT_H

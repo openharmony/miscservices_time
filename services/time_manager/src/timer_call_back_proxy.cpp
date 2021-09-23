@@ -18,7 +18,6 @@
 
 namespace OHOS {
 namespace MiscServices {
-
 TimerCallbackProxy::TimerCallbackProxy(const sptr<IRemoteObject> &object) : IRemoteProxy<ITimerCallback>(object)
 {
 }
@@ -29,11 +28,11 @@ TimerCallbackProxy::~TimerCallbackProxy()
     TIME_HILOGD(TIME_MODULE_CLIENT, "TimerCallbackProxy instance destoryed");
 }
 
-void TimerCallbackProxy::NotifyTimer(uint64_t timerId)
+void TimerCallbackProxy::NotifyTimer(const uint64_t timerId)
 {
     TIME_HILOGD(TIME_MODULE_CLIENT, "start id: %{public}" PRId64 "", timerId);
     sptr<IRemoteObject> remote = Remote();
-    if (remote == nullptr){
+    if (remote == nullptr) {
         return;
     }
 

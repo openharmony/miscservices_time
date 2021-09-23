@@ -24,6 +24,11 @@ namespace OHOS {
 namespace MiscServicesNapi {
 using namespace OHOS::MiscServices;
 
+constexpr int NONE_PARAMETER = 0;
+constexpr int ONE_PARAMETER = 1;
+constexpr int TWO_PARAMETERS = 2;
+constexpr int THREE_PARAMETERS = 3;
+
 class ITimerInfoInstance : public ITimerInfo {
 public:
     ITimerInfoInstance();
@@ -49,8 +54,6 @@ napi_value CreateTimer(napi_env env, napi_callback_info info);
 napi_value StartTimer(napi_env env, napi_callback_info info);
 napi_value StopTimer(napi_env env, napi_callback_info info);
 napi_value DestroyTimer(napi_env env, napi_callback_info info);
-
 }  // namespace MiscServicesNapi
 }  // namespace OHOS
-
 #endif  // SYSTEM_TIMER_H

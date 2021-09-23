@@ -18,29 +18,13 @@
 
 namespace OHOS {
 namespace MiscServices {
-
-std::mutex TimePermission::instanceLock_;
-sptr<TimePermission> TimePermission::instance_;
+namespace {
+static const int UID_TO_USERID = 100000;
+}
 sptr<AppExecFwk::IBundleMgr> TimePermission::bundleMgrProxy_;
 
-TimePermission::TimePermission()
-{
-}
-
-TimePermission::~TimePermission()
-{
-}
-
-sptr<TimePermission> TimePermission::GetInstance()
-{
-    if (instance_ == nullptr){
-        std::lock_guard<std::mutex> autoLock(instanceLock_);
-        if (instance_ == nullptr) {
-            instance_ = new TimePermission;
-        }
-    }
-    return instance_;
-}
+TimePermission::TimePermission() {};
+TimePermission::~TimePermission() {};
 
 bool TimePermission::CheckSelfPermission(std::string permName)
 {
@@ -49,24 +33,25 @@ bool TimePermission::CheckSelfPermission(std::string permName)
 
 bool TimePermission::CheckCallingPermission(int32_t uid, std::string permName)
 {
-    if (bundleMgrProxy_ == nullptr){
+    if (bundleMgrProxy_ == nullptr) {
         bundleMgrProxy_ = GetBundleManager();
-        TIME_HILOGI(TIME_MODULE_COMMON,"get bundle mgr");
+        TIME_HILOGI(TIME_MODULE_COMMON, "get bundle mgr");
     }
 
-    if (bundleMgrProxy_ == nullptr){
-        TIME_HILOGE(TIME_MODULE_COMMON,"redo get bundle mgr failed");
+    if (bundleMgrProxy_ == nullptr) {
+        TIME_HILOGE(TIME_MODULE_COMMON, "redo get bundle mgr failed");
         return false;
     }
     std::string bundleName;
     auto ret = bundleMgrProxy_->GetBundleNameForUid(uid, bundleName);
-    if (!ret){
-        TIME_HILOGE(TIME_MODULE_COMMON,"get bundle name failed");
+    if (!ret) {
+        TIME_HILOGE(TIME_MODULE_COMMON, "get bundle name failed");
         // always true 
         return true;
     }
-    auto userId = uid / 100000;
-    TIME_HILOGI(TIME_MODULE_COMMON,"VerifyPermission bundleName %{public}s, permission %{public}s", bundleName.c_str(), permName.c_str());
+    auto userId = uid / UID_TO_USERID;
+    TIME_HILOGI(TIME_MODULE_COMMON, "VerifyPermission bundleName %{public}s, permission %{public}s", 
+        bundleName.c_str(), permName.c_str());
     return MockPermission::VerifyPermission(bundleName, permName, userId);
 }
 
@@ -78,11 +63,10 @@ sptr<AppExecFwk::IBundleMgr> TimePermission::GetBundleManager()
             bundleMgrProxy_ =
                 iface_cast<AppExecFwk::IBundleMgr>(systemManager->GetSystemAbility(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID));
         } else {
-            TIME_HILOGE(TIME_MODULE_COMMON,"fail to get SAMGR");
+            TIME_HILOGE(TIME_MODULE_COMMON, "fail to get SAMGR");
         }
     }
     return bundleMgrProxy_;
 }
-
 } // namespace MiscServices
 } // namespace OHOS

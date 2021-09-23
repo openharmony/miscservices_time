@@ -12,6 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#ifndef OHOS_GLOBAL_TIME_SERVICE_TEST_H
+#define OHOS_GLOBAL_TIME_SERVICE_TEST_H
+
 #include "napi/native_api.h"
 #include "napi/native_node_api.h"
 #include <functional>
@@ -26,8 +29,8 @@
 #include <string>
 #include <inttypes.h>
 
-namespace OHOS{
-namespace MiscServices{
+namespace OHOS {
+namespace MiscServices {
 class TimerInfoTest : public ITimerInfo {
 public:
     TimerInfoTest();
@@ -54,7 +57,7 @@ TimerInfoTest::~TimerInfoTest()
 void TimerInfoTest::OnTrigger()
 {
     TIME_HILOGD(TIME_MODULE_SERVICE, "start.");
-    if (callBack_ != nullptr){
+    if (callBack_ != nullptr) {
         TIME_HILOGD(TIME_MODULE_SERVICE, "call back.");
         callBack_();
     }
@@ -83,6 +86,6 @@ void TimerInfoTest::SetWantAgent(std::shared_ptr<OHOS::Notification::WantAgent::
 {
     wantAgent = _wantAgent;
 }
-
 }
 }
+#endif

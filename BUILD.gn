@@ -24,6 +24,7 @@ group("time_native_packages") {
       "interfaces/kits/js/napi/system_timer:systemtimer",
       "profile:miscservices_time_sa_profiles",
       "services:time_service",
+      "services:timezone_json",
     ]
   }
 }

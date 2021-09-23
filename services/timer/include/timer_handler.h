@@ -13,8 +13,6 @@
  * limitations under the License.
  */
 
-
-
 #ifndef TIMER_HANDLER_H
 #define TIMER_HANDLER_H
 
@@ -26,32 +24,23 @@
 #include <chrono>
 #include <memory>
 
-
 namespace OHOS {
 namespace MiscServices {
-
 static const size_t ALARM_TYPE_COUNT = 5;
 static const size_t N_TIMER_FDS = ALARM_TYPE_COUNT + 1;
-
 typedef std::array<int, N_TIMER_FDS> TimerFds;
 
 class TimerHandler {
 public:
     static std::shared_ptr<TimerHandler> Create ();
-
     int Set (uint32_t type, std::chrono::nanoseconds when);
-    int WaitForAlarm ();
-
+    uint32_t WaitForAlarm ();
     ~TimerHandler ();
-
 private:
     TimerHandler (const TimerFds &fds, int epollfd);
-
     const TimerFds fds_;
     const int epollFd_;
 };
-
-}// MiscService
-}// OHOS
-
+} // MiscService
+} // OHOS
 #endif

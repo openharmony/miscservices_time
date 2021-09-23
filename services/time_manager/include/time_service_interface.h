@@ -21,10 +21,8 @@
 
 namespace OHOS {
 namespace MiscServices {
-
 class ITimeService : public IRemoteBroker {
 public:
-    
     // remote method code
     enum {
         SET_TIME = 0,
@@ -168,7 +166,6 @@ public:
 
     DECLARE_INTERFACE_DESCRIPTOR(u"ohos.miscservices.time.ITimeService");
 };
-
 } // namespace MiscServices
 } // namespace OHOS
 #endif // SERVICES_INCLUDE_TIME_SERVICE_INTERFACE_H

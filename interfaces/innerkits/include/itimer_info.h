@@ -12,13 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#ifndef I_TIMER_INFO_H
+#define I_TIMER_INFO_H
 
 #include <mutex>
 #include "want_agent.h"
 
 namespace OHOS {
 namespace MiscServices {
-
 class ITimerInfo {
 public:
     ITimerInfo();
@@ -70,9 +71,10 @@ public:
      */
     virtual void SetInterval(const uint64_t &interval) = 0;
     virtual void SetWantAgent(std::shared_ptr<OHOS::Notification::WantAgent::WantAgent> wantAgent) = 0;
-    virtual void OnTrigger() = 0;    
+    virtual void OnTrigger() = 0;
 };
 
 } // MiscServices
 } // OHOS
 
+#endif // I_TIMER_INFO_H

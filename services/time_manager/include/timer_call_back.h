@@ -25,13 +25,10 @@
 
 namespace OHOS {
 namespace MiscServices {
-
 class TimerCallback : public TimerCallbackStub {
 public:
     DISALLOW_COPY_AND_MOVE(TimerCallback);
-
     static sptr<TimerCallback> GetInstance();
-
     virtual void NotifyTimer(const uint64_t timerId) override;
     /**
      * Get timer callback info.
@@ -41,7 +38,6 @@ public:
      * @return Get timer callback info success or not
      */
     bool InsertTimerCallbackInfo(const uint64_t timerId, const std::shared_ptr<ITimerInfo> &timerInfo);
-
     bool RemoveTimerCallbackInfo(const uint64_t timerId);
 
 private:
@@ -50,11 +46,9 @@ private:
 
     static std::mutex instanceLock_;
     static sptr<TimerCallback> instance_;
-
     static std::map<uint64_t, std::shared_ptr<ITimerInfo>> TimerInfoMap_;
     static std::mutex timerInfoMutex_;
 };
-
 }  // namespace MiscServices
 }  // namespace OHOS
 

@@ -13,14 +13,11 @@
  * limitations under the License.
  */
 
-#include "system_timer.h"
-#include "napi/native_api.h"
-#include "napi/native_node_api.h"
+#include "timer_init.h"
 
 namespace OHOS {
 namespace MiscServicesNapi {
 EXTERN_C_START
-
 /*
  * Module export function
  */
@@ -30,7 +27,6 @@ static napi_value Init(napi_env env, napi_value exports)
      * Propertise define
      */
     SystemtimerInit(env, exports);
-
     return exports;
 }
 EXTERN_C_END

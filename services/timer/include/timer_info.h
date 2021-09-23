@@ -25,9 +25,7 @@
 
 namespace OHOS {
 namespace MiscServices {
-
 class TimerInfo {
-
 public:
     const uint64_t id;
     const int type;
@@ -37,7 +35,7 @@ public:
     const uint32_t flags;
     const uint64_t uid;
 
-    uint64_t count{};
+    uint64_t count {};
     std::chrono::milliseconds when;
     std::chrono::milliseconds windowLength;
     std::chrono::steady_clock::time_point whenElapsed;
@@ -47,20 +45,18 @@ public:
     std::chrono::milliseconds repeatInterval;
 
     TimerInfo (uint64_t id, int type,
-             std::chrono::milliseconds when,
-             std::chrono::steady_clock::time_point whenElapsed,
-             std::chrono::milliseconds windowLength,
-             std::chrono::steady_clock::time_point maxWhen,
-             std::chrono::milliseconds interval,
-             std::function<void (const uint64_t)> callback,
-             uint32_t flags,
-             uint64_t uid);
-
+               std::chrono::milliseconds when,
+               std::chrono::steady_clock::time_point whenElapsed,
+               std::chrono::milliseconds windowLength,
+               std::chrono::steady_clock::time_point maxWhen,
+               std::chrono::milliseconds interval,
+               std::function<void (const uint64_t)> callback,
+               uint32_t flags,
+               uint64_t uid);
+    virtual ~TimerInfo() = default;
     bool operator== (const TimerInfo &other) const;
     bool Matches (const std::string &packageName) const;
 };
-
-}// MiscService
-}// OHOSw
-
+} // MiscService
+} // OHOS
 #endif

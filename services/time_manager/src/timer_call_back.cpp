@@ -17,7 +17,6 @@
 
 namespace OHOS {
 namespace MiscServices {
-
 std::mutex TimerCallback::instanceLock_;
 sptr<TimerCallback> TimerCallback::instance_;
 
@@ -45,10 +44,10 @@ sptr<TimerCallback> TimerCallback::GetInstance()
 }
     
 bool TimerCallback::InsertTimerCallbackInfo(const uint64_t timerId,
-        const std::shared_ptr<ITimerInfo> &timerInfo)
+                                            const std::shared_ptr<ITimerInfo> &timerInfo)
 {
     TIME_HILOGD(TIME_MODULE_SERVICE, "start.");
-    if (timerInfo == nullptr){
+    if (timerInfo == nullptr) {
         return false;
     }
 
@@ -87,17 +86,18 @@ void TimerCallback::NotifyTimer(const uint64_t timerId)
         TIME_HILOGD(TIME_MODULE_SERVICE, "ontrigger.");
         it->second->OnTrigger();
 
-        if (it->second->wantAgent != nullptr){
+        if (it->second->wantAgent != nullptr) {
             TIME_HILOGD(TIME_MODULE_SERVICE, "trigger wantagent.");
             std::shared_ptr<AppExecFwk::Context> context = std::make_shared<OHOS::AppExecFwk::AbilityContext>();
-            std::shared_ptr<AAFwk::Want> want = Notification::WantAgent::WantAgentHelper::GetWant(it->second->wantAgent);
+            std::shared_ptr<AAFwk::Want> want = 
+                Notification::WantAgent::WantAgentHelper::GetWant(it->second->wantAgent);
           
             OHOS::Notification::WantAgent::TriggerInfo paramsInfo("", nullptr, want, 11);
-            Notification::WantAgent::WantAgentHelper::TriggerWantAgent(context, it->second->wantAgent, nullptr, paramsInfo);
+            Notification::WantAgent::WantAgentHelper::TriggerWantAgent(context,
+                it->second->wantAgent, nullptr, paramsInfo);
         }
     }
     TIME_HILOGD(TIME_MODULE_SERVICE, "end.");
 }
-
 }  // namespace MiscServices
 }  // namespace OHOS

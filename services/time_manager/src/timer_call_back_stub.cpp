@@ -17,7 +17,6 @@
 
 namespace OHOS {
 namespace MiscServices {
-
 int TimerCallbackStub::OnRemoteRequest(uint32_t code, MessageParcel &data, MessageParcel &reply,
     MessageOption &option)
 {

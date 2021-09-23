@@ -23,7 +23,6 @@
 #include <inttypes.h>
 namespace OHOS {
 namespace MiscServices {
-
 class TimerCallbackStub : public IRemoteStub<ITimerCallback> {
 public:
     DISALLOW_COPY_AND_MOVE(TimerCallbackStub);

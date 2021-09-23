@@ -23,9 +23,7 @@
 
 namespace OHOS {
 namespace MiscServices {
-
 class TimeServiceNotify {
-
 public:
     TimeServiceNotify() = default;
     ~TimeServiceNotify() = default;
@@ -42,7 +40,6 @@ private:
     sptr<IntentWant> timeZoneChangeWant_;
     sptr<OHOS::EventFwk::CommonEventPublishInfo> publishInfo_;
 };
-
 } // namespace MiscServices
 } // namespace OHOS
 

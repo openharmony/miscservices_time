@@ -21,6 +21,11 @@
 
 namespace OHOS {
 namespace MiscServicesNapi {
+constexpr int TIMER_TYPE_REALTIME = 0;
+constexpr int TIMER_TYPE_WAKEUP = 1;
+constexpr int TIMER_TYPE_EXACT = 2;
+constexpr int TIMER_TYPE_IDLE = 3;
+
 napi_value TimerTypeInit(napi_env env, napi_value exports);
 }  // namespace MiscServicesNapi
 }  // namespace OHOS

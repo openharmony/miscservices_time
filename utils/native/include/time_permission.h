@@ -22,25 +22,21 @@
 #include "mock_permission.h"
 #include "system_ability_definition.h"
 #include "iservice_registry.h"
-#include "refbase.h"
+#include <singleton.h>
 
 #include <mutex>
 #include <string>
 namespace OHOS {
 namespace MiscServices {
-class TimePermission : public RefBase{
+class TimePermission {
+    DECLARE_DELAYED_SINGLETON(TimePermission)
 public:
-    static sptr<TimePermission> GetInstance();
     bool CheckSelfPermission(const std::string permName);
     bool CheckCallingPermission(const int32_t uid, const std::string permName);
 
 private:
-    TimePermission();
-    ~TimePermission();
     sptr<AppExecFwk::IBundleMgr> GetBundleManager();
 
-    static std::mutex instanceLock_;
-    static sptr<TimePermission> instance_;
     static sptr<AppExecFwk::IBundleMgr> bundleMgrProxy_;
 };
 } // namespace MiscServices

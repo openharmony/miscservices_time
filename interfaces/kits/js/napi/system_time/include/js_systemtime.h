@@ -26,17 +26,15 @@ constexpr int REJECT = 0;
 
 constexpr int NONE_PARAMETER = 0;
 constexpr int ONE_PARAMETER = 1;
-constexpr int TWO_PARAMETER = 2;
-constexpr int THREE_PARAMETER = 3;
-
+constexpr int TWO_PARAMETERS = 2;
+constexpr int THREE_PARAMETERS = 3;
 constexpr int MAX_TIME_ZONE_ID = 1024;
 
-
-#define GET_PARAMS(env, info, num) \
+#define GET_PARAMS(env, info, num)                                \
     size_t argc = num;             \
-    napi_value argv[num];          \
-    napi_value thisVar;            \
-    void* data;                    \
+    napi_value argv[num] = {0};    \
+    napi_value thisVar = nullptr;  \
+    void *data;                    \
     napi_get_cb_info(env, info, &argc, argv, &thisVar, &data)
 
 typedef struct AsyncContext {

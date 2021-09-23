@@ -21,7 +21,6 @@
 
 namespace OHOS {
 namespace MiscServices {
-
 struct TimerEntry {
     uint64_t id;
     int type;
@@ -57,8 +56,8 @@ public:
     virtual bool StopTimer (uint64_t timerNumber) = 0;
     virtual bool DestroyTimer (uint64_t timerNumber) = 0;
     virtual ~ITimerManager () = default;
-};// ITimerManager
-}// MiscService
-}// OHOS
+}; // ITimerManager
+} // MiscService
+} // OHOS
 
 #endif

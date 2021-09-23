@@ -30,12 +30,11 @@ public:
 
     ~TimerCallbackProxy();
     DISALLOW_COPY_AND_MOVE(TimerCallbackProxy);
-    virtual void NotifyTimer(uint64_t timerId) override;
+    virtual void NotifyTimer(const uint64_t timerId) override;
 
 private:
     static inline BrokerDelegator<TimerCallbackProxy> delegator_;
 };
-
 } // namespace PowerMgr
 } // namespace OHOS
 

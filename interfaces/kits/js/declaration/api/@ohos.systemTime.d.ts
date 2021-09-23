@@ -44,7 +44,6 @@ declare namespace systemTime {
      */
     function setTimezone(timezone: string, callback: AsyncCallback<boolean>): void;
     function setTimezone(timezone: string): Promise<boolean>;
-    
 }
 
 export default systemTime;
