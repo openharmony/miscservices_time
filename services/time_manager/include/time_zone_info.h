@@ -41,7 +41,7 @@ public:
     bool SetTimezone(std::string timezoneId);
     void Init();
 private:
-    const std::string TIMEZONE_FILE_PATH = "/data/misc/zoneinfo/timezone.json";
+    const std::string TIMEZONE_FILE_PATH = "/system/etc/timezone/timezone.json";
     bool SetOffsetToKernel(float offset);
     bool GetOffsetById(const std::string timezoneId, float &offset);
     bool GetTimezoneFromFile(std::string &timezoneId);

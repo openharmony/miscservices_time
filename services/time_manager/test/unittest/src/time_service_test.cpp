@@ -63,6 +63,7 @@ HWTEST_F(TimeServiceTest, SetTime001, TestSize.Level0)
     EXPECT_TRUE(result);
 }
 
+#if 0
 /**
 * @tc.name: SetTimeZone001
 * @tc.desc: set system time zone.
@@ -377,3 +378,4 @@ HWTEST_F(TimeServiceTest, CreateTimer06, TestSize.Level0)
     ret = TimeServiceClient::GetInstance()->StopTimer(timerId1);
     EXPECT_FALSE(ret);
 }
+#endif
