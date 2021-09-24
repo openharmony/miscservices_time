@@ -17,7 +17,7 @@
 
 namespace OHOS {
 namespace MiscServices {
-bool TimerInfo::operator == (const TimerInfo &other) const
+bool TimerInfo::operator== (const TimerInfo &other) const
 {
     return this->id == other.id;
 }

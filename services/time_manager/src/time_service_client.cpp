@@ -136,9 +136,9 @@ uint64_t TimeServiceClient::CreateTimer(std::shared_ptr<ITimerInfo> TimerOptions
         return 0;
     }
 
-    auto timerId = timeServiceProxy_->CreateTimer(TimerOptions->type,
-                                                  TimerOptions->repeat,
-                                                  TimerOptions->interval,
+    auto timerId = timeServiceProxy_->CreateTimer(TimerOptions->type, 
+                                                  TimerOptions->repeat, 
+                                                  TimerOptions->interval, 
                                                   timerCallbackInfoObject);
     
     if (timerId == 0) {

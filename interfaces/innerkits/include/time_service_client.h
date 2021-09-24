@@ -16,12 +16,11 @@
 #ifndef SERVICES_INCLUDE_TIME_SERVICES_MANAGER_H
 #define SERVICES_INCLUDE_TIME_SERVICES_MANAGER_H
 
-#include <mutex>
-
 #include "refbase.h"
 #include "time_service_interface.h"
 #include "iremote_object.h"
 #include "timer_call_back.h"
+#include <mutex>
 
 namespace OHOS {
 namespace MiscServices {

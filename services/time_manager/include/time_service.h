@@ -80,7 +80,7 @@ private:
     bool GetTimeByClockid(clockid_t clockID, struct timespec* tv);
     int set_rtc_time(time_t sec);
 
-    bool check_rtc(std::string rtc_path, uint64_t rtc_id);
+    bool check_rtc(std::string rtc_path, uint32_t rtc_id);
     int get_wall_clock_rtc_id();
 
     ServiceRunningState state_;

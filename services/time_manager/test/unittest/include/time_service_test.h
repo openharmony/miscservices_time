@@ -12,22 +12,80 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#ifndef OHOS_GLOBAL_TIME_SERVICE_TEST_H
+#define OHOS_GLOBAL_TIME_SERVICE_TEST_H
 
-#ifndef TIME_SERVICE_TEST_H
-#define TIME_SERVICE_TEST_H
-#include <atomic>
+#include "napi/native_api.h"
+#include "napi/native_node_api.h"
+#include <functional>
+#include <gtest/gtest.h>
+#include <cstdint>
+#include <vector>
+#include <sys/time.h>
 
-std::atomic<int> g_data1(0);
+#include <thread>
+#include "time_common.h"
+#include "time_service_client.h"
+#include <string>
+#include <inttypes.h>
 
-void TimeOutCallback1(void)
+namespace OHOS {
+namespace MiscServices {
+class TimerInfoTest : public ITimerInfo {
+public:
+    TimerInfoTest();
+    virtual ~TimerInfoTest();
+    virtual void OnTrigger() override;
+    virtual void SetType(const int &type) override;
+    virtual void SetRepeat(bool repeat) override;
+    virtual void SetInterval(const uint64_t &interval) override;
+    virtual void SetWantAgent(std::shared_ptr<OHOS::Notification::WantAgent::WantAgent> wantAgent) override;
+    void SetCallbackInfo(const std::function<void()> &callBack);
+
+    private:
+        std::function<void()> callBack_ = nullptr;
+};
+
+TimerInfoTest::TimerInfoTest()
 {
-    g_data1 += 1;
 }
 
-std::atomic<int> g_data2(0);
-void TimeOutCallback2(void)
+TimerInfoTest::~TimerInfoTest()
 {
-    g_data2 += 1;
 }
 
-#endif // TIME_SERVICE_TEST_H
+void TimerInfoTest::OnTrigger()
+{
+    TIME_HILOGD(TIME_MODULE_SERVICE, "start.");
+    if (callBack_ != nullptr) {
+        TIME_HILOGD(TIME_MODULE_SERVICE, "call back.");
+        callBack_();
+    }
+    TIME_HILOGD(TIME_MODULE_SERVICE, "end.");
+}
+
+void TimerInfoTest::SetCallbackInfo(const std::function<void()> &callBack)
+{
+    callBack_ = callBack;
+}
+
+void TimerInfoTest::SetType(const int &_type)
+{
+    type = _type;
+}
+
+void TimerInfoTest::SetRepeat(bool _repeat)
+{
+    repeat = _repeat;
+}
+void TimerInfoTest::SetInterval(const uint64_t &_interval)
+{
+    interval = _interval;
+}
+void TimerInfoTest::SetWantAgent(std::shared_ptr<OHOS::Notification::WantAgent::WantAgent> _wantAgent)
+{
+    wantAgent = _wantAgent;
+}
+}
+}
+#endif

@@ -12,35 +12,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+#include "time_service.h"
+#include "time_zone_info.h" 
+
+#include "time_common.h"
+
+#include "system_ability.h"
+#include "system_ability_definition.h"
+#include "iservice_registry.h"
+
 #include <ctime>
 #include <cstdio>
 #include <string>
 #include <unistd.h>
 #include <sys/time.h>
 #include <cerrno>
+#include "pthread.h"
 #include <mutex>
+#include <sys/ioctl.h>
+#include <linux/rtc.h>
 #include <dirent.h>
 #include <cstring>
 #include <fcntl.h>
+#include <sys/socket.h>
+#include <sys/types.h>
 #include <fstream>
 #include <sstream>
 
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <sys/ioctl.h>
-#include <linux/rtc.h>
-
-#include "pthread.h"
-#include "time_service.h"
-#include "time_zone_info.h" 
-#include "time_common.h"
-#include "system_ability.h"
-#include "system_ability_definition.h"
-#include "iservice_registry.h"
 
 namespace OHOS {
 namespace MiscServices {
-namespace {
+namespace{
 // Unit of measure conversion , BASE: second
 static const int MILLI_TO_BASE = 1000LL;
 static const int MICR_TO_BASE = 1000000LL;
@@ -71,8 +74,8 @@ TimeService::TimeService(int32_t systemAbilityId, bool runOnCreate)
     TIME_HILOGI(TIME_MODULE_SERVICE, " TimeService Start.");
 }
 
-TimeService::TimeService()
-    :state_(ServiceRunningState::STATE_NOT_START), rtc_id(get_wall_clock_rtc_id())
+TimeService::TimeService() 
+    : state_(ServiceRunningState::STATE_NOT_START), rtc_id(get_wall_clock_rtc_id())
 {
 }
 
@@ -100,6 +103,7 @@ void TimeService::OnStart()
     InitServiceHandler();
     InitTimerHandler();
     InitNotifyHandler();
+    // init timezone 
     DelayedSingleton<TimeZoneInfo>::GetInstance()->Init();
     if (Init() != ERR_OK) {
         auto callback = [=]() { Init(); };
@@ -136,7 +140,7 @@ void TimeService::OnStop()
     TIME_HILOGI(TIME_MODULE_SERVICE, "OnStop End.");
 }
 
-void TimeService::InitNotifyHandler()
+void TimeService::InitNotifyHandler() 
 {
     TIME_HILOGI(TIME_MODULE_SERVICE, "InitNotify started.");
     if (timeServiceNotify_ != nullptr) {
@@ -160,7 +164,7 @@ void TimeService::InitServiceHandler()
     TIME_HILOGI(TIME_MODULE_SERVICE, "InitServiceHandler Succeeded.");
 }
 
-void TimeService::InitTimerHandler()
+void TimeService::InitTimerHandler() 
 {
     TIME_HILOGI(TIME_MODULE_SERVICE, "Init Timer started.");
     if (timerManagerHandler_ != nullptr) {
@@ -177,7 +181,7 @@ void TimeService::PaserTimerPara(int32_t type, bool repeat, uint64_t interval, T
     if ((type & TIMER_TYPE_REALTIME_MASK) > 0 ) {
         isRealtime = true;
     }
-    if ((type & TIMER_TYPE_REALTIME_WAKEUP_MASK) > 0) {
+    if ((type & TIMER_TYPE_REALTIME_WAKEUP_MASK) > 0 ) {
         isWakeup = true;
     }
     if ((type & TIMER_TYPE_EXACT_MASK) > 0) {
@@ -187,13 +191,13 @@ void TimeService::PaserTimerPara(int32_t type, bool repeat, uint64_t interval, T
     }
 
     if (isRealtime && isWakeup) {
-        paras.timerType = ITimerManager::TimerType::ELAPSED_REALTIME_WAKEUP;
+        paras.timerType = ITimerManager::TimerType::ELAPSED_REALTIME_WAKEUP; 
     }else if (isRealtime) {
         paras.timerType = ITimerManager::TimerType::ELAPSED_REALTIME;
     }else if (isWakeup) {
-        paras.timerType = ITimerManager::TimerType::RTC_WAKEUP;
+        paras.timerType = ITimerManager::TimerType::RTC_WAKEUP; 
     }else{
-        paras.timerType = ITimerManager::TimerType::RTC;
+        paras.timerType = ITimerManager::TimerType::RTC; 
     }
     if (repeat) {
         paras.interval =  (interval < FIVE_THOUSANDS) ? FIVE_THOUSANDS : interval;
@@ -230,12 +234,8 @@ uint64_t TimeService::CreateTimer(int32_t type, bool repeat, uint64_t interval,
             return 0;
         }
     }
-    return timerManagerHandler_->CreateTimer(paras.timerType,
-                                             paras.windowLength,
-                                             paras.interval,
-                                             paras.flag,
-                                             callbackFunc,
-                                             0);
+    return timerManagerHandler_->CreateTimer(paras.timerType, 
+        paras.windowLength, paras.interval, paras.flag, callbackFunc, 0);
 }
 
 bool TimeService::StartTimer(uint64_t timerId, uint64_t triggerTimes) 
@@ -300,28 +300,28 @@ int32_t TimeService::SetTime(const int64_t time)
         return E_TIME_NO_PERMISSION;
     }
     TIME_HILOGI(TIME_MODULE_SERVICE, "Setting time of day to milliseconds: %{public}" PRId64 "", time);
-    if (time < 0 || time/1000LL >= LONG_MAX) {
+    if (time < 0 || time / 1000LL >= LONG_MAX) {
         TIME_HILOGE(TIME_MODULE_SERVICE, "input param error");
         return E_TIME_PARAMETERS_INVALID;
     }
     struct timeval tv{};
-    tv.tv_sec = (time_t) (time/MILLI_TO_BASE);
-    tv.tv_usec = (suseconds_t)((time % MILLI_TO_BASE) * MILLI_TO_MICR);
+    tv.tv_sec = (time_t) (time / MILLI_TO_BASE);
+    tv.tv_usec = (suseconds_t) ((time % MILLI_TO_BASE) * MILLI_TO_MICR);
 
     int result = settimeofday(&tv, NULL);
-    if (result < 0){
+    if (result < 0) {
         TIME_HILOGE(TIME_MODULE_SERVICE, "settimeofday fail: %{public}d.",result);
         return E_TIME_DEAL_FAILED;
     }
     auto ret = set_rtc_time(tv.tv_sec);
-    if (ret < 0){
+    if (ret < 0) {
         TIME_HILOGE(TIME_MODULE_SERVICE, "set rtc fail: %{public}d.", ret);
         return E_TIME_SET_RTC_FAILED;
     }
     
     int64_t currentTime = 0;
     GetWallTimeMs(currentTime);
-    if (timeServiceNotify_ != nullptr){
+    if (timeServiceNotify_ != nullptr) {
         timeServiceNotify_->PublishTimeChanageEvents(currentTime);
     }
     
@@ -329,12 +329,12 @@ int32_t TimeService::SetTime(const int64_t time)
 }
 
 int TimeService::set_rtc_time(time_t sec) {
-    struct rtc_time rtc{};
+    struct rtc_time rtc {};
     struct tm tm {}; 
     struct tm *gmtime_res = nullptr;
     int fd = 0;
     int res;
-    if (rtc_id < 0){
+    if (rtc_id < 0) {
         TIME_HILOGE(TIME_MODULE_SERVICE, "invalid rtc id: %{public}s:", strerror(ENODEV));
         return -1;
     }
@@ -359,8 +359,8 @@ int TimeService::set_rtc_time(time_t sec) {
         rtc.tm_wday = tm.tm_wday;
         rtc.tm_yday = tm.tm_yday;
         rtc.tm_isdst = tm.tm_isdst;
-        res = ioctl(fd, RTC_SET_TIME,&rtc);
-        if (res < 0){
+        res = ioctl(fd, RTC_SET_TIME, &rtc);
+        if (res < 0) {
             TIME_HILOGE(TIME_MODULE_SERVICE, "ioctl RTC_SET_TIME failed: %{public}s", strerror(errno));
         }
     }else{
@@ -371,7 +371,7 @@ int TimeService::set_rtc_time(time_t sec) {
     return res;
 }
 
-bool TimeService::check_rtc(std::string rtc_path, uint64_t rtc_id_t)
+bool TimeService::check_rtc(std::string rtc_path, uint32_t rtc_id_t)
 {
     std::stringstream strs;
     strs << rtc_path << "/rtc" << rtc_id_t << "/hctosys";
@@ -379,9 +379,9 @@ bool TimeService::check_rtc(std::string rtc_path, uint64_t rtc_id_t)
 
     uint32_t hctosys;
     std::fstream file(hctosys_path.data(), std::ios_base::in);
-    if (file.is_open()){
+    if (file.is_open()) {
         file >> hctosys;
-    } else{
+    } else {
         TIME_HILOGE(TIME_MODULE_SERVICE, "failed to open %{public}s", hctosys_path.data());
         return false;
     }
@@ -399,27 +399,22 @@ int TimeService::get_wall_clock_rtc_id()
     }
 
     struct dirent *dirent;
-    std::string s = "rtc";
-    while (errno = 0,
-           dirent = readdir(dir.get())){
-        
-        std::string name(dirent->d_name);
-        unsigned long rtc_id_t = 0;
-        auto index = name.find(s);
-        if (index == std::string::npos){
+    while (errno = 0, 
+           dirent = readdir(dir.get())) {
+        unsigned int rtc_id_t;
+        int matched = sscanf_s(dirent->d_name, "rtc%u", &rtc_id_t, sizeof(int));
+        if (matched < 0) {
+            break;
+        } else if (matched != 1) {
             continue;
-        } else {
-            auto rtc_id_str = name.substr(index + s.length());
-            rtc_id_t = std::stoul(rtc_id_str);
         }
-       
         if (check_rtc(rtc_path, rtc_id_t)) {
-            TIME_HILOGD(TIME_MODULE_SERVICE, "found wall clock rtc %{public}ld", rtc_id_t);
+            TIME_HILOGD(TIME_MODULE_SERVICE, "found wall clock rtc %{public}u", rtc_id_t);
             return rtc_id_t;
         }
     }
 
-    if (errno == 0){
+    if (errno == 0) {
         TIME_HILOGE(TIME_MODULE_SERVICE, "no wall clock rtc found");
     }else{
         TIME_HILOGE(TIME_MODULE_SERVICE, "failed to check rtc: %{public}s", strerror(errno));
@@ -461,7 +456,7 @@ int32_t TimeService::GetWallTimeMs(int64_t &times)
 {   
     struct timespec tv{};
     
-    if (GetTimeByClockid(CLOCK_REALTIME, &tv)){
+    if (GetTimeByClockid(CLOCK_REALTIME, &tv)) {
         times = tv.tv_sec * MILLI_TO_BASE + tv.tv_nsec / NANO_TO_MILLI;
         return ERR_OK;
     }
@@ -473,7 +468,7 @@ int32_t TimeService::GetWallTimeNs(int64_t &times)
 {   
     struct timespec tv{};
 
-    if (GetTimeByClockid(CLOCK_REALTIME, &tv)){
+    if (GetTimeByClockid(CLOCK_REALTIME, &tv)) {
         times = tv.tv_sec * NANO_TO_BASE + tv.tv_nsec;
         return ERR_OK;
     }
@@ -485,7 +480,7 @@ int32_t TimeService::GetBootTimeMs(int64_t &times)
 {   
     struct timespec tv{};
 
-    if (GetTimeByClockid(CLOCK_BOOTTIME, &tv)){
+    if (GetTimeByClockid(CLOCK_BOOTTIME, &tv)) {
         times = tv.tv_sec * MILLI_TO_BASE + tv.tv_nsec / NANO_TO_MILLI;
         return ERR_OK;
     }
@@ -497,7 +492,7 @@ int32_t TimeService::GetBootTimeNs(int64_t &times)
 {   
     struct timespec tv{};
 
-    if (GetTimeByClockid(CLOCK_BOOTTIME, &tv)){
+    if (GetTimeByClockid(CLOCK_BOOTTIME, &tv)) {
         times = tv.tv_sec * NANO_TO_BASE + tv.tv_nsec;
         return ERR_OK;
     }
@@ -509,7 +504,7 @@ int32_t TimeService::GetMonotonicTimeMs(int64_t &times)
 {   
     struct timespec tv{};
 
-    if (GetTimeByClockid(CLOCK_MONOTONIC, &tv)){
+    if (GetTimeByClockid(CLOCK_MONOTONIC, &tv)) {
         times = tv.tv_sec * MILLI_TO_BASE + tv.tv_nsec / NANO_TO_MILLI;
         return ERR_OK;
     }
@@ -521,7 +516,7 @@ int32_t TimeService::GetMonotonicTimeNs(int64_t &times)
 {   
     struct timespec tv{};
 
-    if (GetTimeByClockid(CLOCK_MONOTONIC, &tv)){
+    if (GetTimeByClockid(CLOCK_MONOTONIC, &tv)) {
         times = tv.tv_sec * NANO_TO_BASE + tv.tv_nsec;
         return ERR_OK;
     }

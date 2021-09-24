@@ -50,7 +50,7 @@ bool TimePermission::CheckCallingPermission(int32_t uid, std::string permName)
         return true;
     }
     auto userId = uid / UID_TO_USERID;
-    TIME_HILOGI(TIME_MODULE_COMMON,"VerifyPermission bundleName: % {public}s,permission: % {public}s",
+    TIME_HILOGI(TIME_MODULE_COMMON, "VerifyPermission bundleName %{public}s, permission %{public}s", 
         bundleName.c_str(), permName.c_str());
     return MockPermission::VerifyPermission(bundleName, permName, userId);
 }

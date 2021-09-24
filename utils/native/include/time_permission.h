@@ -12,19 +12,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+
 #ifndef TIME_PERMISSION_H
 #define TIME_PERMISSION_H
-
-#include <mutex>
-#include <string>
-#include <singleton.h>
 
 #include "bundle_mgr_interface.h"
 #include "time_common.h"
 #include "mock_permission.h"
 #include "system_ability_definition.h"
 #include "iservice_registry.h"
+#include <singleton.h>
 
+#include <mutex>
+#include <string>
 namespace OHOS {
 namespace MiscServices {
 class TimePermission {
