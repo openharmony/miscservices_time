@@ -80,7 +80,7 @@ ohos_shared_library("time_service") {
 
 ohos_prebuilt_etc("timezone_json") {
   source = "time_manager/src/timezone.json"
-  module_install_dir = "/data/misc/zoneinfo"
+  relative_install_dir = "timezone"
   part_name = "time_native"
   subsystem_name = "miscservices"
 }
