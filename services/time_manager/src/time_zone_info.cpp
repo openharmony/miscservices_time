@@ -119,7 +119,7 @@ bool TimeZoneInfo::SetOffsetToKernel(float offsetHour)
     struct timezone tz{};
     tz.tz_minuteswest = static_cast<int>(offsetHour * HOURS_TO_MINUTES);
     tz.tz_dsttime = 0;
-    TIME_HILOGD(TIME_MODULE_SERVICE, "settimeofday, Offset hours % {public}f, Offset minutes % {public}d",
+    TIME_HILOGD(TIME_MODULE_SERVICE, "settimeofday, Offset hours %{public}f, Offset minutes %{public}d",
         offsetHour, tz.tz_minuteswest);
     int result = settimeofday(NULL, &tz);
     if (result < 0) {
