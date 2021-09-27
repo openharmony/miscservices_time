@@ -415,7 +415,7 @@ napi_value ParseParametersByStartTimer(const napi_env &env, const napi_value (&a
     int64_t triggerTime = 0;
     napi_get_value_int64(env, argv[1], &triggerTime);
     NAPI_ASSERT(env, triggerTime >= 0, "Wrong argument triggerTime. Positive number expected.");
-    uintTriggerTime = static_cast<uint64_t>triggerTime;
+    uintTriggerTime = static_cast<uint64_t>(triggerTime);
 
     // argv[2]:callback
     if (argc >= START_MAX_PARA) {
