@@ -58,7 +58,7 @@ std::shared_ptr<TimerHandler> TimerHandler::Create()
             TIME_HILOGE(TIME_MODULE_SERVICE, "timerfd_create %{public}d  failed: %{public}s",
                 static_cast<int>(i), strerror(errno));
             close(epollfd);
-            for(size_t j = 0; j < i; j++) {
+            for (size_t j = 0; j < i; j++) {
                 close(fds[j]);
             }
             return nullptr;
