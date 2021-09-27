@@ -25,24 +25,24 @@ config("utils_config") {
 ohos_source_set("time_utils") {
   sources = [
     "mock/src/mock_permission.cpp",
-    "native/src/time_permission.cpp",
     "native/src/time_file_utils.cpp",
+    "native/src/time_permission.cpp",
   ]
 
   public_configs = [ ":utils_config" ]
 
-  deps = [ 
-    "//utils/native/base:utils",
+  deps = [
     "//foundation/aafwk/standard/interfaces/innerkits/base:base",
     "//foundation/aafwk/standard/interfaces/innerkits/want:want",
     "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_core:appexecfwk_core",
-    "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk:system_ability_fwk",
-    "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
-    "//foundation/distributeddatamgr/appdatamgr/interfaces/innerkits/native_rdb:native_rdb",
     "//foundation/distributeddatamgr/appdatamgr/interfaces/innerkits/native_appdatafwk:native_appdatafwk",
     "//foundation/distributeddatamgr/appdatamgr/interfaces/innerkits/native_preferences:native_preferences",
+    "//foundation/distributeddatamgr/appdatamgr/interfaces/innerkits/native_rdb:native_rdb",
+    "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk:system_ability_fwk",
+    "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
+    "//utils/native/base:utils",
   ]
-  
+
   external_deps = [
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",

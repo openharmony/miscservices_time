@@ -17,7 +17,7 @@
 
 #include <dirent.h>
 #include <fcntl.h>
-#include <limits.h>
+#include <climits>
 #include <sys/stat.h>
 #include <unistd.h>
 

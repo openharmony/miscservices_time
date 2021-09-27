@@ -214,7 +214,7 @@ HWTEST_F(TimeServiceTest, GetTime008, TestSize.Level0)
 * @tc.desc: Create system timer.
 * @tc.type: FUNC
 */
-HWTEST_F(TimeServiceTest, CreateTimer01, TestSize.Level0)
+HWTEST_F(TimeServiceTest, CreateTimer001, TestSize.Level0)
 {
     g_data1 = 0;
     auto timerInfo = std::make_shared<TimerInfoTest>();
@@ -241,7 +241,7 @@ HWTEST_F(TimeServiceTest, CreateTimer01, TestSize.Level0)
 * @tc.desc: Create system timer.
 * @tc.type: FUNC
 */
-HWTEST_F(TimeServiceTest, CreateTimer02, TestSize.Level0)
+HWTEST_F(TimeServiceTest, CreateTimer002, TestSize.Level0)
 {
     g_data1 = 0;
     auto timerInfo = std::make_shared<TimerInfoTest>();
@@ -271,7 +271,7 @@ HWTEST_F(TimeServiceTest, CreateTimer02, TestSize.Level0)
 * @tc.desc: Create system timer.
 * @tc.type: FUNC
 */
-HWTEST_F(TimeServiceTest, CreateTimer03, TestSize.Level0)
+HWTEST_F(TimeServiceTest, CreateTimer003, TestSize.Level0)
 {
     uint64_t timerId = 0;
     auto ret = TimeServiceClient::GetInstance()->StartTimer(timerId, 5);
@@ -287,7 +287,7 @@ HWTEST_F(TimeServiceTest, CreateTimer03, TestSize.Level0)
 * @tc.desc: Create system timer.
 * @tc.type: FUNC
 */
-HWTEST_F(TimeServiceTest, CreateTimer04, TestSize.Level0)
+HWTEST_F(TimeServiceTest, CreateTimer004, TestSize.Level0)
 {
     auto timerInfo = std::make_shared<TimerInfoTest>();
     timerInfo->SetType(1);
@@ -310,7 +310,7 @@ HWTEST_F(TimeServiceTest, CreateTimer04, TestSize.Level0)
 * @tc.desc: Create system timer.
 * @tc.type: FUNC
 */
-HWTEST_F(TimeServiceTest, CreateTimer05, TestSize.Level0)
+HWTEST_F(TimeServiceTest, CreateTimer005, TestSize.Level0)
 {
     g_data1 = 0;
     auto timerInfo = std::make_shared<TimerInfoTest>();
@@ -337,7 +337,7 @@ HWTEST_F(TimeServiceTest, CreateTimer05, TestSize.Level0)
 * @tc.desc: Create system timer.
 * @tc.type: FUNC
 */
-HWTEST_F(TimeServiceTest, CreateTimer06, TestSize.Level0)
+HWTEST_F(TimeServiceTest, CreateTimer006, TestSize.Level0)
 {
     g_data1 = 1;
     auto timerInfo = std::make_shared<TimerInfoTest>();
