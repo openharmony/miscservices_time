@@ -30,9 +30,9 @@
 namespace OHOS {
 namespace MiscServices {
 struct zoneInfoEntry {
-   std::string ID;
-   std::string alias;
-   float utcOffsetHours;
+    std::string ID;
+    std::string alias;
+    float utcOffsetHours;
 };
 
 class TimeZoneInfo {

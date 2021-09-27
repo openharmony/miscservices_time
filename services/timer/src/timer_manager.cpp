@@ -399,8 +399,7 @@ bool TimerManager::TriggerTimersLocked(std::vector<std::shared_ptr<TimerInfo>> &
             alarm->count = 1;
             triggerList.push_back(alarm);
             if (alarm->repeatInterval > milliseconds::zero()) {
-                alarm->count += duration_cast<milliseconds>(nowElapsed-
-                    alarm->expectedWhenElapsed) / alarm->repeatInterval;
+                alarm->count += duration_cast<milliseconds>(nowElapsed - alarm->expectedWhenElapsed) / alarm->repeatInterval;
                 auto delta = alarm->count * alarm->repeatInterval;
                 auto nextElapsed = alarm->whenElapsed + delta;
                 SetHandlerLocked(alarm->id, alarm->type, alarm->when + delta, nextElapsed, alarm->windowLength,

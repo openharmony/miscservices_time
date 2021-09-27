@@ -126,7 +126,7 @@ uint32_t TimerHandler::WaitForAlarm()
     }
 
     uint32_t result = 0;
-    for(int i = 0;i < nevents;i++) {
+    for (int i = 0; i < nevents; i++) {
         uint32_t alarm_idx = events[i].data.u32;
         uint64_t unused;
         ssize_t err = read(fds_[alarm_idx], &unused, sizeof(unused));

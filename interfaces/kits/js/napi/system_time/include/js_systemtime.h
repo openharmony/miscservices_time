@@ -60,6 +60,6 @@ struct TimeCallbackPromiseInfo {
     bool isCallback = false;
     int errorCode = NO_ERROR;
 };
-}//MiscServicesNapi
-}//OHOS
+}// MiscServicesNapi
+}// OHOS
 #endif

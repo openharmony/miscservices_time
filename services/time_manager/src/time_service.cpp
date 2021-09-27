@@ -106,7 +106,7 @@ void TimeService::OnStart()
         serviceHandler_->PostTask(callback, INIT_INTERVAL);
         TIME_HILOGE(TIME_MODULE_SERVICE, "Init failed. Try again 10s later.");
         return;
-    } 
+    }
 
     TIME_HILOGI(TIME_MODULE_SERVICE, "Start TimeService success."); 
     return;
@@ -192,12 +192,12 @@ void TimeService::PaserTimerPara(int32_t type, bool repeat, uint64_t interval, T
         paras.timerType = ITimerManager::TimerType::ELAPSED_REALTIME;
     }else if (isWakeup) {
         paras.timerType = ITimerManager::TimerType::RTC_WAKEUP;
-    }else{
+    }else {
         paras.timerType = ITimerManager::TimerType::RTC;
     }
     if (repeat) {
         paras.interval =  (interval < FIVE_THOUSANDS) ? FIVE_THOUSANDS : interval;
-    }else{
+    } else {
         paras.interval = 0;
     }
     return;
@@ -305,7 +305,7 @@ int32_t TimeService::SetTime(const int64_t time)
         return E_TIME_PARAMETERS_INVALID;
     }
     struct timeval tv{};
-    tv.tv_sec = (time_t) (time/MILLI_TO_BASE);
+    tv.tv_sec = (time_t) (time / MILLI_TO_BASE);
     tv.tv_usec = (suseconds_t)((time % MILLI_TO_BASE) * MILLI_TO_MICR);
 
     int result = settimeofday(&tv, NULL);
@@ -318,7 +318,6 @@ int32_t TimeService::SetTime(const int64_t time)
         TIME_HILOGE(TIME_MODULE_SERVICE, "set rtc fail: %{public}d.", ret);
         return E_TIME_SET_RTC_FAILED;
     }
-    
     int64_t currentTime = 0;
     GetWallTimeMs(currentTime);
     if (timeServiceNotify_ != nullptr) {
@@ -465,9 +464,8 @@ int32_t TimeService::GetWallTimeMs(int64_t &times)
         times = tv.tv_sec * MILLI_TO_BASE + tv.tv_nsec / NANO_TO_MILLI;
         return ERR_OK;
     }
-    
     return  E_TIME_DEAL_FAILED;
-} 
+}
 
 int32_t TimeService::GetWallTimeNs(int64_t &times)
 {   
@@ -477,7 +475,6 @@ int32_t TimeService::GetWallTimeNs(int64_t &times)
         times = tv.tv_sec * NANO_TO_BASE + tv.tv_nsec;
         return ERR_OK;
     }
-    
     return  E_TIME_DEAL_FAILED;
 }
 
@@ -489,9 +486,8 @@ int32_t TimeService::GetBootTimeMs(int64_t &times)
         times = tv.tv_sec * MILLI_TO_BASE + tv.tv_nsec / NANO_TO_MILLI;
         return ERR_OK;
     }
-    
     return  E_TIME_DEAL_FAILED;
-} 
+}
 
 int32_t TimeService::GetBootTimeNs(int64_t &times)
 {   
@@ -501,9 +497,8 @@ int32_t TimeService::GetBootTimeNs(int64_t &times)
         times = tv.tv_sec * NANO_TO_BASE + tv.tv_nsec;
         return ERR_OK;
     }
-    
     return  E_TIME_DEAL_FAILED;
-} 
+}
 
 int32_t TimeService::GetMonotonicTimeMs(int64_t &times)
 {   
@@ -514,8 +509,7 @@ int32_t TimeService::GetMonotonicTimeMs(int64_t &times)
         return ERR_OK;
     }
     return  E_TIME_DEAL_FAILED;
-} 
-
+}
 
 int32_t TimeService::GetMonotonicTimeNs(int64_t &times)
 {   
@@ -525,10 +519,8 @@ int32_t TimeService::GetMonotonicTimeNs(int64_t &times)
         times = tv.tv_sec * NANO_TO_BASE + tv.tv_nsec;
         return ERR_OK;
     }
-    
     return  E_TIME_DEAL_FAILED;
-} 
-
+}
 
 int32_t TimeService::GetThreadTimeMs(int64_t &times)
 {   
@@ -539,14 +531,13 @@ int32_t TimeService::GetThreadTimeMs(int64_t &times)
     if (ret != 0) {
         return E_TIME_PARAMETERS_INVALID;
     }
-               
+
     if (GetTimeByClockid(cid, &tv)) {
         times = tv.tv_sec * MILLI_TO_BASE + tv.tv_nsec / NANO_TO_MILLI;
         return ERR_OK;
     }
-
     return  E_TIME_DEAL_FAILED;
-} 
+}
 
 int32_t TimeService::GetThreadTimeNs(int64_t &times)
 {   
@@ -557,15 +548,13 @@ int32_t TimeService::GetThreadTimeNs(int64_t &times)
     if (ret != 0) {
         return E_TIME_PARAMETERS_INVALID;
     }
-               
+
     if (GetTimeByClockid(cid, &tv)) {
         times = tv.tv_sec * NANO_TO_BASE + tv.tv_nsec;
         return ERR_OK;
     }
-
     return  E_TIME_DEAL_FAILED;
-} 
-
+}
 
 bool TimeService::GetTimeByClockid(clockid_t clk_id, struct timespec *tv)
 {
@@ -576,7 +565,5 @@ bool TimeService::GetTimeByClockid(clockid_t clk_id, struct timespec *tv)
     return true;
 }
 
-
 } // namespace MiscServices
 } // namespace OHOS
-

@@ -37,7 +37,7 @@ public:
     uint32_t WaitForAlarm();
     ~TimerHandler();
 private:
-    TimerHandler(const TimerFds &fds,int epollfd);
+    TimerHandler(const TimerFds &fds, int epollfd);
     const TimerFds fds_;
     const int epollFd_;
 };
