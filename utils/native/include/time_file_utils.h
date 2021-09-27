@@ -38,6 +38,6 @@ public:
     static bool IsValidPath(const std::string &rootDir, const std::string &path);
     static std::string GetPathDir(const std::string &path);
 };
-}// MiscServices
-}// OHOS
+} // MiscServices
+} // OHOS
 #endif // TIME_FILE_UTILS_H

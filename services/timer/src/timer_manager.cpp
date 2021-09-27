@@ -78,11 +78,11 @@ uint64_t TimerManager::CreateTimer(int type,
         timerNumber = random_();
     }
     auto timerInfo = std::make_shared<TimerEntry>(TimerEntry {
-        timerNumber, 
+        timerNumber,
         type,
-        windowLength, 
-        interval, 
-        flag, 
+        windowLength,
+        interval,
+        flag,
         std::move(callback),
         uid});
     std::lock_guard<std::mutex> lock(entryMapMutex_);
@@ -226,7 +226,7 @@ void TimerManager::RemoveHandler(uint64_t id)
 
 void TimerManager::RemoveLocked(uint64_t id)
 {
-    TIME_HILOGI(TIME_MODULE_SERVICE, "start id: %{public}" PRId64 "",id);
+    TIME_HILOGI(TIME_MODULE_SERVICE, "start id: %{public}" PRId64 "", id);
     auto whichAlarms = [id](const TimerInfo &timer) {
         return timer.id == id;
     };
@@ -412,10 +412,10 @@ bool TimerManager::TriggerTimersLocked(std::vector<std::shared_ptr<TimerInfo>> &
         }
     }
     std::sort(triggerList.begin(),
-              triggerList.end(),
-              [](const std::shared_ptr<TimerInfo> &l, const std::shared_ptr<TimerInfo> &r) {
-                return l->whenElapsed < r->whenElapsed;
-              });
+                triggerList.end(),
+                [](const std::shared_ptr<TimerInfo> &l, const std::shared_ptr<TimerInfo> &r) {
+                    return l->whenElapsed < r->whenElapsed;
+                });
 
     return hasWakeup;
 }

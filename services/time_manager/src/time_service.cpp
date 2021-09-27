@@ -188,11 +188,11 @@ void TimeService::PaserTimerPara(int32_t type, bool repeat, uint64_t interval, T
 
     if (isRealtime && isWakeup) {
         paras.timerType = ITimerManager::TimerType::ELAPSED_REALTIME_WAKEUP;
-    }else if (isRealtime) {
+    } else if (isRealtime) {
         paras.timerType = ITimerManager::TimerType::ELAPSED_REALTIME;
-    }else if (isWakeup) {
+    } else if (isWakeup) {
         paras.timerType = ITimerManager::TimerType::RTC_WAKEUP;
-    }else {
+    } else {
         paras.timerType = ITimerManager::TimerType::RTC;
     }
     if (repeat) {

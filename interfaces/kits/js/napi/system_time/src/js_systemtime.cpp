@@ -244,5 +244,5 @@ extern "C" __attribute__((constructor)) void SystemTimeRegister()
 {
     napi_module_register(&system_time_module);
 }
-}// MiscServicesNapi
-}// OHOS
+} // MiscServicesNapi
+} // OHOS
