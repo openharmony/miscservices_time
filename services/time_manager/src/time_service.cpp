@@ -173,14 +173,15 @@ void TimeService::PaserTimerPara(int32_t type, bool repeat, uint64_t interval, T
 {
     bool isRealtime = false;
     bool isWakeup = false;
+    auto uIntType = static_cast<uint32_t>(type);
     paras.flag = 0;
-    if ((type & TIMER_TYPE_REALTIME_MASK) > 0 ) {
+    if ((uIntType & TIMER_TYPE_REALTIME_MASK) > 0 ) {
         isRealtime = true;
     }
-    if ((type & TIMER_TYPE_REALTIME_WAKEUP_MASK) > 0) {
+    if ((uIntType & TIMER_TYPE_REALTIME_WAKEUP_MASK) > 0) {
         isWakeup = true;
     }
-    if ((type & TIMER_TYPE_EXACT_MASK) > 0) {
+    if ((uIntType & TIMER_TYPE_EXACT_MASK) > 0) {
         paras.windowLength = 0;
     }else{
         paras.windowLength = -1;
@@ -341,7 +342,8 @@ int TimeService::set_rtc_time(time_t sec) {
     strs << "/dev/rtc" << rtc_id;
     auto rtc_dev = strs.str();
     TIME_HILOGI(TIME_MODULE_SERVICE, "rtc_dev : %{public}s:", rtc_dev.data());
-    fd = open(rtc_dev.data(), O_RDWR);
+    auto rtc_data = rtc_dev.data();
+    fd = open(rtc_data, O_RDWR);
     if (fd < 0) {
         TIME_HILOGE(TIME_MODULE_SERVICE, "open failed %{public}s: %{public}s", rtc_dev.data(), strerror(errno));
         return -1;

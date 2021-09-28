@@ -342,7 +342,7 @@ void PaddingAsyncCallbackInfoIsByCreateTimer(
 napi_value CreateTimer(napi_env env, napi_callback_info info)
 {
     size_t argc = CREATE_MAX_PARA;
-    napi_value argv[CREATE_MAX_PARA];
+    napi_value argv[CREATE_MAX_PARA] = {0};
     napi_value thisVar = nullptr;
     NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, NULL));
     std::shared_ptr<ITimerInfoInstance> iTimerInfoInstance = std::make_shared<ITimerInfoInstance>();
@@ -415,7 +415,7 @@ napi_value ParseParametersByStartTimer(const napi_env &env, const napi_value (&a
     int64_t triggerTime = 0;
     napi_get_value_int64(env, argv[1], &triggerTime);
     NAPI_ASSERT(env, triggerTime >= 0, "Wrong argument triggerTime. Positive number expected.");
-    uintTriggerTime = (uint64_t)triggerTime;
+    uintTriggerTime = static_cast<uint64_t>(triggerTime);
 
     // argv[2]:callback
     if (argc >= START_MAX_PARA) {
@@ -444,7 +444,7 @@ void PaddingAsyncCallbackInfoIsByStartTimer(
 napi_value StartTimer(napi_env env, napi_callback_info info)
 {
     size_t argc = START_MAX_PARA;
-    napi_value argv[START_MAX_PARA];
+    napi_value argv[START_MAX_PARA] = {0};
     napi_value thisVar = nullptr;
     NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, NULL));
 
@@ -552,7 +552,7 @@ void PaddingAsyncCallbackInfoIsByStopTimer(
 napi_value StopTimer(napi_env env, napi_callback_info info)
 {
     size_t argc = STOP_MAX_PARA;
-    napi_value argv[STOP_MAX_PARA];
+    napi_value argv[STOP_MAX_PARA] = {0};
     napi_value thisVar = nullptr;
     NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, NULL));
 
@@ -657,7 +657,7 @@ void PaddingAsyncCallbackInfoIsByDestroyTimer(
 napi_value DestroyTimer(napi_env env, napi_callback_info info)
 {
     size_t argc = DESTROY_MAX_PARA;
-    napi_value argv[DESTROY_MAX_PARA];
+    napi_value argv[DESTROY_MAX_PARA] = {0};
     napi_value thisVar = nullptr;
     NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, NULL));
 

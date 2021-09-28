@@ -150,7 +150,7 @@ void TimerManager::SetHandler(uint64_t id,
                               std::function<void (const uint64_t)> callback,
                               uint64_t uid)
 {
-    TIME_HILOGI(TIME_MODULE_SERVICE, "start id: %{public}" PRId64 "",id);
+    TIME_HILOGI(TIME_MODULE_SERVICE, "start id: %{public}" PRId64 "", id);
     TIME_HILOGI(TIME_MODULE_SERVICE,
         "start type:%{public}d windowLength:%{public}" PRId64"interval:%{public}" PRId64"flag:%{public}d",
         type, windowLength, interval, flag);
@@ -412,8 +412,8 @@ bool TimerManager::TriggerTimersLocked(std::vector<std::shared_ptr<TimerInfo>> &
         }
     }
     std::sort(triggerList.begin(),
-                triggerList.end(),
-                [](const std::shared_ptr<TimerInfo> &l, const std::shared_ptr<TimerInfo> &r) {
+              triggerList.end(),
+              [](const std::shared_ptr<TimerInfo> &l, const std::shared_ptr<TimerInfo> &r) {
                     return l->whenElapsed < r->whenElapsed;
                 });
 
