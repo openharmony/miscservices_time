@@ -414,8 +414,8 @@ bool TimerManager::TriggerTimersLocked(std::vector<std::shared_ptr<TimerInfo>> &
     std::sort(triggerList.begin(),
               triggerList.end(),
               [](const std::shared_ptr<TimerInfo> &l, const std::shared_ptr<TimerInfo> &r) {
-                return l->whenElapsed < r->whenElapsed;
-              });
+                    return l->whenElapsed < r->whenElapsed;
+                });
 
     return hasWakeup;
 }
