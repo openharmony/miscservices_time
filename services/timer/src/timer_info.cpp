@@ -28,14 +28,14 @@ bool TimerInfo::Matches(const std::string &packageName) const
 }
 
 TimerInfo::TimerInfo(uint64_t _id, int _type,
-                      std::chrono::milliseconds _when,
-                      std::chrono::steady_clock::time_point _whenElapsed,
-                      std::chrono::milliseconds _windowLength,
-                      std::chrono::steady_clock::time_point _maxWhen,
-                      std::chrono::milliseconds _interval,
-                      std::function<void(const uint64_t)> _callback,
-                      uint32_t _flags,
-                      uint64_t _uid)
+                     std::chrono::milliseconds _when,
+                     std::chrono::steady_clock::time_point _whenElapsed,
+                     std::chrono::milliseconds _windowLength,
+                     std::chrono::steady_clock::time_point _maxWhen,
+                     std::chrono::milliseconds _interval,
+                     std::function<void(const uint64_t)> _callback,
+                     uint32_t _flags,
+                     uint64_t _uid)
     : id {_id},
       type {_type},
       origWhen {_when},

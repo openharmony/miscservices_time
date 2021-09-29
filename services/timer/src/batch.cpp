@@ -46,7 +46,7 @@ std::shared_ptr<TimerInfo> Batch::Get(size_t index) const
 }
 
 bool Batch::CanHold(std::chrono::steady_clock::time_point whenElapsed,
-                     std::chrono::steady_clock::time_point maxWhen) const
+                    std::chrono::steady_clock::time_point maxWhen) const
 {
     return (end_ > whenElapsed) && (start_ <= maxWhen);
 }
@@ -54,8 +54,8 @@ bool Batch::CanHold(std::chrono::steady_clock::time_point whenElapsed,
 bool Batch::Add(const std::shared_ptr<TimerInfo> &alarm)
 {
     bool new_start = false;
-    auto it = std::upper_bound(alarms_.begin(), 
-        alarms_.end(), 
+    auto it = std::upper_bound(alarms_.begin(),
+        alarms_.end(),
         alarm,
         [](const std::shared_ptr<TimerInfo> &first, const std::shared_ptr<TimerInfo> &second) {
             return first->whenElapsed < second->whenElapsed;
@@ -116,10 +116,10 @@ bool Batch::Remove(std::function<bool (const TimerInfo &)> predicate)
 
 bool Batch::HasPackage(const std::string &package_name)
 {
-    return std::find_if(alarms_.begin(), 
+    return std::find_if(alarms_.begin(),
         alarms_.end(),
-        [package_name] (const std::shared_ptr<TimerInfo> &alarm) { 
-            return alarm->Matches(package_name); 
+        [package_name] (const std::shared_ptr<TimerInfo> &alarm) {
+            return alarm->Matches(package_name);
         }) != alarms_.end();
 }
 

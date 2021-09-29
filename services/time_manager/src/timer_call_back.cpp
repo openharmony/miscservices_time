@@ -18,7 +18,7 @@
 namespace OHOS {
 namespace MiscServices {
 namespace {
-    const int WANTAGENT_CODE_ELEVEN = 11;   
+    const int WANTAGENT_CODE_ELEVEN = 11;
 }
 std::mutex TimerCallback::instanceLock_;
 sptr<TimerCallback> TimerCallback::instance_;
@@ -102,5 +102,5 @@ void TimerCallback::NotifyTimer(const uint64_t timerId)
     }
     TIME_HILOGD(TIME_MODULE_SERVICE, "end.");
 }
-}  // namespace MiscServices
-}  // namespace OHOS
+} // namespace MiscServices
+} // namespace OHOS

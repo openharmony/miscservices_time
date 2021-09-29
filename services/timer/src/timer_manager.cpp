@@ -63,14 +63,14 @@ TimerManager::TimerManager(std::shared_ptr<TimerHandler> impl)
     alarmThread_.reset(new std::thread(&TimerManager::TimerLooper, this));
 }
 
-uint64_t TimerManager::CreateTimer(int type, 
-                                   uint64_t windowLength, 
-                                   uint64_t interval, 
+uint64_t TimerManager::CreateTimer(int type,
+                                   uint64_t windowLength,
+                                   uint64_t interval,
                                    int flag,
-                                   std::function<void (const uint64_t)> callback, 
+                                   std::function<void (const uint64_t)> callback,
                                    uint64_t uid)
 {
-    TIME_HILOGI(TIME_MODULE_SERVICE, 
+    TIME_HILOGI(TIME_MODULE_SERVICE,
         "Create timer: %{public}d windowLength:%{public}" PRId64 "interval:%{public}" PRId64 "flag:%{public}d",
         type,
         windowLength,
@@ -81,12 +81,12 @@ uint64_t TimerManager::CreateTimer(int type,
         timerNumber = random_();
     }
     auto timerInfo = std::make_shared<TimerEntry>(TimerEntry {
-        timerNumber, 
+        timerNumber,
         type,
-        windowLength, 
-        interval, 
-        flag, 
-        std::move(callback), 
+        windowLength,
+        interval,
+        flag,
+        std::move(callback),
         uid
         });
     std::lock_guard<std::mutex> lock(entryMapMutex_);
@@ -151,7 +151,7 @@ void TimerManager::SetHandler(uint64_t id,
                               uint64_t windowLength,
                               uint64_t interval,
                               int flag,
-                              std::function<void (const uint64_t)> callback, 
+                              std::function<void (const uint64_t)> callback,
                               uint64_t uid)
 {
     TIME_HILOGI(TIME_MODULE_SERVICE, "start id: %{public}" PRId64 "", id);
@@ -236,7 +236,7 @@ void TimerManager::RemoveLocked(uint64_t id)
     };
 
     bool didRemove = false;
-    for (auto it = alarmBatches_.begin(); it != alarmBatches_.end(); ) {
+    for (auto it = alarmBatches_.begin(); it != alarmBatches_.end();) {
         auto batch = *it;
         didRemove = batch->Remove(whichAlarms);
         if (batch->Size() == 0) {
@@ -343,8 +343,8 @@ void TimerManager::TimerLooper()
             lastTimeChangeClockTime = lastTimeChangeClockTime_;
             expectedClockTime = lastTimeChangeClockTime + (duration_cast<milliseconds>(nowElapsed.time_since_epoch()) -
                 duration_cast<milliseconds>(lastTimeChangeRealtime_.time_since_epoch()));
-            if (lastTimeChangeClockTime == system_clock::time_point::min() 
-                || nowRtc < (expectedClockTime - milliseconds(ONE_THOUSAND)) 
+            if (lastTimeChangeClockTime == system_clock::time_point::min()
+                || nowRtc < (expectedClockTime - milliseconds(ONE_THOUSAND))
                 || nowRtc > (expectedClockTime + milliseconds(ONE_THOUSAND))) {
                 TIME_HILOGI(TIME_MODULE_SERVICE, "Time changed notification from kernel; rebatching");
                 ReBatchAllTimers();
@@ -399,7 +399,7 @@ bool TimerManager::TriggerTimersLocked(std::vector<std::shared_ptr<TimerInfo>> &
             alarm->count = 1;
             triggerList.push_back(alarm);
             if (alarm->repeatInterval > milliseconds::zero()) {
-                alarm->count += duration_cast<milliseconds>(nowElapsed - 
+                alarm->count += duration_cast<milliseconds>(nowElapsed -
                     alarm->expectedWhenElapsed) / alarm->repeatInterval;
                 auto delta = alarm->count * alarm->repeatInterval;
                 auto nextElapsed = alarm->whenElapsed + delta;
@@ -412,7 +412,7 @@ bool TimerManager::TriggerTimersLocked(std::vector<std::shared_ptr<TimerInfo>> &
             }
         }
     }
-    std::sort(triggerList.begin(), 
+    std::sort(triggerList.begin(),
         triggerList.end(),
         [] (const std::shared_ptr<TimerInfo> &l, const std::shared_ptr<TimerInfo> &r) {
             return l->whenElapsed < r->whenElapsed;
@@ -508,19 +508,19 @@ void TimerManager::DeliverTimersLocked(const std::vector<std::shared_ptr<TimerIn
 bool AddBatchLocked(std::vector<std::shared_ptr<Batch>> &list, const std::shared_ptr<Batch> &newBatch)
 {
     TIME_HILOGI(TIME_MODULE_SERVICE, "start");
-    auto it = std::upper_bound(list.begin(), 
-                               list.end(), 
+    auto it = std::upper_bound(list.begin(),
+                               list.end(),
                                newBatch,
                                [](const std::shared_ptr<Batch> &first, const std::shared_ptr<Batch> &second) {
-                                   return first->GetStart() < second->GetStart();
-                               });
+                                    return first->GetStart() < second->GetStart();
+                                });
     list.insert(it, newBatch);
     TIME_HILOGI(TIME_MODULE_SERVICE, "end");
     return it == list.begin();
 }
 
-steady_clock::time_point MaxTriggerTime(steady_clock::time_point now, 
-                                        steady_clock::time_point triggerAtTime, 
+steady_clock::time_point MaxTriggerTime(steady_clock::time_point now,
+                                        steady_clock::time_point triggerAtTime,
                                         milliseconds interval)
 {
     milliseconds futurity = (interval == milliseconds::zero()) ? 

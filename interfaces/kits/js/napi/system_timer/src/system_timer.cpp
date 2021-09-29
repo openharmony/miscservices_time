@@ -198,9 +198,9 @@ void ITimerInfoInstance::OnTrigger()
                 return;
             }
 
-            SetCallback(dataWorkerData->env, 
-                        dataWorkerData->ref, 
-                        NO_ERROR, 
+            SetCallback(dataWorkerData->env,
+                        dataWorkerData->ref,
+                        NO_ERROR,
                         NapiGetNull(dataWorkerData->env));
             delete dataWorkerData;
             dataWorkerData = nullptr;
