@@ -16,8 +16,8 @@
 #include "time_zone_info.h"
 #include "time_file_utils.h"
 
-namespace OHOS{
-namespace MiscServices{
+namespace OHOS {
+namespace MiscServices {
 namespace {
 const std::string TIMEZONE_FILE_PATH = "/data/misc/zoneinfo/timezone.json";
 static const int HOURS_TO_MINUTES = 60;
@@ -149,7 +149,7 @@ bool TimeZoneInfo::SetOffsetToKernel(float offsetHour)
     TIME_HILOGD(TIME_MODULE_SERVICE, "settimeofday, Offset hours :%{public}f , Offset minutes :%{public}d",  offsetHour, tz.tz_minuteswest);
     int result = settimeofday(NULL, &tz);
     if (result < 0) {
-        TIME_HILOGE(TIME_MODULE_SERVICE, "settimeofday fail:%{public}d.", result);
+        TIME_HILOGE(TIME_MODULE_SERVICE, "settimeofday fail: %{public}d.", result);
         return false;
     }
     return true;

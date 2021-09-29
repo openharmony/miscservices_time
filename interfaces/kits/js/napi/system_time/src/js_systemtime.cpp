@@ -110,7 +110,9 @@ napi_value JSSystemTimeSetTime(napi_env env, napi_callback_info info)
 
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "JSSystemTimeSetTime", NAPI_AUTO_LENGTH, &resource);
-    napi_create_async_work(env, nullptr, resource,[](napi_env env, void* data) {
+    napi_create_async_work(env, 
+        nullptr, 
+        resource,[](napi_env env, void* data) {
             AsyncContext* asyncContext = (AsyncContext*)data;
             asyncContext->isOK = TimeServiceClient::GetInstance()->SetTime(asyncContext->time);
         },
@@ -136,12 +138,13 @@ napi_value JSSystemTimeSetTime(napi_env env, napi_callback_info info)
                 asyncContext = nullptr;
             }
         },
-        (void*)asyncContext, &asyncContext->work);
+        (void*)asyncContext, 
+        &asyncContext->work);
     napi_queue_async_work(env, asyncContext->work);
     return result;
 }
 
-napi_value JSSystemTimeSetTimeZone(napi_env env, napi_callback_info info)
+napi_value JSSystemTimeSetTimeZone(napi_env env, napi_callback_info info) 
 {
     TIME_HILOGI(TIME_MODULE_JS_NAPI, "JSSystemTimeSetTimeZone start");
     GET_PARAMS(env, info, TWO_PARAMETERS);
@@ -157,12 +160,12 @@ napi_value JSSystemTimeSetTimeZone(napi_env env, napi_callback_info info)
             char timeZoneChars[MAX_TIME_ZONE_ID];
             size_t timeZoneCharsSize;
             if (napi_ok != napi_get_value_string_utf8(env,
-                                                      argv[i],
-                                                      timeZoneChars,
-                                                      MAX_TIME_ZONE_ID-1,
-                                                      &timeZoneCharsSize)) {
-                delete asyncContext;
-                NAPI_ASSERT(env, false, "input para invalid");
+                argv[i],
+                timeZoneChars,
+                MAX_TIME_ZONE_ID - 1,
+                &timeZoneCharsSize)) {
+                    delete asyncContext;
+                    NAPI_ASSERT(env, false, "input para invalid");
             }
             std::string timeZoneStr(timeZoneChars, timeZoneCharsSize);
             asyncContext->timeZone = timeZoneStr;
@@ -184,7 +187,9 @@ napi_value JSSystemTimeSetTimeZone(napi_env env, napi_callback_info info)
     }
     napi_value resource = nullptr;
     napi_create_string_utf8(env, "JSSystemTimeSetTimeZone", NAPI_AUTO_LENGTH, &resource);
-    napi_create_async_work(env, nullptr, resource,
+    napi_create_async_work(env,
+        nullptr,
+        resource,
         [](napi_env env, void* data) {
             AsyncContext* asyncContext = (AsyncContext*)data;
             asyncContext->isOK = TimeServiceClient::GetInstance()->SetTimeZone(asyncContext->timeZone);

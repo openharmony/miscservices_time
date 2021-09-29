@@ -43,7 +43,6 @@ static napi_module _module = {
     .nm_modname = "systemtimer",
     .nm_priv = ((void *)0),
     .reserved = {0}
-
 };
 
 /*

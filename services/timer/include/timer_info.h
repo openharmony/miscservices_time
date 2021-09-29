@@ -44,18 +44,18 @@ public:
     std::chrono::steady_clock::time_point expectedMaxWhenElapsed;
     std::chrono::milliseconds repeatInterval;
 
-    TimerInfo (uint64_t id, int type,
-               std::chrono::milliseconds when,
-               std::chrono::steady_clock::time_point whenElapsed,
-               std::chrono::milliseconds windowLength,
-               std::chrono::steady_clock::time_point maxWhen,
-               std::chrono::milliseconds interval,
-               std::function<void (const uint64_t)> callback,
-               uint32_t flags,
-               uint64_t uid);
+    TimerInfo(uint64_t id, int type,
+        std::chrono::milliseconds when,
+        std::chrono::steady_clock::time_point whenElapsed,
+        std::chrono::milliseconds windowLength,
+        std::chrono::steady_clock::time_point maxWhen,
+        std::chrono::milliseconds interval,
+        std::function<void (const uint64_t)> callback,
+        uint32_t flags,
+        uint64_t uid);
     virtual ~TimerInfo() = default;
-    bool operator== (const TimerInfo &other) const;
-    bool Matches (const std::string &packageName) const;
+    bool operator==(const TimerInfo &other) const;
+    bool Matches(const std::string &packageName) const;
 };
 } // MiscService
 } // OHOS

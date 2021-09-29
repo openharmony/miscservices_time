@@ -32,54 +32,56 @@ namespace MiscServices {
 class TimerManager : public ITimerManager {
 public:
     static std::shared_ptr<TimerManager> Create();
-
-    uint64_t CreateTimer(int type, uint64_t windowLength, uint64_t interval,int flag,
-                           std::function<void (const uint64_t)> callback,uint64_t uid) override;
+    uint64_t CreateTimer(int type,
+        uint64_t windowLength,
+        uint64_t interval,
+        int flag,
+        std::function<void (const uint64_t)> callback,
+        uint64_t uid) override;
     bool StartTimer(uint64_t timerNumber, uint64_t triggerTime) override;
     bool StopTimer(uint64_t timerNumber) override;
     bool DestroyTimer(uint64_t timerNumber) override;
-
     ~TimerManager() override;
 
 private:
     explicit TimerManager(std::shared_ptr<TimerHandler> impl);
     void TimerLooper();
 
-    void SetHandler(uint64_t id, int type, uint64_t triggerAtTime, uint64_t windowLength, uint64_t interval, int flag,
-                      std::function<void (const uint64_t)> callback,
-                      uint64_t uid);
-
-    void SetHandlerLocked(uint64_t id, int type,
-                            std::chrono::milliseconds when,
-                            std::chrono::steady_clock::time_point whenElapsed,
-                            std::chrono::milliseconds windowLength,
-                            std::chrono::steady_clock::time_point maxWhen,
-                            std::chrono::milliseconds interval,
-                            std::function<void (const uint64_t)> callback,
-                            uint32_t flags,
-                            bool doValidate,
-                            uint64_t callingUid);
-
+    void SetHandler(uint64_t id,
+        int type,
+        uint64_t triggerAtTime,
+        uint64_t windowLength,
+        uint64_t interval,
+        int flag,
+        std::function<void (const uint64_t)> callback,
+        uint64_t uid);
+    void SetHandlerLocked(uint64_t id,
+        int type,
+        std::chrono::milliseconds when,
+        std::chrono::steady_clock::time_point whenElapsed,
+        std::chrono::milliseconds windowLength,
+        std::chrono::steady_clock::time_point maxWhen,
+        std::chrono::milliseconds interval,
+        std::function<void (const uint64_t)> callback,
+        uint32_t flags,
+        bool doValidate,
+        uint64_t callingUid);
     void RemoveHandler(uint64_t id);
     void RemoveLocked(uint64_t id);
     void ReBatchAllTimers();
     void ReBatchAllTimersLocked(bool doValidate);
     void ReAddTimerLocked(std::shared_ptr<TimerInfo> timer,
-                            std::chrono::steady_clock::time_point nowElapsed, bool doValidate);
-
+        std::chrono::steady_clock::time_point nowElapsed,
+        bool doValidate);
     void SetHandlerLocked(std::shared_ptr<TimerInfo> alarm, bool rebatching, bool doValidate);
     void InsertAndBatchTimerLocked(std::shared_ptr<TimerInfo> alarm);
     int64_t AttemptCoalesceLocked(std::chrono::steady_clock::time_point whenElapsed,
-                                    std::chrono::steady_clock::time_point maxWhen);
-
+        std::chrono::steady_clock::time_point maxWhen);
     bool TriggerTimersLocked(std::vector<std::shared_ptr<TimerInfo>> &triggerList,
-                               std::chrono::steady_clock::time_point nowElapsed);
-
+        std::chrono::steady_clock::time_point nowElapsed);
     void RescheduleKernelTimerLocked();
-
     void DeliverTimersLocked(const std::vector<std::shared_ptr<TimerInfo>> &triggerList,
-                               std::chrono::steady_clock::time_point nowElapsed);
-
+        std::chrono::steady_clock::time_point nowElapsed);
     std::shared_ptr<Batch> FindFirstWakeupBatchLocked();
     void SetLocked(int type, std::chrono::nanoseconds when);
     std::chrono::steady_clock::time_point ConvertToElapsed(std::chrono::milliseconds when, int type);
@@ -92,11 +94,9 @@ private:
     std::vector<std::shared_ptr<Batch>> alarmBatches_;
     std::mutex mutex_;
     std::mutex entryMapMutex_;
-
     std::chrono::system_clock::time_point lastTimeChangeClockTime_;
     std::chrono::steady_clock::time_point lastTimeChangeRealtime_;
 }; // timer_manager
-
 } // MiscServices
 } // OHOS
 

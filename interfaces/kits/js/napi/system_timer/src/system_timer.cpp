@@ -38,32 +38,32 @@ const int PARAM1 = 1;
 
 struct CallbackPromiseInfo {
     napi_ref callback = nullptr;
-    napi_deferred deferred;
+    napi_deferred deferred = nullptr;
     bool isCallback = false;
     int errorCode = 0;
 };
 
 struct ReceiveDataWorker {
-    napi_env env;
+    napi_env env = nullptr;
     napi_ref ref = 0;
 };
 
 struct AsyncCallbackInfoCreate {
-    napi_env env;
-    napi_async_work asyncWork;
+    napi_env env = nullptr;
+    napi_async_work asyncWork = nullptr;
     napi_ref callback = nullptr;
-    napi_deferred deferred;
-    std::shared_ptr<ITimerInfoInstance> iTimerInfoInstance;
+    napi_deferred deferred = nullptr;
+    std::shared_ptr<ITimerInfoInstance> iTimerInfoInstance = nullptr;
     uint64_t timerId = 0;
     bool isCallback = false;
     int errorCode = NO_ERROR;
 };
 
 struct AsyncCallbackInfoStart {
-    napi_env env;
-    napi_async_work asyncWork;
+    napi_env env = nullptr;
+    napi_async_work asyncWork = nullptr;
     napi_ref callback = nullptr;
-    napi_deferred deferred;
+    napi_deferred deferred = nullptr;
     uint64_t timerId = 0;
     uint64_t triggerTime = 0;
     bool isOK = false;
@@ -72,10 +72,10 @@ struct AsyncCallbackInfoStart {
 };
 
 struct AsyncCallbackInfoStop {
-    napi_env env;
-    napi_async_work asyncWork;
+    napi_env env = nullptr;
+    napi_async_work asyncWork = nullptr;
     napi_ref callback = nullptr;
-    napi_deferred deferred;
+    napi_deferred deferred = nullptr;
     uint64_t timerId = 0;
     bool isOK = false;
     bool isCallback = false;
@@ -83,10 +83,10 @@ struct AsyncCallbackInfoStop {
 };
 
 struct AsyncCallbackInfoDestroy {
-    napi_env env;
-    napi_async_work asyncWork;
+    napi_env env = nullptr;
+    napi_async_work asyncWork = nullptr;
     napi_ref callback = nullptr;
-    napi_deferred deferred;
+    napi_deferred deferred = nullptr;
     uint64_t timerId = 0;
     bool isOK = false;
     bool isCallback = false;
@@ -198,9 +198,9 @@ void ITimerInfoInstance::OnTrigger()
                 return;
             }
 
-            SetCallback(dataWorkerData->env,
-                        dataWorkerData->ref,
-                        NO_ERROR,
+            SetCallback(dataWorkerData->env, 
+                        dataWorkerData->ref, 
+                        NO_ERROR, 
                         NapiGetNull(dataWorkerData->env));
             delete dataWorkerData;
             dataWorkerData = nullptr;
@@ -283,7 +283,7 @@ napi_value GetTimerOptions(const napi_env &env, const napi_value &value,
         if (wantAgent == nullptr) {
             return nullptr;
         }
-        std::shared_ptr<OHOS::Notification::WantAgent::WantAgent> sWantAgent =
+        std::shared_ptr<OHOS::Notification::WantAgent::WantAgent> sWantAgent = 
             std::make_shared<OHOS::Notification::WantAgent::WantAgent>(*wantAgent);
         iTimerInfoInstance->SetWantAgent(sWantAgent);
     }
@@ -427,8 +427,10 @@ napi_value ParseParametersByStartTimer(const napi_env &env, const napi_value (&a
     return NapiGetNull(env);
 }
 
-void PaddingAsyncCallbackInfoIsByStartTimer(
-    const napi_env &env, AsyncCallbackInfoStart *&asynccallbackinfo, const napi_ref &callback, napi_value &promise)
+void PaddingAsyncCallbackInfoIsByStartTimer(const napi_env &env,
+    AsyncCallbackInfoStart *&asynccallbackinfo,
+    const napi_ref &callback,
+    napi_value &promise)
 {
     if (callback) {
         asynccallbackinfo->callback = callback;
@@ -455,8 +457,10 @@ napi_value StartTimer(napi_env env, napi_callback_info info)
         return JSParaError(env, callback);
     }
 
-    AsyncCallbackInfoStart *asynccallbackinfo = new (std::nothrow)
-        AsyncCallbackInfoStart{.env = env, .asyncWork = nullptr, .timerId = timerId, .triggerTime = triggerTime};
+    AsyncCallbackInfoStart *asynccallbackinfo = new (std::nothrow)AsyncCallbackInfoStart{.env = env,
+        .asyncWork = nullptr,
+        .timerId = timerId,
+        .triggerTime = triggerTime};
     if (!asynccallbackinfo) {
         return JSParaError(env, callback);
     }
@@ -535,8 +539,10 @@ napi_value ParseParametersByStopTimer(const napi_env &env, const napi_value (&ar
     return NapiGetNull(env);
 }
 
-void PaddingAsyncCallbackInfoIsByStopTimer(
-    const napi_env &env, AsyncCallbackInfoStop *&asynccallbackinfo, const napi_ref &callback, napi_value &promise)
+void PaddingAsyncCallbackInfoIsByStopTimer(const napi_env &env,
+    AsyncCallbackInfoStop *&asynccallbackinfo,
+    const napi_ref &callback,
+    napi_value &promise)
 {
     if (callback) {
         asynccallbackinfo->callback = callback;
@@ -562,8 +568,9 @@ napi_value StopTimer(napi_env env, napi_callback_info info)
         return JSParaError(env, callback);
     }
 
-    AsyncCallbackInfoStop *asynccallbackinfo =
-        new (std::nothrow) AsyncCallbackInfoStop{.env = env, .asyncWork = nullptr, .timerId = timerId};
+    AsyncCallbackInfoStop *asynccallbackinfo = new (std::nothrow) AsyncCallbackInfoStop{.env = env,
+            .asyncWork = nullptr,
+            .timerId = timerId};
     if (!asynccallbackinfo) {
         return JSParaError(env, callback);
     }

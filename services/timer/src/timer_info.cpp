@@ -17,30 +17,30 @@
 
 namespace OHOS {
 namespace MiscServices {
-bool TimerInfo::operator ==(const TimerInfo &other) const
+bool TimerInfo::operator==(const TimerInfo &other) const
 {
     return this->id == other.id;
 }
 
-bool TimerInfo::Matches (const std::string &packageName) const
+bool TimerInfo::Matches(const std::string &packageName) const
 {
     return false;
 }
 
-TimerInfo::TimerInfo (uint64_t _id, int _type,
+TimerInfo::TimerInfo(uint64_t _id, int _type,
                       std::chrono::milliseconds _when,
                       std::chrono::steady_clock::time_point _whenElapsed,
                       std::chrono::milliseconds _windowLength,
                       std::chrono::steady_clock::time_point _maxWhen,
                       std::chrono::milliseconds _interval,
-                      std::function<void (const uint64_t)> _callback,
+                      std::function<void(const uint64_t)> _callback,
                       uint32_t _flags,
                       uint64_t _uid)
     : id {_id},
       type {_type},
       origWhen {_when},
       wakeup {_type == ITimerManager::ELAPSED_REALTIME_WAKEUP || _type == ITimerManager::RTC_WAKEUP},
-      callback {std::move (_callback)},
+      callback {std::move(_callback)},
       flags {_flags},
       uid {_uid},
       when {_when},

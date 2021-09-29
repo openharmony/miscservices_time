@@ -73,7 +73,6 @@ public:
     virtual void SetWantAgent(std::shared_ptr<OHOS::Notification::WantAgent::WantAgent> wantAgent) = 0;
     virtual void OnTrigger() = 0;
 };
-
 } // MiscServices
 } // OHOS
 

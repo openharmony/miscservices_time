@@ -43,12 +43,12 @@ const int ARGS_TWO = 2;
     napi_get_cb_info(env, info, &argc, argv, &thisVar, &data)
 
 typedef struct AsyncContext {
-    napi_env env;
-    napi_async_work work;
+    napi_env env = nullptr;
+    napi_async_work work = nullptr;
     int64_t time;
     std::string timeZone;
-    napi_deferred deferred;
-    napi_ref callbackRef;
+    napi_deferred deferred = nullptr;
+    napi_ref callbackRef = nullptr;
     bool isCallback = false;
     bool isOK = false;
     int errorCode = NO_ERROR;
@@ -56,7 +56,7 @@ typedef struct AsyncContext {
 
 struct TimeCallbackPromiseInfo {
     napi_ref callback = nullptr;
-    napi_deferred deferred;
+    napi_deferred deferred = nullptr;
     bool isCallback = false;
     int errorCode = NO_ERROR;
 };
