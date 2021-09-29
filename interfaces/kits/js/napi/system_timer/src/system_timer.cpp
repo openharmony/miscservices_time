@@ -298,7 +298,6 @@ napi_value GetTimerOptions(const napi_env &env, const napi_value &value,
         napi_create_reference(env, result, 1, &onTriggerCallback);
         iTimerInfoInstance->SetCallbackInfo(env, onTriggerCallback);
     }
-
     return NapiGetNull(env);
 }
 
@@ -460,7 +459,8 @@ napi_value StartTimer(napi_env env, napi_callback_info info)
     AsyncCallbackInfoStart *asynccallbackinfo = new (std::nothrow)AsyncCallbackInfoStart{.env = env,
         .asyncWork = nullptr,
         .timerId = timerId,
-        .triggerTime = triggerTime};
+        .triggerTime = triggerTime
+        };
     if (!asynccallbackinfo) {
         return JSParaError(env, callback);
     }
