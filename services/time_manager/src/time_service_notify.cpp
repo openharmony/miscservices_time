@@ -23,8 +23,8 @@
 using namespace OHOS::AAFwk;
 using namespace OHOS::EventFwk;
 
-namespace OHOS{
-namespace MiscServices{
+namespace OHOS {
+namespace MiscServices {
 void TimeServiceNotify::RegisterPublishEvents()
 {
     if (publishInfo_ != nullptr) {
@@ -61,7 +61,5 @@ void TimeServiceNotify::PublishTimeZoneChangeEvents(int64_t eventTime)
 {
     PublishEvents(eventTime, timeZoneChangeWant_);
 }
-
-
 } // MiscService 
 } // OHOS

@@ -55,6 +55,5 @@ void TimerCallbackProxy::NotifyTimer(const uint64_t timerId)
     }
     TIME_HILOGI(TIME_MODULE_CLIENT, "end.");
 }
-
 } // namespace MiscServices
 } // namespace OHOS

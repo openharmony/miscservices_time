@@ -111,7 +111,7 @@ int TimerHandler::Set(uint32_t type, std::chrono::nanoseconds when)
     }
 
     auto second = std::chrono::duration_cast<std::chrono::seconds>(when);
-    timespec ts { second.count(),(when - second).count()};
+    timespec ts {second.count(), (when - second).count()};
     itimerspec spec {timespec {}, ts};
     return timerfd_settime(fds_[type], TFD_TIMER_ABSTIME, &spec, nullptr);
 }

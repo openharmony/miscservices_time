@@ -21,7 +21,6 @@
 
 namespace OHOS {
 namespace MiscServicesNapi {
-
 } // OHOS
 } // MiscServicesNapi
 #endif // TIMER_INIT_H

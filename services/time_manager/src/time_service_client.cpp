@@ -140,14 +140,12 @@ uint64_t TimeServiceClient::CreateTimer(std::shared_ptr<ITimerInfo> TimerOptions
                                                   TimerOptions->repeat,
                                                   TimerOptions->interval,
                                                   timerCallbackInfoObject);
-    
     if (timerId == 0) {
         TIME_HILOGE(TIME_MODULE_CLIENT, "Create timer failed");
         return 0;
     }
     TIME_HILOGI(TIME_MODULE_SERVICE, "CreateTimer id: %{public}" PRId64 "", timerId);
     auto ret = TimerCallback::GetInstance()->InsertTimerCallbackInfo(timerId, TimerOptions);
-    
     if (!ret) {
         return 0;
     }

@@ -27,6 +27,8 @@ const int NONE_PARAMETER = 0;
 const int ONE_PARAMETER = 1;
 const int TWO_PARAMETERS = 2;
 const int THREE_PARAMETERS = 3;
+const int SET_TIME_MAX_PARA = 2;
+const int SET_TIMEZONE_MAX_PARA = 2;
 const int MAX_TIME_ZONE_ID = 1024;
 const int NO_ERROR = 0;
 const int ERROR = -1;
@@ -35,20 +37,13 @@ const int PARAM1 = 1;
 const int ARGS_TWO = 2;
 }
 
-#define GET_PARAMS(env, info, num)                                \
-    size_t argc = num;             \
-    napi_value argv[num] = {0};    \
-    napi_value thisVar = nullptr;  \
-    void *data;                    \
-    napi_get_cb_info(env, info, &argc, argv, &thisVar, &data)
-
 typedef struct AsyncContext {
-    napi_env env;
-    napi_async_work work;
+    napi_env env = nullptr;
+    napi_async_work work = nullptr;
     int64_t time;
     std::string timeZone;
-    napi_deferred deferred;
-    napi_ref callbackRef;
+    napi_deferred deferred = nullptr;
+    napi_ref callbackRef = nullptr;
     bool isCallback = false;
     bool isOK = false;
     int errorCode = NO_ERROR;
@@ -56,7 +51,7 @@ typedef struct AsyncContext {
 
 struct TimeCallbackPromiseInfo {
     napi_ref callback = nullptr;
-    napi_deferred deferred;
+    napi_deferred deferred = nullptr;
     bool isCallback = false;
     int errorCode = NO_ERROR;
 };

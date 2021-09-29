@@ -20,47 +20,47 @@ namespace OHOS {
 namespace MiscServices {
 const auto TYPE_NONWAKEUP_MASK = 0x1;
 
-Batch::Batch ()
-    : start_{std::chrono::steady_clock::time_point::min ()},
-      end_{std::chrono::steady_clock::time_point::max ()},
-      flags_{0}
+Batch::Batch()
+    : start_ {std::chrono::steady_clock::time_point::min()},
+      end_ {std::chrono::steady_clock::time_point::max()},
+      flags_ {0}
 {
 }
 
-Batch::Batch (const TimerInfo &seed)
-    : start_{seed.whenElapsed},
-      end_{seed.maxWhenElapsed},
-      flags_{seed.flags},
-      alarms_{std::make_shared<TimerInfo> (seed)}
+Batch::Batch(const TimerInfo &seed)
+    : start_ {seed.whenElapsed},
+      end_ {seed.maxWhenElapsed},
+      flags_ {seed.flags},
+      alarms_ {std::make_shared<TimerInfo>(seed)}
 {
 }
 
-size_t Batch::Size () const
+size_t Batch::Size() const
 {
-    return alarms_.size ();
+    return alarms_.size();
 }
 
-std::shared_ptr<TimerInfo> Batch::Get (size_t index) const
+std::shared_ptr<TimerInfo> Batch::Get(size_t index) const
 {
     return (index >= alarms_.size()) ? nullptr : alarms_.at(index);
 }
 
-bool Batch::CanHold (std::chrono::steady_clock::time_point whenElapsed,
-                     std::chrono::steady_clock::time_point maxWhen) const
+bool Batch::CanHold(std::chrono::steady_clock::time_point whenElapsed,
+                    std::chrono::steady_clock::time_point maxWhen) const
 {
     return (end_ > whenElapsed) && (start_ <= maxWhen);
 }
 
-bool Batch::Add (const std::shared_ptr<TimerInfo> &alarm)
+bool Batch::Add(const std::shared_ptr<TimerInfo> &alarm)
 {
     bool new_start = false;
     auto it = std::upper_bound(alarms_.begin(),
-                               alarms_.end(),
-                               alarm,
-                               [](const std::shared_ptr<TimerInfo> &first, const std::shared_ptr<TimerInfo> &second) {
-                                   return first->whenElapsed < second->whenElapsed;
-                               });
-    alarms_.insert (it, alarm); // 根据Alarm.when_elapsed从小到大排列
+        alarms_.end(),
+        alarm,
+        [](const std::shared_ptr<TimerInfo> &first, const std::shared_ptr<TimerInfo> &second) {
+            return first->whenElapsed < second->whenElapsed;
+        });
+    alarms_.insert(it, alarm); // 根据Alarm.when_elapsed从小到大排列
 
     if (alarm->whenElapsed > start_) {
         start_ = alarm->whenElapsed;
@@ -75,22 +75,22 @@ bool Batch::Add (const std::shared_ptr<TimerInfo> &alarm)
     return new_start;
 }
 
-bool Batch::Remove (const TimerInfo &alarm)
+bool Batch::Remove(const TimerInfo &alarm)
 {
-    return Remove ([alarm] (const TimerInfo &a) { return a == alarm; });
+    return Remove([alarm] (const TimerInfo &a) { return a == alarm; });
 }
 
-bool Batch::Remove (std::function<bool (const TimerInfo &)> predicate)
+bool Batch::Remove(std::function<bool (const TimerInfo &)> predicate)
 {
     TIME_HILOGD(TIME_MODULE_SERVICE, "start");
     bool didRemove = false;
-    auto newStart = std::chrono::steady_clock::time_point::min ();
-    auto newEnd = std::chrono::steady_clock::time_point::max ();
+    auto newStart = std::chrono::steady_clock::time_point::min();
+    auto newEnd = std::chrono::steady_clock::time_point::max();
     uint32_t newFlags = 0;
-    for (auto it = alarms_.begin (); it != alarms_.end ();) {
+    for (auto it = alarms_.begin(); it != alarms_.end();) {
         auto alarm = *it;
         TIME_HILOGD(TIME_MODULE_SERVICE, "looper");
-        if (predicate (*alarm)) {
+        if (predicate(*alarm)) {
             TIME_HILOGD(TIME_MODULE_SERVICE, "erase");
             it = alarms_.erase(it);
             didRemove = true;
@@ -114,34 +114,34 @@ bool Batch::Remove (std::function<bool (const TimerInfo &)> predicate)
     return didRemove;
 }
 
-bool Batch::HasPackage (const std::string &package_name)
+bool Batch::HasPackage(const std::string &package_name)
 {
     return std::find_if(alarms_.begin(),
-                        alarms_.end(),
-                        [package_name](const std::shared_ptr<TimerInfo> &alarm) {
-                             return alarm->Matches(package_name);
-                        }) != alarms_.end();
+        alarms_.end(),
+        [package_name] (const std::shared_ptr<TimerInfo> &alarm) {
+            return alarm->Matches(package_name);
+        }) != alarms_.end();
 }
 
-bool Batch::HasWakeups () const
+bool Batch::HasWakeups() const
 {
-    return std::any_of (alarms_.begin (), alarms_.begin (),
-                        [] (const std::shared_ptr<TimerInfo> &item) {
-                            return (static_cast<uint32_t>(item->type) & TYPE_NONWAKEUP_MASK) == 0;
-                        });
+    return std::any_of(alarms_.begin(), alarms_.begin(),
+        [] (const std::shared_ptr<TimerInfo> &item) {
+            return (static_cast<uint32_t>(item->type) & TYPE_NONWAKEUP_MASK) == 0;
+        });
 }
 
-std::chrono::steady_clock::time_point Batch::GetStart () const
+std::chrono::steady_clock::time_point Batch::GetStart() const
 {
     return start_;
 }
 
-std::chrono::steady_clock::time_point Batch::GetEnd () const
+std::chrono::steady_clock::time_point Batch::GetEnd() const
 {
     return end_;
 }
 
-uint32_t Batch::GetFlags () const
+uint32_t Batch::GetFlags() const
 {
     return flags_;
 }

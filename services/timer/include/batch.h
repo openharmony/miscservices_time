@@ -26,21 +26,21 @@ namespace OHOS {
 namespace MiscServices {
 class Batch {
 public:
-    Batch ();
-    explicit Batch (const TimerInfo &seed);
+    Batch();
+    explicit Batch(const TimerInfo &seed);
     virtual ~Batch() = default;
-    std::chrono::steady_clock::time_point GetStart () const;
-    std::chrono::steady_clock::time_point GetEnd () const;
-    uint32_t GetFlags () const;
-    size_t Size () const;
-    std::shared_ptr<TimerInfo> Get (size_t index) const;
-    bool CanHold (std::chrono::steady_clock::time_point whenElapsed,
-                  std::chrono::steady_clock::time_point maxWhen) const;
-    bool Add (const std::shared_ptr<TimerInfo> &alarm);
-    bool Remove (const TimerInfo &alarm);
-    bool Remove (std::function<bool (const TimerInfo &)> predicate);
-    bool HasPackage (const std::string &package_name);
-    bool HasWakeups () const;
+    std::chrono::steady_clock::time_point GetStart() const;
+    std::chrono::steady_clock::time_point GetEnd() const;
+    uint32_t GetFlags() const;
+    size_t Size() const;
+    std::shared_ptr<TimerInfo> Get(size_t index) const;
+    bool CanHold(std::chrono::steady_clock::time_point whenElapsed,
+                 std::chrono::steady_clock::time_point maxWhen) const;
+    bool Add(const std::shared_ptr<TimerInfo> &alarm);
+    bool Remove(const TimerInfo &alarm);
+    bool Remove(std::function<bool(const TimerInfo &)> predicate);
+    bool HasPackage(const std::string &package_name);
+    bool HasWakeups() const;
 
 private:
     std::chrono::steady_clock::time_point start_;

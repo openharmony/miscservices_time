@@ -47,6 +47,5 @@ int TimerCallbackStub::OnTriggerStub(MessageParcel& data)
     TIME_HILOGD(TIME_MODULE_SERVICE, "end.");
     return ERR_OK;
 }
-
 } // namespace MiscServices
 } // namespace OHOS
