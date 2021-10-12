@@ -236,7 +236,7 @@ void TimerManager::RemoveLocked(uint64_t id)
     };
 
     bool didRemove = false;
-    for (auto it = alarmBatches_.begin(); it != alarmBatches_.end();) {
+    for (auto it = alarmBatches_.begin(); it != alarmBatches_.end(); ) {
         auto batch = *it;
         didRemove = batch->Remove(whichAlarms);
         if (batch->Size() == 0) {

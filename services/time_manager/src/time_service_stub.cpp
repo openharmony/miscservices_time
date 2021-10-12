@@ -241,7 +241,7 @@ int32_t TimeServiceStub::OnCreateTimer(MessageParcel &data, MessageParcel &reply
         return E_TIME_PARAMETERS_INVALID;
     }
     auto timerId = CreateTimer(type, repeat, interval, obj);
-    if (timerId == 0 ) {
+    if (timerId == 0) {
         TIME_HILOGE(TIME_MODULE_SERVICE, "Create timer failed");
         return E_TIME_DEAL_FAILED;
     }

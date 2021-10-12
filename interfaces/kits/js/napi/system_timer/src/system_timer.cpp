@@ -456,7 +456,8 @@ napi_value StartTimer(napi_env env, napi_callback_info info)
         return JSParaError(env, callback);
     }
 
-    AsyncCallbackInfoStart *asynccallbackinfo = new (std::nothrow)AsyncCallbackInfoStart{.env = env,
+    AsyncCallbackInfoStart *asynccallbackinfo = new (std::nothrow)AsyncCallbackInfoStart{
+        .env = env,
         .asyncWork = nullptr,
         .timerId = timerId,
         .triggerTime = triggerTime
@@ -568,9 +569,11 @@ napi_value StopTimer(napi_env env, napi_callback_info info)
         return JSParaError(env, callback);
     }
 
-    AsyncCallbackInfoStop *asynccallbackinfo = new (std::nothrow) AsyncCallbackInfoStop{.env = env,
-            .asyncWork = nullptr,
-            .timerId = timerId};
+    AsyncCallbackInfoStop *asynccallbackinfo = new (std::nothrow) AsyncCallbackInfoStop {
+        .env = env,
+        .asyncWork = nullptr,
+        .timerId = timerId
+        };
     if (!asynccallbackinfo) {
         return JSParaError(env, callback);
     }
@@ -675,7 +678,7 @@ napi_value DestroyTimer(napi_env env, napi_callback_info info)
     }
 
     AsyncCallbackInfoDestroy *asynccallbackinfo =
-        new (std::nothrow) AsyncCallbackInfoDestroy{.env = env, .asyncWork = nullptr, .timerId = timerId};
+        new (std::nothrow) AsyncCallbackInfoDestroy {.env = env, .asyncWork = nullptr, .timerId = timerId};
     if (!asynccallbackinfo) {
         return JSParaError(env, callback);
     }
