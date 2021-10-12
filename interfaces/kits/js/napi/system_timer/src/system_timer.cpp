@@ -456,7 +456,7 @@ napi_value StartTimer(napi_env env, napi_callback_info info)
         return JSParaError(env, callback);
     }
 
-    AsyncCallbackInfoStart *asynccallbackinfo = new (std::nothrow)AsyncCallbackInfoStart{
+    AsyncCallbackInfoStart *asynccallbackinfo = new (std::nothrow)AsyncCallbackInfoStart {
         .env = env,
         .asyncWork = nullptr,
         .timerId = timerId,

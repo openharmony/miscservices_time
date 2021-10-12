@@ -87,7 +87,7 @@ bool Batch::Remove(std::function<bool (const TimerInfo &)> predicate)
     auto newStart = std::chrono::steady_clock::time_point::min();
     auto newEnd = std::chrono::steady_clock::time_point::max();
     uint32_t newFlags = 0;
-    for (auto it = alarms_.begin(); it != alarms_.end(); ) {
+    for (auto it = alarms_.begin(); it != alarms_.end();) {
         auto alarm = *it;
         TIME_HILOGD(TIME_MODULE_SERVICE, "looper");
         if (predicate(*alarm)) {
