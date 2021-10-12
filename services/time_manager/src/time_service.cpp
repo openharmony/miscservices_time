@@ -205,7 +205,7 @@ void TimeService::PaserTimerPara(int32_t type, bool repeat, uint64_t interval, T
     return;
 }
 
-uint64_t TimeService::CreateTimer(int32_t type, bool repeat, uint64_t interval, 
+uint64_t TimeService::CreateTimer(int32_t type, bool repeat, uint64_t interval,
     sptr<IRemoteObject> &obj)
 {
     if (obj == nullptr) {
