@@ -238,5 +238,5 @@ console.log('end');
 
 **Misc services subsystem**
 
-miscservices\_time
+[miscservices\_time](https://gitee.com/openharmony/miscservices_time/tree/master/)
 

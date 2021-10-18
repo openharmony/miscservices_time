@@ -30,6 +30,7 @@ const int THREE_PARAMETERS = 3;
 const int SET_TIME_MAX_PARA = 2;
 const int SET_TIMEZONE_MAX_PARA = 2;
 const int MAX_TIME_ZONE_ID = 1024;
+const int INVALID_TIME = -1;
 const int NO_ERROR = 0;
 const int ERROR = -1;
 const int PARAM0 = 0;
@@ -40,8 +41,8 @@ const int ARGS_TWO = 2;
 typedef struct AsyncContext {
     napi_env env = nullptr;
     napi_async_work work = nullptr;
-    int64_t time;
-    std::string timeZone;
+    int64_t time = INVALID_TIME;
+    std::string timeZone = "";
     napi_deferred deferred = nullptr;
     napi_ref callbackRef = nullptr;
     bool isCallback = false;

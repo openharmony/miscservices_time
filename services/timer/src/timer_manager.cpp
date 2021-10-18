@@ -390,7 +390,7 @@ bool TimerManager::TriggerTimersLocked(std::vector<std::shared_ptr<TimerInfo>> &
             break;
         }
         alarmBatches_.erase(alarmBatches_.begin());
-        TIME_HILOGI(TIME_MODULE_SERVICE, "after erase alarmBatches_.size= %{public}d", 
+        TIME_HILOGI(TIME_MODULE_SERVICE, "after erase alarmBatches_.size= %{public}d",
             static_cast<int>(alarmBatches_.size()));
 
         const auto n = batch->Size();
@@ -464,7 +464,7 @@ void TimerManager::SetLocked(int type, std::chrono::nanoseconds when)
 void TimerManager::InsertAndBatchTimerLocked(std::shared_ptr<TimerInfo> alarm)
 {
     TIME_HILOGI(TIME_MODULE_SERVICE, "start");
-    int64_t whichBatch = (alarm->flags & static_cast<uint32_t>(STANDALONE)) ? -1 
+    int64_t whichBatch = (alarm->flags & static_cast<uint32_t>(STANDALONE)) ? -1
         : AttemptCoalesceLocked(alarm->whenElapsed, alarm->maxWhenElapsed);
     TIME_HILOGI(TIME_MODULE_SERVICE, "whichBatch= %{public}" PRId64 "", whichBatch);
     if (whichBatch < 0) {
