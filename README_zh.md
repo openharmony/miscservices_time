@@ -241,5 +241,5 @@ console.log('end');
 
 **Misc软件服务子系统**
 
-miscservices\_time
+[miscservices\_time](https://gitee.com/openharmony/miscservices_time/tree/OpenHarmony-3.0-LTS/)
 

@@ -31,12 +31,12 @@
 #include <linux/rtc.h>
 
 #include "pthread.h"
-#include "time_service.h"
-#include "time_zone_info.h" 
+#include "time_zone_info.h"
 #include "time_common.h"
 #include "system_ability.h"
 #include "system_ability_definition.h"
 #include "iservice_registry.h"
+#include "time_service.h"
 
 namespace OHOS {
 namespace MiscServices {
@@ -64,8 +64,8 @@ std::shared_ptr<MiscServices::TimeServiceNotify> TimeService::timeServiceNotify_
 std::shared_ptr<TimerManager> TimeService::timerManagerHandler_  = nullptr;
 
 TimeService::TimeService(int32_t systemAbilityId, bool runOnCreate)
-    : SystemAbility(systemAbilityId, runOnCreate), 
-      state_(ServiceRunningState::STATE_NOT_START), 
+    : SystemAbility(systemAbilityId, runOnCreate),
+      state_(ServiceRunningState::STATE_NOT_START),
       rtc_id(get_wall_clock_rtc_id())
 {
     TIME_HILOGI(TIME_MODULE_SERVICE, " TimeService Start.");
@@ -205,7 +205,7 @@ void TimeService::PaserTimerPara(int32_t type, bool repeat, uint64_t interval, T
     return;
 }
 
-uint64_t TimeService::CreateTimer(int32_t type, bool repeat, uint64_t interval, 
+uint64_t TimeService::CreateTimer(int32_t type, bool repeat, uint64_t interval,
     sptr<IRemoteObject> &obj)
 {
     if (obj == nullptr) {
@@ -240,10 +240,9 @@ uint64_t TimeService::CreateTimer(int32_t type, bool repeat, uint64_t interval,
                                              0);
 }
 
-bool TimeService::StartTimer(uint64_t timerId, uint64_t triggerTimes) 
+bool TimeService::StartTimer(uint64_t timerId, uint64_t triggerTimes)
 {
-    uint64_t triggerTimesIn;
-    triggerTimesIn = (triggerTimes < MIN_TRIGGER_TIMES) ? MIN_TRIGGER_TIMES : triggerTimes;
+    uint64_t triggerTimesIn = (triggerTimes < MIN_TRIGGER_TIMES) ? MIN_TRIGGER_TIMES : triggerTimes;
     if (timerManagerHandler_ == nullptr) {
         TIME_HILOGE(TIME_MODULE_SERVICE, "Timer manager nullptr.");
         timerManagerHandler_ = TimerManager::Create();
@@ -276,7 +275,7 @@ bool TimeService::StopTimer(uint64_t  timerId)
     return ret;
 }
 
-bool TimeService::DestroyTimer(uint64_t  timerId) 
+bool TimeService::DestroyTimer(uint64_t  timerId)
 {
     if (timerManagerHandler_ == nullptr) {
         TIME_HILOGE(TIME_MODULE_SERVICE, "Timer manager nullptr.");
@@ -329,7 +328,8 @@ int32_t TimeService::SetTime(const int64_t time)
     return  ERR_OK;
 }
 
-int TimeService::set_rtc_time(time_t sec) {
+int TimeService::set_rtc_time(time_t sec)
+{
     struct rtc_time rtc {};
     struct tm tm {}; 
     struct tm *gmtime_res = nullptr;
@@ -404,7 +404,6 @@ int TimeService::get_wall_clock_rtc_id()
     std::string s = "rtc";
     while (errno = 0,
            dirent = readdir(dir.get())) {
-        
         std::string name(dirent->d_name);
         unsigned long rtc_id_t = 0;
         auto index = name.find(s);
@@ -460,7 +459,7 @@ int32_t TimeService::GetTimeZone(std::string &timeZoneId)
 }
 
 int32_t TimeService::GetWallTimeMs(int64_t &times)
-{   
+{
     struct timespec tv {};
     
     if (GetTimeByClockid(CLOCK_REALTIME, &tv)) {
@@ -471,7 +470,7 @@ int32_t TimeService::GetWallTimeMs(int64_t &times)
 }
 
 int32_t TimeService::GetWallTimeNs(int64_t &times)
-{   
+{
     struct timespec tv {};
 
     if (GetTimeByClockid(CLOCK_REALTIME, &tv)) {
@@ -482,7 +481,7 @@ int32_t TimeService::GetWallTimeNs(int64_t &times)
 }
 
 int32_t TimeService::GetBootTimeMs(int64_t &times)
-{   
+{
     struct timespec tv {};
 
     if (GetTimeByClockid(CLOCK_BOOTTIME, &tv)) {
@@ -493,7 +492,7 @@ int32_t TimeService::GetBootTimeMs(int64_t &times)
 }
 
 int32_t TimeService::GetBootTimeNs(int64_t &times)
-{   
+{
     struct timespec tv {};
 
     if (GetTimeByClockid(CLOCK_BOOTTIME, &tv)) {
@@ -504,7 +503,7 @@ int32_t TimeService::GetBootTimeNs(int64_t &times)
 }
 
 int32_t TimeService::GetMonotonicTimeMs(int64_t &times)
-{   
+{
     struct timespec tv {};
 
     if (GetTimeByClockid(CLOCK_MONOTONIC, &tv)) {
@@ -515,7 +514,7 @@ int32_t TimeService::GetMonotonicTimeMs(int64_t &times)
 }
 
 int32_t TimeService::GetMonotonicTimeNs(int64_t &times)
-{   
+{
     struct timespec tv {};
 
     if (GetTimeByClockid(CLOCK_MONOTONIC, &tv)) {
@@ -526,7 +525,7 @@ int32_t TimeService::GetMonotonicTimeNs(int64_t &times)
 }
 
 int32_t TimeService::GetThreadTimeMs(int64_t &times)
-{   
+{
     struct timespec tv {};
     int ret;
     clockid_t cid;
@@ -543,7 +542,7 @@ int32_t TimeService::GetThreadTimeMs(int64_t &times)
 }
 
 int32_t TimeService::GetThreadTimeNs(int64_t &times)
-{   
+{
     struct timespec tv {};
     int ret;
     clockid_t cid;
@@ -567,6 +566,5 @@ bool TimeService::GetTimeByClockid(clockid_t clk_id, struct timespec *tv)
     }
     return true;
 }
-
 } // namespace MiscServices
 } // namespace OHOS
