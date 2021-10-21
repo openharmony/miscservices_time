@@ -26,7 +26,6 @@ config("time_service_config") {
     "//foundation/distributeddatamgr/appdatamgr/interfaces/innerkits/native_rdb/include/",
     "/foundation/distributeddatamgr/appdatamgr/interfaces/innerkits/native_appdatafwk/include/",
   ]
-  cflags_cc = [ "-fexceptions" ]
 }
 
 ohos_shared_library("time_service") {
