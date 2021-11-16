@@ -108,7 +108,7 @@ napi_value ParseParametersBySetTime(const napi_env &env, const napi_value (&argv
 
     // argv[0]: times or date object
     NAPI_CALL(env, napi_typeof(env, argv[0], &valueType));
-    NAPI_ASSERT(env, valueType == napi_string || valueType == napi_object, "Wrong argument type. string expected.");
+    NAPI_ASSERT(env, valueType == napi_number || valueType == napi_object, "Wrong argument type. string expected.");
     if (valueType == napi_number) {
         napi_get_value_int64(env, argv[0], &times);
         NAPI_ASSERT(env, times >= 0, "Wrong argument timer. Positive number expected.");
