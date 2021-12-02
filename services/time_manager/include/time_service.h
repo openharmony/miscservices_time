@@ -77,7 +77,7 @@ private:
     void InitTimeZone();
     void InitTimerHandler();
     void PaserTimerPara(int32_t type, bool repeat, uint64_t interval, TimerPara &paras);
-    bool GetTimeByClockid(clockid_t clockID, struct timespec* tv);
+    bool GetTimeByClockid(clockid_t clockID, struct timespec &tv);
     int set_rtc_time(time_t sec);
 
     bool check_rtc(std::string rtc_path, uint64_t rtc_id);

@@ -45,12 +45,12 @@ namespace {
 static const int MILLI_TO_BASE = 1000LL;
 static const int MICR_TO_BASE = 1000000LL;
 static const int NANO_TO_BASE = 1000000000LL;
-static const int FIVE_THOUSANDS = 5000LL;
 static const std::int32_t INIT_INTERVAL = 10000L;
 static const uint32_t TIMER_TYPE_REALTIME_MASK = 1 << 0;
 static const uint32_t TIMER_TYPE_REALTIME_WAKEUP_MASK = 1 << 1;
 static const uint32_t TIMER_TYPE_EXACT_MASK = 1 << 2;
 constexpr int MIN_TRIGGER_TIMES = 5000;
+constexpr int INVALID_TIMER_ID = 0;
 constexpr int MILLI_TO_MICR = MICR_TO_BASE / MILLI_TO_BASE;
 constexpr int NANO_TO_MILLI = NANO_TO_BASE / MILLI_TO_BASE;
 }
@@ -108,7 +108,7 @@ void TimeService::OnStart()
         return;
     }
 
-    TIME_HILOGI(TIME_MODULE_SERVICE, "Start TimeService success."); 
+    TIME_HILOGI(TIME_MODULE_SERVICE, "Start TimeService success.");
     return;
 }
 
@@ -198,7 +198,7 @@ void TimeService::PaserTimerPara(int32_t type, bool repeat, uint64_t interval, T
         paras.timerType = ITimerManager::TimerType::RTC;
     }
     if (repeat) {
-        paras.interval =  (interval < FIVE_THOUSANDS) ? FIVE_THOUSANDS : interval;
+        paras.interval = interval;
     } else {
         paras.interval = 0;
     }
@@ -208,16 +208,17 @@ void TimeService::PaserTimerPara(int32_t type, bool repeat, uint64_t interval, T
 uint64_t TimeService::CreateTimer(int32_t type, bool repeat, uint64_t interval,
     sptr<IRemoteObject> &obj)
 {
+    int uid = IPCSkeleton::GetCallingUid();
     if (obj == nullptr) {
         TIME_HILOGE(TIME_MODULE_SERVICE, "Input nullptr.");
-        return 0;
+        return INVALID_TIMER_ID;
     }
     struct TimerPara paras {};
     PaserTimerPara(type, repeat, interval, paras);
     sptr<ITimerCallback> timerCallback = iface_cast<ITimerCallback>(obj);
     if (timerCallback == nullptr) {
         TIME_HILOGE(TIME_MODULE_SERVICE, "ITimerCallback nullptr.");
-        return 0;
+        return INVALID_TIMER_ID;
     }
     TIME_HILOGI(TIME_MODULE_SERVICE, "Start create timer.");
     auto callbackFunc = [timerCallback](uint64_t id) {
@@ -229,7 +230,7 @@ uint64_t TimeService::CreateTimer(int32_t type, bool repeat, uint64_t interval,
         timerManagerHandler_ = TimerManager::Create();
         if (timerManagerHandler_ == nullptr) {
             TIME_HILOGE(TIME_MODULE_SERVICE, "Redo Timer manager Init Failed.");
-            return 0;
+            return INVALID_TIMER_ID;
         }
     }
     return timerManagerHandler_->CreateTimer(paras.timerType,
@@ -237,20 +238,20 @@ uint64_t TimeService::CreateTimer(int32_t type, bool repeat, uint64_t interval,
                                              paras.interval,
                                              paras.flag,
                                              callbackFunc,
-                                             0);
+                                             uid);
 }
 
 bool TimeService::StartTimer(uint64_t timerId, uint64_t triggerTimes)
 {
-    uint64_t triggerTimesIn = (triggerTimes < MIN_TRIGGER_TIMES) ? MIN_TRIGGER_TIMES : triggerTimes;
     if (timerManagerHandler_ == nullptr) {
         TIME_HILOGE(TIME_MODULE_SERVICE, "Timer manager nullptr.");
         timerManagerHandler_ = TimerManager::Create();
         if (timerManagerHandler_ == nullptr) {
             TIME_HILOGE(TIME_MODULE_SERVICE, "Redo Timer manager Init Failed.");
-            return 0;
+            return false;
         }
     }
+    uint64_t triggerTimesIn = (triggerTimes < MIN_TRIGGER_TIMES) ? MIN_TRIGGER_TIMES : triggerTimes;
     auto ret = timerManagerHandler_->StartTimer(timerId, triggerTimesIn);
     if (!ret) {
         TIME_HILOGE(TIME_MODULE_SERVICE, "TimerId Not found.");
@@ -265,7 +266,7 @@ bool TimeService::StopTimer(uint64_t  timerId)
         timerManagerHandler_ = TimerManager::Create();
         if (timerManagerHandler_ == nullptr) {
             TIME_HILOGE(TIME_MODULE_SERVICE, "Redo Timer manager Init Failed.");
-            return 0;
+            return false;
         }
     }
     auto ret = timerManagerHandler_->StopTimer(timerId);
@@ -282,7 +283,7 @@ bool TimeService::DestroyTimer(uint64_t  timerId)
         timerManagerHandler_ = TimerManager::Create();
         if (timerManagerHandler_ == nullptr) {
             TIME_HILOGE(TIME_MODULE_SERVICE, "Redo Timer manager Init Failed.");
-            return 0;
+            return false;
         }
     }
     auto ret = timerManagerHandler_->DestroyTimer(timerId);
@@ -462,7 +463,7 @@ int32_t TimeService::GetWallTimeMs(int64_t &times)
 {
     struct timespec tv {};
     
-    if (GetTimeByClockid(CLOCK_REALTIME, &tv)) {
+    if (GetTimeByClockid(CLOCK_REALTIME, tv)) {
         times = tv.tv_sec * MILLI_TO_BASE + tv.tv_nsec / NANO_TO_MILLI;
         return ERR_OK;
     }
@@ -473,7 +474,7 @@ int32_t TimeService::GetWallTimeNs(int64_t &times)
 {
     struct timespec tv {};
 
-    if (GetTimeByClockid(CLOCK_REALTIME, &tv)) {
+    if (GetTimeByClockid(CLOCK_REALTIME, tv)) {
         times = tv.tv_sec * NANO_TO_BASE + tv.tv_nsec;
         return ERR_OK;
     }
@@ -484,7 +485,7 @@ int32_t TimeService::GetBootTimeMs(int64_t &times)
 {
     struct timespec tv {};
 
-    if (GetTimeByClockid(CLOCK_BOOTTIME, &tv)) {
+    if (GetTimeByClockid(CLOCK_BOOTTIME, tv)) {
         times = tv.tv_sec * MILLI_TO_BASE + tv.tv_nsec / NANO_TO_MILLI;
         return ERR_OK;
     }
@@ -495,7 +496,7 @@ int32_t TimeService::GetBootTimeNs(int64_t &times)
 {
     struct timespec tv {};
 
-    if (GetTimeByClockid(CLOCK_BOOTTIME, &tv)) {
+    if (GetTimeByClockid(CLOCK_BOOTTIME, tv)) {
         times = tv.tv_sec * NANO_TO_BASE + tv.tv_nsec;
         return ERR_OK;
     }
@@ -506,7 +507,7 @@ int32_t TimeService::GetMonotonicTimeMs(int64_t &times)
 {
     struct timespec tv {};
 
-    if (GetTimeByClockid(CLOCK_MONOTONIC, &tv)) {
+    if (GetTimeByClockid(CLOCK_MONOTONIC, tv)) {
         times = tv.tv_sec * MILLI_TO_BASE + tv.tv_nsec / NANO_TO_MILLI;
         return ERR_OK;
     }
@@ -517,7 +518,7 @@ int32_t TimeService::GetMonotonicTimeNs(int64_t &times)
 {
     struct timespec tv {};
 
-    if (GetTimeByClockid(CLOCK_MONOTONIC, &tv)) {
+    if (GetTimeByClockid(CLOCK_MONOTONIC, tv)) {
         times = tv.tv_sec * NANO_TO_BASE + tv.tv_nsec;
         return ERR_OK;
     }
@@ -534,7 +535,7 @@ int32_t TimeService::GetThreadTimeMs(int64_t &times)
         return E_TIME_PARAMETERS_INVALID;
     }
 
-    if (GetTimeByClockid(cid, &tv)) {
+    if (GetTimeByClockid(cid, tv)) {
         times = tv.tv_sec * MILLI_TO_BASE + tv.tv_nsec / NANO_TO_MILLI;
         return ERR_OK;
     }
@@ -551,16 +552,16 @@ int32_t TimeService::GetThreadTimeNs(int64_t &times)
         return E_TIME_PARAMETERS_INVALID;
     }
                
-    if (GetTimeByClockid(cid, &tv)) {
+    if (GetTimeByClockid(cid, tv)) {
         times = tv.tv_sec * NANO_TO_BASE + tv.tv_nsec;
         return ERR_OK;
     }
     return  E_TIME_DEAL_FAILED;
 }
 
-bool TimeService::GetTimeByClockid(clockid_t clk_id, struct timespec *tv)
+bool TimeService::GetTimeByClockid(clockid_t clk_id, struct timespec &tv)
 {
-    if (clock_gettime(clk_id, tv) < 0) {
+    if (clock_gettime(clk_id, &tv) < 0) {
         TIME_HILOGE(TIME_MODULE_SERVICE, "Failed clock_gettime.");
         return false;
     }

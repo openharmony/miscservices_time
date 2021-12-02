@@ -35,7 +35,7 @@ TimerInfo::TimerInfo(uint64_t _id, int _type,
                      std::chrono::milliseconds _interval,
                      std::function<void(const uint64_t)> _callback,
                      uint32_t _flags,
-                     uint64_t _uid)
+                     int _uid)
     : id {_id},
       type {_type},
       origWhen {_when},

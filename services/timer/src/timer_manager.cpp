@@ -27,9 +27,12 @@ namespace {
 static int TIME_CHANGED_BITS = 16;
 static uint32_t TIME_CHANGED_MASK = 1 << TIME_CHANGED_BITS;
 const int ONE_THOUSAND = 1000;
+const int FIRST_APPLICATION_UID = 10000;
 const float_t BATCH_WINDOW_COE = 0.75;
 const auto MIN_FUTURITY = seconds(5);
-const auto MIN_INTERVAL = seconds(5);
+const auto ZERO_FUTURITY = seconds(0);
+const auto MIN_INTERVAL_FIVE_SECONDS = seconds(5);
+const auto MIN_INTERVAL_ONE_SECONDS = seconds(1);
 const auto MAX_INTERVAL = hours(24 * 365);
 const auto INTERVAL_HOUR = hours(1);
 const auto INTERVAL_HALF_DAY = hours(12);
@@ -68,7 +71,7 @@ uint64_t TimerManager::CreateTimer(int type,
                                    uint64_t interval,
                                    int flag,
                                    std::function<void (const uint64_t)> callback,
-                                   uint64_t uid)
+                                   int uid)
 {
     TIME_HILOGI(TIME_MODULE_SERVICE,
         "Create timer: %{public}d windowLength:%{public}" PRId64 "interval:%{public}" PRId64 "flag:%{public}d",
@@ -145,6 +148,14 @@ bool TimerManager::DestroyTimer(uint64_t timerNumber)
     return true;
 }
 
+bool TimerManager::IsSystemUid(int uid)
+{
+    if (uid < FIRST_APPLICATION_UID) {
+        return true;
+    }
+    return false;
+}
+
 void TimerManager::SetHandler(uint64_t id,
                               int type,
                               uint64_t triggerAtTime,
@@ -152,7 +163,7 @@ void TimerManager::SetHandler(uint64_t id,
                               uint64_t interval,
                               int flag,
                               std::function<void (const uint64_t)> callback,
-                              uint64_t uid)
+                              int uid)
 {
     TIME_HILOGI(TIME_MODULE_SERVICE, "start id: %{public}" PRId64 "", id);
     TIME_HILOGI(TIME_MODULE_SERVICE,
@@ -162,10 +173,10 @@ void TimerManager::SetHandler(uint64_t id,
     if (windowLengthDuration > INTERVAL_HALF_DAY) {
         windowLengthDuration = INTERVAL_HOUR;
     }
-
+    auto minInterval = (IsSystemUid(uid)) ? MIN_INTERVAL_ONE_SECONDS : MIN_INTERVAL_FIVE_SECONDS;
     auto intervalDuration = milliseconds(interval);
-    if (intervalDuration > milliseconds::zero() && intervalDuration < MIN_INTERVAL) {
-        intervalDuration = MIN_INTERVAL;
+    if (intervalDuration > milliseconds::zero() && intervalDuration < minInterval) {
+        intervalDuration = minInterval;
     } else if (intervalDuration > MAX_INTERVAL) {
         intervalDuration = MAX_INTERVAL;
     }
@@ -174,7 +185,7 @@ void TimerManager::SetHandler(uint64_t id,
     }
     auto nowElapsed = steady_clock::now();
     auto nominalTrigger = ConvertToElapsed(milliseconds(triggerAtTime), type);
-    auto minTrigger = nowElapsed + MIN_FUTURITY;
+    auto minTrigger =  (IsSystemUid(uid)) ? nowElapsed + ZERO_FUTURITY : nowElapsed + MIN_FUTURITY;
     auto triggerElapsed = (nominalTrigger > minTrigger) ? nominalTrigger : minTrigger;
 
     steady_clock::time_point maxElapsed;
