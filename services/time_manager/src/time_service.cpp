@@ -251,8 +251,7 @@ bool TimeService::StartTimer(uint64_t timerId, uint64_t triggerTimes)
             return false;
         }
     }
-    uint64_t triggerTimesIn;
-    triggerTimesIn = (triggerTimes < MIN_TRIGGER_TIMES) ? MIN_TRIGGER_TIMES : triggerTimes;
+    uint64_t triggerTimesIn = (triggerTimes < MIN_TRIGGER_TIMES) ? MIN_TRIGGER_TIMES : triggerTimes;
     auto ret = timerManagerHandler_->StartTimer(timerId, triggerTimesIn);
     if (!ret) {
         TIME_HILOGE(TIME_MODULE_SERVICE, "TimerId Not found.");

@@ -27,6 +27,7 @@ namespace {
 static int TIME_CHANGED_BITS = 16;
 static uint32_t TIME_CHANGED_MASK = 1 << TIME_CHANGED_BITS;
 const int ONE_THOUSAND = 1000;
+const int FIRST_APPLICATION_UID = 10000;
 const float_t BATCH_WINDOW_COE = 0.75;
 const auto MIN_FUTURITY = seconds(5);
 const auto ZERO_FUTURITY = seconds(0);
@@ -69,7 +70,7 @@ uint64_t TimerManager::CreateTimer(int type,
                                    uint64_t windowLength,
                                    uint64_t interval,
                                    int flag,
-                                   std::function<void (const uint64_t)> callback, 
+                                   std::function<void (const uint64_t)> callback,
                                    int uid)
 {
     TIME_HILOGI(TIME_MODULE_SERVICE,
@@ -149,7 +150,7 @@ bool TimerManager::DestroyTimer(uint64_t timerNumber)
 
 bool TimerManager::IsSystemUid(int uid)
 {
-    if (uid < 10000){
+    if (uid < FIRST_APPLICATION_UID) {
         return true;
     }
     return false;
