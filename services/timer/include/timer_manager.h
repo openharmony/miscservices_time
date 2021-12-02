@@ -37,7 +37,7 @@ public:
         uint64_t interval,
         int flag,
         std::function<void (const uint64_t)> callback,
-        uint64_t uid) override;
+        int uid) override;
     bool StartTimer(uint64_t timerNumber, uint64_t triggerTime) override;
     bool StopTimer(uint64_t timerNumber) override;
     bool DestroyTimer(uint64_t timerNumber) override;
@@ -54,7 +54,7 @@ private:
         uint64_t interval,
         int flag,
         std::function<void (const uint64_t)> callback,
-        uint64_t uid);
+        int uid);
     void SetHandlerLocked(uint64_t id,
         int type,
         std::chrono::milliseconds when,
@@ -68,6 +68,7 @@ private:
         uint64_t callingUid);
     void RemoveHandler(uint64_t id);
     void RemoveLocked(uint64_t id);
+    bool IsSystemUid(int uid);
     void ReBatchAllTimers();
     void ReBatchAllTimersLocked(bool doValidate);
     void ReAddTimerLocked(std::shared_ptr<TimerInfo> timer,
