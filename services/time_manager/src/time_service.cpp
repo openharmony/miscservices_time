@@ -108,7 +108,7 @@ void TimeService::OnStart()
         return;
     }
 
-    TIME_HILOGI(TIME_MODULE_SERVICE, "Start TimeService success."); 
+    TIME_HILOGI(TIME_MODULE_SERVICE, "Start TimeService success.");
     return;
 }
 
