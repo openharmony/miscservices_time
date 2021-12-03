@@ -28,7 +28,7 @@ struct TimerEntry {
     uint64_t interval;
     int flag;
     std::function<void (const uint64_t)> callback;
-    uint64_t uid;
+    int uid;
 };
 
 class ITimerManager {
@@ -50,7 +50,7 @@ public:
 
     virtual uint64_t CreateTimer(int type, uint64_t windowLength,  uint64_t interval, int flag,
                                     std::function<void(const uint64_t)> callback,
-                                    uint64_t uid) = 0;
+                                    int uid) = 0;
 
     virtual bool StartTimer(uint64_t timerNumber, uint64_t triggerTime) = 0;
     virtual bool StopTimer(uint64_t timerNumber) = 0;

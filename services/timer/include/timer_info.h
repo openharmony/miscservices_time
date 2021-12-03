@@ -33,7 +33,7 @@ public:
     const bool wakeup;
     const std::function<void (const uint64_t)> callback;
     const uint32_t flags;
-    const uint64_t uid;
+    const int uid;
 
     uint64_t count {};
     std::chrono::milliseconds when;
@@ -52,7 +52,7 @@ public:
         std::chrono::milliseconds interval,
         std::function<void (const uint64_t)> callback,
         uint32_t flags,
-        uint64_t uid);
+        int uid);
     virtual ~TimerInfo() = default;
     bool operator==(const TimerInfo &other) const;
     bool Matches(const std::string &packageName) const;
