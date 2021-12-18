@@ -25,7 +25,7 @@ const std::string TIMEZONE_FILE_PATH = "/data/misc/zoneinfo/timezone.json";
 
 TimeZoneInfo::TimeZoneInfo()
 {
-    std::vector<struct zoneInfoEntry> timezoneList = { 
+    std::vector<struct zoneInfoEntry> timezoneList = {
         {"Antarctica/McMurdo", "AQ", 12},
         {"America/Argentina/Buenos_Aires", "AR", -3},
         {"Australia/Sydney", "AU", 10},
@@ -122,7 +122,6 @@ bool TimeZoneInfo::SetTimezone(std::string timezoneId)
         TIME_HILOGE(TIME_MODULE_SERVICE, "Timezone unsupport %{public}s.", timezoneId.c_str());
         return false;
     }
-    TIME_HILOGD(TIME_MODULE_SERVICE, "timezone :%{public}s , GMT Offset :%{public}d",  timezoneId.c_str(), gmtOffset);
     if (!SetOffsetToKernel(gmtOffset)) {
         TIME_HILOGE(TIME_MODULE_SERVICE, "Set kernel failed.");
         return false;
@@ -146,13 +145,11 @@ bool TimeZoneInfo::SetOffsetToKernel(int offsetHour)
     std::stringstream TZstrs;
     time_t timeNow;
     TZstrs << "UTC-" << offsetHour;
-    time(&timeNow);
-    TIME_HILOGD(TIME_MODULE_SERVICE, "timeZone: %{public}s, time Now %{public}s", TZstrs.str().data(), asctime(localtime(&timeNow)));
-    if (setenv("TZ", TZstrs.str().data(), 1) == 0) 
-    {
+    (void)time(&timeNow);
+    if (setenv("TZ", TZstrs.str().data(), 1) == 0){
         tzset();
-        time(&timeNow);
-        TIME_HILOGD(TIME_MODULE_SERVICE, "time Now %{public}s", asctime(localtime(&timeNow)));
+        (void)time(&timeNow);
+        // TIME_HILOGD(TIME_MODULE_SERVICE, "time Now %{public}s", asctime(localtime(&timeNow)));
         return true;
     }
     TIME_HILOGE(TIME_MODULE_SERVICE, "Set timezone failed %{public}s", TZstrs.str().data());

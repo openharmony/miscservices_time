@@ -18,6 +18,7 @@
 #include <unistd.h>
 #include <sys/time.h>
 #include <cerrno>
+#include <chrono>
 #include <mutex>
 #include <dirent.h>
 #include <cstring>
@@ -29,15 +30,14 @@
 #include <sys/types.h>
 #include <sys/ioctl.h>
 #include <linux/rtc.h>
-#include <chrono>
 #include "pthread.h"
-#include "time_service.h"
-#include "time_zone_info.h" 
+#include "time_zone_info.h"
 #include "time_common.h"
 #include "time_tick_notify.h"
 #include "system_ability.h"
 #include "system_ability_definition.h"
 #include "iservice_registry.h"
+#include "time_service.h"
 using namespace std::chrono;
 
 namespace OHOS {
@@ -251,7 +251,7 @@ uint64_t TimeService::CreateTimer(int32_t type, uint64_t windowLength, uint64_t 
     return timerManagerHandler_->CreateTimer(type, windowLength, interval, flag, Callback, 0);
 }
 
-bool TimeService::StartTimer(uint64_t timerId, uint64_t triggerTimes) 
+bool TimeService::StartTimer(uint64_t timerId, uint64_t triggerTimes)
 {
     if (timerManagerHandler_ == nullptr) {
         TIME_HILOGE(TIME_MODULE_SERVICE, "Timer manager nullptr.");

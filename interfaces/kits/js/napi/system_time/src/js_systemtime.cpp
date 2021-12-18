@@ -282,7 +282,7 @@ napi_value ParseParametersGet(const napi_env &env, const napi_value (&argv)[SET_
     return TimeNapiGetNull(env);
 }
 
-napi_value JSSystemTimeGetCurrentTime(napi_env env, napi_callback_info info) 
+napi_value JSSystemTimeGetCurrentTime(napi_env env, napi_callback_info info)
 {
     size_t argc = SET_TIMEZONE_MAX_PARA;
     napi_value argv[SET_TIMEZONE_MAX_PARA] = {0};
@@ -292,7 +292,7 @@ napi_value JSSystemTimeGetCurrentTime(napi_env env, napi_callback_info info)
     if (ParseParametersGet(env, argv, argc, callback) == nullptr) {
         return TimeJSParaError(env, callback);
     }
-    AsyncContext* asyncContext = new (std::nothrow)AsyncContext{.env = env};
+    AsyncContext* asyncContext = new (std::nothrow)AsyncContext {.env = env};
     if (!asyncContext) {
         return TimeJSParaError(env, callback);
     }
@@ -310,7 +310,6 @@ napi_value JSSystemTimeGetCurrentTime(napi_env env, napi_callback_info info)
         [](napi_env env, napi_status status, void* data) {
             AsyncContext* asyncContext = (AsyncContext*)data;
             if (asyncContext->time < 0) {
-                //asyncContext->errorCode = ERROR;
             }
             TimeCallbackPromiseInfo info;
             info.isCallback = asyncContext->isCallback;
@@ -336,7 +335,7 @@ napi_value JSSystemTimeGetCurrentTime(napi_env env, napi_callback_info info)
     }
 }
 
-napi_value JSSystemTimeGetCurrentTimeNs(napi_env env, napi_callback_info info) 
+napi_value JSSystemTimeGetCurrentTimeNs(napi_env env, napi_callback_info info)
 {
     size_t argc = SET_TIMEZONE_MAX_PARA;
     napi_value argv[SET_TIMEZONE_MAX_PARA] = {0};
@@ -346,7 +345,7 @@ napi_value JSSystemTimeGetCurrentTimeNs(napi_env env, napi_callback_info info)
     if (ParseParametersGet(env, argv, argc, callback) == nullptr) {
         return TimeJSParaError(env, callback);
     }
-    AsyncContext* asyncContext = new (std::nothrow)AsyncContext{.env = env};
+    AsyncContext* asyncContext = new (std::nothrow)AsyncContext {.env = env};
     if (!asyncContext) {
         return TimeJSParaError(env, callback);
     }
@@ -390,7 +389,7 @@ napi_value JSSystemTimeGetCurrentTimeNs(napi_env env, napi_callback_info info)
     }
 }
 
-napi_value JSSystemTimeGetRealActiveTime(napi_env env, napi_callback_info info) 
+napi_value JSSystemTimeGetRealActiveTime(napi_env env, napi_callback_info info)
 {
     size_t argc = SET_TIMEZONE_MAX_PARA;
     napi_value argv[SET_TIMEZONE_MAX_PARA] = {0};
@@ -400,7 +399,7 @@ napi_value JSSystemTimeGetRealActiveTime(napi_env env, napi_callback_info info)
     if (ParseParametersGet(env, argv, argc, callback) == nullptr) {
         return TimeJSParaError(env, callback);
     }
-    AsyncContext* asyncContext = new (std::nothrow)AsyncContext{.env = env};
+    AsyncContext* asyncContext = new (std::nothrow)AsyncContext {.env = env};
     if (!asyncContext) {
         return TimeJSParaError(env, callback);
     }
@@ -444,7 +443,7 @@ napi_value JSSystemTimeGetRealActiveTime(napi_env env, napi_callback_info info)
     }
 }
 
-napi_value JSSystemTimeGetRealActiveTimeNs(napi_env env, napi_callback_info info) 
+napi_value JSSystemTimeGetRealActiveTimeNs(napi_env env, napi_callback_info info)
 {
     size_t argc = SET_TIMEZONE_MAX_PARA;
     napi_value argv[SET_TIMEZONE_MAX_PARA] = {0};
@@ -454,7 +453,7 @@ napi_value JSSystemTimeGetRealActiveTimeNs(napi_env env, napi_callback_info info
     if (ParseParametersGet(env, argv, argc, callback) == nullptr) {
         return TimeJSParaError(env, callback);
     }
-    AsyncContext* asyncContext = new (std::nothrow)AsyncContext{.env = env};
+    AsyncContext* asyncContext = new (std::nothrow)AsyncContext {.env = env};
     if (!asyncContext) {
         return TimeJSParaError(env, callback);
     }
@@ -498,7 +497,7 @@ napi_value JSSystemTimeGetRealActiveTimeNs(napi_env env, napi_callback_info info
     }
 }
 
-napi_value JSSystemTimeGetRealTime(napi_env env, napi_callback_info info) 
+napi_value JSSystemTimeGetRealTime(napi_env env, napi_callback_info info)
 {
     size_t argc = SET_TIMEZONE_MAX_PARA;
     napi_value argv[SET_TIMEZONE_MAX_PARA] = {0};
@@ -508,7 +507,7 @@ napi_value JSSystemTimeGetRealTime(napi_env env, napi_callback_info info)
     if (ParseParametersGet(env, argv, argc, callback) == nullptr) {
         return TimeJSParaError(env, callback);
     }
-    AsyncContext* asyncContext = new (std::nothrow)AsyncContext{.env = env};
+    AsyncContext* asyncContext = new (std::nothrow)AsyncContext {.env = env};
     if (!asyncContext) {
         return TimeJSParaError(env, callback);
     }
@@ -552,7 +551,7 @@ napi_value JSSystemTimeGetRealTime(napi_env env, napi_callback_info info)
     }
 }
 
-napi_value JSSystemTimeGetRealTimeNs(napi_env env, napi_callback_info info) 
+napi_value JSSystemTimeGetRealTimeNs(napi_env env, napi_callback_info info)
 {
     size_t argc = SET_TIMEZONE_MAX_PARA;
     napi_value argv[SET_TIMEZONE_MAX_PARA] = {0};
@@ -562,7 +561,7 @@ napi_value JSSystemTimeGetRealTimeNs(napi_env env, napi_callback_info info)
     if (ParseParametersGet(env, argv, argc, callback) == nullptr) {
         return TimeJSParaError(env, callback);
     }
-    AsyncContext* asyncContext = new (std::nothrow)AsyncContext{.env = env};
+    AsyncContext* asyncContext = new (std::nothrow)AsyncContext {.env = env};
     if (!asyncContext) {
         return TimeJSParaError(env, callback);
     }
@@ -606,7 +605,7 @@ napi_value JSSystemTimeGetRealTimeNs(napi_env env, napi_callback_info info)
     }
 }
 
-napi_value JSSystemTimeGetDate(napi_env env, napi_callback_info info) 
+napi_value JSSystemTimeGetDate(napi_env env, napi_callback_info info)
 {
     size_t argc = SET_TIMEZONE_MAX_PARA;
     napi_value argv[SET_TIMEZONE_MAX_PARA] = {0};
@@ -616,7 +615,7 @@ napi_value JSSystemTimeGetDate(napi_env env, napi_callback_info info)
     if (ParseParametersGet(env, argv, argc, callback) == nullptr) {
         return TimeJSParaError(env, callback);
     }
-    AsyncContext* asyncContext = new (std::nothrow)AsyncContext{.env = env};
+    AsyncContext* asyncContext = new (std::nothrow)AsyncContext {.env = env};
     if (!asyncContext) {
         return TimeJSParaError(env, callback);
     }
@@ -660,7 +659,7 @@ napi_value JSSystemTimeGetDate(napi_env env, napi_callback_info info)
     }
 }
 
-napi_value JSSystemTimeGetTimeZone(napi_env env, napi_callback_info info) 
+napi_value JSSystemTimeGetTimeZone(napi_env env, napi_callback_info info)
 {
     size_t argc = SET_TIMEZONE_MAX_PARA;
     napi_value argv[SET_TIMEZONE_MAX_PARA] = {0};
@@ -670,11 +669,10 @@ napi_value JSSystemTimeGetTimeZone(napi_env env, napi_callback_info info)
     if (ParseParametersGet(env, argv, argc, callback) == nullptr) {
         return TimeJSParaError(env, callback);
     }
-    AsyncContext* asyncContext = new (std::nothrow)AsyncContext{.env = env};
+    AsyncContext* asyncContext = new (std::nothrow)AsyncContext {.env = env};
     if (!asyncContext) {
         return TimeJSParaError(env, callback);
     }
-    //TIME_HILOGI(TIME_MODULE_SERVICE, " end##ret = %{public}d", ret);
     TIME_HILOGI(TIME_MODULE_JS_NAPI, " jsgetTimezone start==");
     napi_value promise = nullptr;
     TimePaddingAsyncCallbackInfo(env, asyncContext, callback, promise);

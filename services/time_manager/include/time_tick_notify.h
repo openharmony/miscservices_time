@@ -20,7 +20,7 @@
 
 namespace OHOS {
 namespace MiscServices {
-class TimeTickNotify : public DelayedSingleton<TimeTickNotify>  {
+class TimeTickNotify : public DelayedSingleton<TimeTickNotify> {
     DECLARE_DELAYED_SINGLETON(TimeTickNotify);
 public:
     DISALLOW_COPY_AND_MOVE(TimeTickNotify);
@@ -29,7 +29,7 @@ public:
     void Stop();
 private:
     void startTimer();
-    void refreshNextTriggerTime(); 
+    void refreshNextTriggerTime();
     uint64_t timerId_;
     uint64_t nextTriggerTime_;
 };

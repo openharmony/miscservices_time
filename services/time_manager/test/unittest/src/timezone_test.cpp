@@ -12,18 +12,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <cstdlib>
+#include <ctime>
 #include "timer_info_test.h"
 #include "time_service_test.h"
-#include <sstream>
-#include "stdlib.h"
-#include <time.h>
 
 using namespace testing::ext;
 using namespace OHOS;
 using namespace OHOS::MiscServices;
 
-class TimeServiceTest : public testing::Test
-{
+class TimeServiceTest : public testing::Test {
 public:
     static void SetUpTestCase(void);
     static void TearDownTestCase(void);
@@ -31,20 +29,16 @@ public:
     void TearDown();
 };
 
-void TimeServiceTest::SetUpTestCase(void)
-{
+void TimeServiceTest::SetUpTestCase(void) {
 }
 
-void TimeServiceTest::TearDownTestCase(void)
-{
+void TimeServiceTest::TearDownTestCase(void) {
 }
 
-void TimeServiceTest::SetUp(void)
-{
+void TimeServiceTest::SetUp(void) {
 }
 
-void TimeServiceTest::TearDown(void)
-{
+void TimeServiceTest::TearDown(void) {
 }
 
 /**
@@ -52,15 +46,13 @@ void TimeServiceTest::TearDown(void)
 * @tc.desc: Set system timezone.
 * @tc.type: FUNC
 */
-HWTEST_F(TimeServiceTest, SetTimezone01, TestSize.Level0)
-{
-    time_t t;  //定义变量
-    time(&t);  //获取系统时间
-    TIME_HILOGI(TIME_MODULE_CLIENT, "Time before: %{public}s",asctime(localtime(&t)));
-    if (setenv("TZ", "GMT-10", 1) ==0)  //设置环境变量
-    {
-        tzset();  //设置UNIX时间兼容
-        time(&t);  //获取系统时间
-        TIME_HILOGI(TIME_MODULE_CLIENT, "Time now: %{public}s",asctime(localtime(&t)));
+HWTEST_F(TimeServiceTest, SetTimezone01, TestSize.Level0) {
+    time_t t; // 定义变量
+    time(&t); // 获取系统时间
+    TIME_HILOGI(TIME_MODULE_CLIENT, "Time before: %{public}s", asctime(localtime(&t)));
+    if (setenv("TZ", "GMT-10", 1) ==0) {
+        tzset(); // 设置UNIX时间兼容
+        (void)time(&t); // 获取系统时间
+        TIME_HILOGI(TIME_MODULE_CLIENT, "Time now: %{public}s", asctime(localtime(&t)));
     }
 }

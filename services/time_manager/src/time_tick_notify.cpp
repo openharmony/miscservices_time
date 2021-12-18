@@ -12,14 +12,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <chrono>
+#include <thread>
+#include <cinttypes>
 #include "time_common.h"
 #include "time_tick_notify.h"
 #include "time_service_notify.h"
 #include "timer_manager_interface.h"
 #include "time_service.h"
-#include <chrono>
-#include <thread>
-#include <inttypes.h>
 using namespace std::chrono;
 
 namespace OHOS {
@@ -30,17 +30,17 @@ constexpr uint64_t MINUTE_TO_MILLISECOND = 6000;
 constexpr uint64_t NANO_TO_SECOND = 1000000000;
 constexpr uint64_t  NANO_TO_MILESECOND = 100000;
 constexpr uint64_t SECOND_TO_MINUTE = 60;
-#define MILLISECONDS_FROM_UTC(x) (x / NANO_TO_MILESECOND) % SECOND_TO_MILESECOND
-#define SECONDS_FROM_UTC(x) (x / NANO_TO_SECOND) % SECOND_TO_MINUTE
+#define MILLISECONDS_FROM_UTC(x) ((x / NANO_TO_MILESECOND) % (SECOND_TO_MILESECOND))
+#define SECONDS_FROM_UTC(x) ((x / NANO_TO_SECOND) % (SECOND_TO_MINUTE))
 }
-TimeTickNotify::TimeTickNotify(){};
-TimeTickNotify::~TimeTickNotify(){};
+TimeTickNotify::TimeTickNotify() {};
+TimeTickNotify::~TimeTickNotify() {};
 
 void TimeTickNotify::Init()
 {
     TIME_HILOGD(TIME_MODULE_SERVICE, "Tick notify start.");
     int32_t timerType = ITimerManager::TimerType::ELAPSED_REALTIME;
-    auto callback = [this](uint64_t id){
+    auto callback = [this](uint64_t id) {
         this->Callback(id);
     };
     timerId_ = TimeService::GetInstance()->CreateTimer(timerType, 0, 0, 0, callback);
@@ -57,7 +57,7 @@ void TimeTickNotify::Callback(const uint64_t timerId)
     DelayedSingleton<TimeServiceNotify>::GetInstance()->PublishTimeTickEvents(currentTime);
     timerId_ = timerId;
     refreshNextTriggerTime();
-    auto startFunc = [this](){
+    auto startFunc = [this]() {
         this->startTimer();
     };
     std::thread startTimerThread(startFunc);
