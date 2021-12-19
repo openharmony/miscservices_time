@@ -55,7 +55,7 @@ void TimeTickNotify::Callback(const uint64_t timerId)
     DelayedSingleton<TimeServiceNotify>::GetInstance()->PublishTimeTickEvents(currentTime);
     timerId_ = timerId;
     RefreshNextTriggerTime();
-    auto startFunc = [this](){
+    auto startFunc = [this]() {
         this->StartTimer();
     };
     std::thread startTimerThread(startFunc);

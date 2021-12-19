@@ -29,7 +29,7 @@ public:
     void Stop();
 private:
     void StartTimer();
-    void RefreshNextTriggerTime(); 
+    void RefreshNextTriggerTime();
     uint64_t GetMillisecondsFromUTC(uint64_t UTCtimeNano);
     uint64_t GetSecondsFromUTC(uint64_t UTCtimeNano);
     uint64_t timerId_;
