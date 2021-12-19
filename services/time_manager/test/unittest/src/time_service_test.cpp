@@ -74,11 +74,10 @@ HWTEST_F(TimeServiceTest, SetTimeZone001, TestSize.Level0)
 {   
     time_t t;
     (void)time(&t);
-    TIME_HILOGI(TIME_MODULE_CLIENT, "Time before: %{public}s",asctime(localtime(&t)));
+    TIME_HILOGI(TIME_MODULE_CLIENT, "Time before: %{public}s", asctime(localtime(&t)));
     std::string timeZoneSet("Asia/Shanghai");
     bool result = TimeServiceClient::GetInstance()->SetTimeZone(timeZoneSet);
     EXPECT_TRUE(result);
-    // TIME_HILOGI(TIME_MODULE_CLIENT, "Time now: %{public}s", asctime(localtime(&t)));
     auto timeZoneRes = TimeServiceClient::GetInstance()->GetTimeZone();
     EXPECT_EQ(timeZoneRes, timeZoneSet);
 }
@@ -92,12 +91,11 @@ HWTEST_F(TimeServiceTest, SetTimeZone002, TestSize.Level0)
 {
     time_t t;
     (void)time(&t);
-    TIME_HILOGI(TIME_MODULE_CLIENT, "Time before: %{public}s",asctime(localtime(&t)));
+    TIME_HILOGI(TIME_MODULE_CLIENT, "Time before: %{public}s", asctime(localtime(&t)));
     std::string timeZoneSet("Asia/Ulaanbaatar");
 
     bool result = TimeServiceClient::GetInstance()->SetTimeZone(timeZoneSet);
     EXPECT_TRUE(result);
-    // TIME_HILOGI(TIME_MODULE_CLIENT, "Time now: %{public}s", asctime(localtime(&t)));
     auto timeZoneRes = TimeServiceClient::GetInstance()->GetTimeZone();
     EXPECT_EQ(timeZoneRes, timeZoneSet);
 }

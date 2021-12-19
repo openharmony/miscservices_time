@@ -16,10 +16,10 @@
 #include <thread>
 #include <cinttypes>
 #include "time_common.h"
-#include "time_tick_notify.h"
 #include "time_service_notify.h"
 #include "timer_manager_interface.h"
 #include "time_service.h"
+#include "time_tick_notify.h"
 using namespace std::chrono;
 
 namespace OHOS {
@@ -30,8 +30,8 @@ constexpr uint64_t MINUTE_TO_MILLISECOND = 6000;
 constexpr uint64_t NANO_TO_SECOND = 1000000000;
 constexpr uint64_t  NANO_TO_MILESECOND = 100000;
 constexpr uint64_t SECOND_TO_MINUTE = 60;
-#define MILLISECONDS_FROM_UTC(x) ((x / NANO_TO_MILESECOND) % (SECOND_TO_MILESECOND))
-#define SECONDS_FROM_UTC(x) ((x / NANO_TO_SECOND) % (SECOND_TO_MINUTE))
+#define MILLISECONDS_FROM_UTC(x) (((x) / NANO_TO_MILESECOND) % (SECOND_TO_MILESECOND))
+#define SECONDS_FROM_UTC(x) (((x) / NANO_TO_SECOND) % (SECOND_TO_MINUTE))
 }
 TimeTickNotify::TimeTickNotify() {};
 TimeTickNotify::~TimeTickNotify() {};

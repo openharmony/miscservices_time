@@ -15,7 +15,6 @@
 
 #include "time_zone_info.h"
 #include "time_file_utils.h"
-#include <sstream>
 
 namespace OHOS {
 namespace MiscServices {
@@ -146,10 +145,9 @@ bool TimeZoneInfo::SetOffsetToKernel(int offsetHour)
     time_t timeNow;
     TZstrs << "UTC-" << offsetHour;
     (void)time(&timeNow);
-    if (setenv("TZ", TZstrs.str().data(), 1) == 0){
+    if (setenv("TZ", TZstrs.str().data(), 1) == 0) {
         tzset();
         (void)time(&timeNow);
-        // TIME_HILOGD(TIME_MODULE_SERVICE, "time Now %{public}s", asctime(localtime(&timeNow)));
         return true;
     }
     TIME_HILOGE(TIME_MODULE_SERVICE, "Set timezone failed %{public}s", TZstrs.str().data());
