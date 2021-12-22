@@ -29,16 +29,6 @@ config("time_service_config") {
 }
 
 ohos_shared_library("time_service") {
-  configs = [ 
-    "${time_utils_path}:utils_config",
-  ]
-
-  public_configs = [
-    "//utils/native/base:utils_config",
-    "//third_party/jsoncpp:jsoncpp_public_config",
-    ":time_service_config",
-  ]
-
   sources = [
     "time_manager/src/itimer_info.cpp",
     "time_manager/src/time_service_client.cpp",
@@ -56,7 +46,12 @@ ohos_shared_library("time_service") {
     "timer/src/timer_info.cpp",
     "timer/src/timer_manager.cpp",
   ]
-
+  configs = [ "${time_utils_path}:utils_config" ]
+  public_configs = [
+    "//utils/native/base:utils_config",
+    "//third_party/jsoncpp:jsoncpp_public_config",
+    ":time_service_config",
+  ]
   deps = [
     "${time_utils_path}:time_utils",
     "//base/notification/ans_standard/frameworks/wantagent:wantagent_innerkits",
@@ -76,7 +71,7 @@ ohos_shared_library("time_service") {
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "safwk:system_ability_fwk",
-    "samgr_L2:samgr_proxy",
+    "samgr_standard:samgr_proxy",
   ]
   part_name = "time_native"
   subsystem_name = "miscservices"
