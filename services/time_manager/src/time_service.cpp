@@ -268,7 +268,7 @@ bool TimeService::StartTimer(uint64_t timerId, uint64_t triggerTimes)
     return ret;
 }
 
-bool TimeService::StopTimer(uint64_t  timerId) 
+bool TimeService::StopTimer(uint64_t  timerId)
 {
     if (timerManagerHandler_ == nullptr) {
         TIME_HILOGE(TIME_MODULE_SERVICE, "Timer manager nullptr.");
