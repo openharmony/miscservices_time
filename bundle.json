@@ -1,0 +1,59 @@
+{
+    "name": "@ohos/miscservices_time",
+    "version": "",
+    "description": "提供定时器、时间时区控制接口，支撑鸿蒙应用使用定时、时间时区功能。",
+    "homePage": "https://gitee.com/openharmony",
+    "license": "Apache V2",
+    "repository": "https://gitee.com/openharmony/miscservices_time",
+    "domain": "os",
+    "language": "",
+    "publishAs": "code-segment",
+    "private": false,
+    "scripts": {},
+    "tags": [
+        "base"
+    ],
+    "keywords": [
+        "miscservices",
+        "time"
+    ],
+    "envs": [],
+    "dirs": [],
+    "author": {
+        "name": "",
+        "email": "",
+        "url": ""
+    },
+    "contributors": [
+        {
+            "name": "",
+            "email": "",
+            "url": ""
+        }
+    ],
+    "segment": {
+        "destPath": "base/miscservices/time"
+    },
+    "component": {
+        "name": "miscservices_time",
+        "subsystem": "miscservices",
+        "syscap": [
+            "SystemCapability.MiscServices.Time"
+        ],
+        "features": [],
+        "adated_system_type": [
+            "standard"
+        ],
+        "rom": "",
+        "ram": "",
+        "deps": {
+            "components": [],
+            "third_party": []
+        },
+        "build": {
+            "sub_component": [],
+            "inner_kits": [],
+            "test": []
+        }
+    }
+}
