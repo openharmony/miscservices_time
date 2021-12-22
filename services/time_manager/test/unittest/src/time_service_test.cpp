@@ -14,12 +14,14 @@
  */
 #include <cstdlib>
 #include <ctime>
+#include <chrono>
 #include "timer_info_test.h"
 #include "time_service_test.h"
 
 using namespace testing::ext;
 using namespace OHOS;
 using namespace OHOS::MiscServices;
+using namespace std::chrono;
 
 class TimeServiceTest : public testing::Test
 {
@@ -220,8 +222,9 @@ HWTEST_F(TimeServiceTest, CreateTimer001, TestSize.Level0)
     timerInfo->SetCallbackInfo(TimeOutCallback1);
     auto timerId1 = TimeServiceClient::GetInstance()->CreateTimer(timerInfo);
     EXPECT_TRUE(timerId1 > 0);
-
-    auto ret = TimeServiceClient::GetInstance()->StartTimer(timerId1, 5);
+    auto BootTimeNano = system_clock::now().time_since_epoch().count();
+    auto BootTimeMilli = BootTimeNano / NANO_TO_MILESECOND;
+    auto ret = TimeServiceClient::GetInstance()->StartTimer(timerId1, BootTimeMilli + 5000);
     std::this_thread::sleep_for(std::chrono::milliseconds(6000));
     EXPECT_TRUE(ret);
     EXPECT_TRUE(g_data1 == 1);
@@ -247,8 +250,9 @@ HWTEST_F(TimeServiceTest, CreateTimer002, TestSize.Level0)
     timerInfo->SetCallbackInfo(TimeOutCallback1);
     auto timerId1 = TimeServiceClient::GetInstance()->CreateTimer(timerInfo);
     EXPECT_TRUE(timerId1 > 0);
-
-    auto ret = TimeServiceClient::GetInstance()->StartTimer(timerId1, 5000);
+    auto BootTimeNano = system_clock::now().time_since_epoch().count();
+    auto BootTimeMilli = BootTimeNano / NANO_TO_MILESECOND;
+    auto ret = TimeServiceClient::GetInstance()->StartTimer(timerId1, BootTimeMilli + 5000);
     std::this_thread::sleep_for(std::chrono::milliseconds(5100));
     EXPECT_TRUE(ret);
     EXPECT_TRUE(g_data1 == 1);
@@ -316,8 +320,9 @@ HWTEST_F(TimeServiceTest, CreateTimer005, TestSize.Level0)
     timerInfo->SetCallbackInfo(TimeOutCallback1);
     auto timerId1 = TimeServiceClient::GetInstance()->CreateTimer(timerInfo);
     EXPECT_TRUE(timerId1 > 0);
-
-    auto ret = TimeServiceClient::GetInstance()->StartTimer(timerId1, 2000);
+    auto BootTimeNano = system_clock::now().time_since_epoch().count();
+    auto BootTimeMilli = BootTimeNano / NANO_TO_MILESECOND;
+    auto ret = TimeServiceClient::GetInstance()->StartTimer(timerId1, BootTimeMilli + 2000);
     EXPECT_TRUE(ret);
     ret = TimeServiceClient::GetInstance()->DestroyTimer(timerId1);
     EXPECT_TRUE(ret);
