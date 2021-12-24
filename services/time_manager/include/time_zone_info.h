@@ -32,10 +32,10 @@ namespace MiscServices {
 struct zoneInfoEntry {
     std::string ID;
     std::string alias;
-    float utcOffsetHours;
+    int utcOffsetHours;
 };
 
-class TimeZoneInfo {
+class TimeZoneInfo : public std::enable_shared_from_this<TimeZoneInfo> {
     DECLARE_DELAYED_SINGLETON(TimeZoneInfo)
 public:
     bool GetTimezone(std::string &timezoneId);
@@ -43,8 +43,8 @@ public:
     void Init();
 private:
     bool InitStorage();
-    bool SetOffsetToKernel(float offset);
-    bool GetOffsetById(const std::string timezoneId, float &offset);
+    bool SetOffsetToKernel(int offset);
+    bool GetOffsetById(const std::string timezoneId, int &offset);
     bool GetTimezoneFromFile(std::string &timezoneId);
     bool SaveTimezoneToFile(std::string timezoneId);
     std::string curTimezoneId_;

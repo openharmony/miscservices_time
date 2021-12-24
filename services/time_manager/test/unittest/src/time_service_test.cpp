@@ -12,13 +12,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <cstdlib>
+#include <ctime>
+#include <chrono>
 #include "timer_info_test.h"
 #include "time_service_test.h"
-
 
 using namespace testing::ext;
 using namespace OHOS;
 using namespace OHOS::MiscServices;
+using namespace std::chrono;
 
 class TimeServiceTest : public testing::Test
 {
@@ -52,11 +55,11 @@ void TimeServiceTest::TearDown(void)
 */
 HWTEST_F(TimeServiceTest, SetTime001, TestSize.Level0)
 {
-    struct timeval getTime;
+    struct timeval getTime {};
     gettimeofday(&getTime, NULL);
     int64_t time = (getTime.tv_sec + 1000) * 1000 + getTime.tv_usec / 1000;
     if (time < 0) {
-        TIME_HILOGE(TIME_MODULE_CLIENT, "Time now invalid : %{public}" PRId64 "",time);
+        TIME_HILOGE(TIME_MODULE_CLIENT, "Time now invalid : %{public}" PRId64 "", time);
         time = 1627307312000;
     }
     TIME_HILOGI(TIME_MODULE_CLIENT, "Time now : %{public}" PRId64 "",time);
@@ -71,15 +74,12 @@ HWTEST_F(TimeServiceTest, SetTime001, TestSize.Level0)
 */
 HWTEST_F(TimeServiceTest, SetTimeZone001, TestSize.Level0)
 {   
-    struct timezone tz = {};
-    gettimeofday(NULL, &tz);
-    TIME_HILOGD(TIME_MODULE_CLIENT, "Before set timezone, GMT offset in kernel : %{public}d", tz.tz_minuteswest);
+    time_t t;
+    (void)time(&t);
+    TIME_HILOGI(TIME_MODULE_CLIENT, "Time before: %{public}s", asctime(localtime(&t)));
     std::string timeZoneSet("Asia/Shanghai");
     bool result = TimeServiceClient::GetInstance()->SetTimeZone(timeZoneSet);
     EXPECT_TRUE(result);
-    auto ret = gettimeofday(NULL, &tz);
-    TIME_HILOGD(TIME_MODULE_CLIENT, "gettimeofday result : %{public}d", ret);
-    TIME_HILOGD(TIME_MODULE_CLIENT, "After set timezone, GMT offset minutes in kernel : %{public}d", tz.tz_minuteswest);
     auto timeZoneRes = TimeServiceClient::GetInstance()->GetTimeZone();
     EXPECT_EQ(timeZoneRes, timeZoneSet);
 }
@@ -91,16 +91,13 @@ HWTEST_F(TimeServiceTest, SetTimeZone001, TestSize.Level0)
 */
 HWTEST_F(TimeServiceTest, SetTimeZone002, TestSize.Level0)
 {
-    struct timezone tz = {};
-    gettimeofday(NULL, &tz);
-    TIME_HILOGD(TIME_MODULE_CLIENT, "Before set timezone, GMT offset in kernel : %{public}d", tz.tz_minuteswest);
+    time_t t;
+    (void)time(&t);
+    TIME_HILOGI(TIME_MODULE_CLIENT, "Time before: %{public}s", asctime(localtime(&t)));
     std::string timeZoneSet("Asia/Ulaanbaatar");
 
     bool result = TimeServiceClient::GetInstance()->SetTimeZone(timeZoneSet);
     EXPECT_TRUE(result);
-    auto ret = gettimeofday(NULL, &tz);
-    TIME_HILOGD(TIME_MODULE_CLIENT, "gettimeofday result : %{public}d", ret);
-    TIME_HILOGD(TIME_MODULE_CLIENT, "After set timezone, GMT offset minutes in kernel : %{public}d", tz.tz_minuteswest);
     auto timeZoneRes = TimeServiceClient::GetInstance()->GetTimeZone();
     EXPECT_EQ(timeZoneRes, timeZoneSet);
 }
@@ -225,8 +222,9 @@ HWTEST_F(TimeServiceTest, CreateTimer001, TestSize.Level0)
     timerInfo->SetCallbackInfo(TimeOutCallback1);
     auto timerId1 = TimeServiceClient::GetInstance()->CreateTimer(timerInfo);
     EXPECT_TRUE(timerId1 > 0);
-
-    auto ret = TimeServiceClient::GetInstance()->StartTimer(timerId1, 5);
+    auto BootTimeNano = system_clock::now().time_since_epoch().count();
+    auto BootTimeMilli = BootTimeNano / NANO_TO_MILESECOND;
+    auto ret = TimeServiceClient::GetInstance()->StartTimer(timerId1, BootTimeMilli + 5000);
     std::this_thread::sleep_for(std::chrono::milliseconds(6000));
     EXPECT_TRUE(ret);
     EXPECT_TRUE(g_data1 == 1);
@@ -252,8 +250,9 @@ HWTEST_F(TimeServiceTest, CreateTimer002, TestSize.Level0)
     timerInfo->SetCallbackInfo(TimeOutCallback1);
     auto timerId1 = TimeServiceClient::GetInstance()->CreateTimer(timerInfo);
     EXPECT_TRUE(timerId1 > 0);
-
-    auto ret = TimeServiceClient::GetInstance()->StartTimer(timerId1, 5000);
+    auto BootTimeNano = system_clock::now().time_since_epoch().count();
+    auto BootTimeMilli = BootTimeNano / NANO_TO_MILESECOND;
+    auto ret = TimeServiceClient::GetInstance()->StartTimer(timerId1, BootTimeMilli + 5000);
     std::this_thread::sleep_for(std::chrono::milliseconds(5100));
     EXPECT_TRUE(ret);
     EXPECT_TRUE(g_data1 == 1);
@@ -321,8 +320,9 @@ HWTEST_F(TimeServiceTest, CreateTimer005, TestSize.Level0)
     timerInfo->SetCallbackInfo(TimeOutCallback1);
     auto timerId1 = TimeServiceClient::GetInstance()->CreateTimer(timerInfo);
     EXPECT_TRUE(timerId1 > 0);
-
-    auto ret = TimeServiceClient::GetInstance()->StartTimer(timerId1, 2000);
+    auto BootTimeNano = system_clock::now().time_since_epoch().count();
+    auto BootTimeMilli = BootTimeNano / NANO_TO_MILESECOND;
+    auto ret = TimeServiceClient::GetInstance()->StartTimer(timerId1, BootTimeMilli + 2000);
     EXPECT_TRUE(ret);
     ret = TimeServiceClient::GetInstance()->DestroyTimer(timerId1);
     EXPECT_TRUE(ret);
@@ -333,7 +333,7 @@ HWTEST_F(TimeServiceTest, CreateTimer005, TestSize.Level0)
 }
 
 /**
-* @tc.name: CreateTimer06 
+* @tc.name: CreateTimer06.
 * @tc.desc: Create system timer.
 * @tc.type: FUNC
 */
@@ -347,7 +347,7 @@ HWTEST_F(TimeServiceTest, CreateTimer006, TestSize.Level0)
     timerInfo->SetWantAgent(nullptr);
     timerInfo->SetCallbackInfo(TimeOutCallback1);
 
-    struct timeval getTime;
+    struct timeval getTime {};
     gettimeofday(&getTime, NULL);
     int64_t current_time = (getTime.tv_sec + 100) * 1000 + getTime.tv_usec / 1000;
     if (current_time < 0) {

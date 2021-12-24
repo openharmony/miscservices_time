@@ -27,7 +27,7 @@
 
 namespace OHOS {
 namespace MiscServices {
-class TimePermission {
+class TimePermission : public std::enable_shared_from_this<TimePermission> {
     DECLARE_DELAYED_SINGLETON(TimePermission)
 public:
     bool CheckSelfPermission(const std::string permName);

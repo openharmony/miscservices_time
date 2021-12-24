@@ -19,7 +19,7 @@ import { WantAgent } from './@ohos.wantAgent';
  * Provides js api for systemTimer
  *
  * @since 7
- * @devices phone, tablet, tv, wearable
+ * @devices phone, tablet, tv, wearable, car
  * @systemapi Hide this for inner system use.
  */
 declare namespace systemTimer {

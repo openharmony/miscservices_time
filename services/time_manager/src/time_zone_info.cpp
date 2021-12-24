@@ -20,17 +20,16 @@ namespace OHOS {
 namespace MiscServices {
 namespace {
 const std::string TIMEZONE_FILE_PATH = "/data/misc/zoneinfo/timezone.json";
-static const int HOURS_TO_MINUTES = 60;
 }
 
 TimeZoneInfo::TimeZoneInfo()
 {
-    std::vector<struct zoneInfoEntry> timezoneList = { 
+    std::vector<struct zoneInfoEntry> timezoneList = {
         {"Antarctica/McMurdo", "AQ", 12},
         {"America/Argentina/Buenos_Aires", "AR", -3},
         {"Australia/Sydney", "AU", 10},
         {"America/Noronha", "BR", -2},
-        {"America/St_Johns", "CA", -2.5},
+        {"America/St_Johns", "CA", -3},
         {"Africa/Kinshasa", "CD", 1},
         {"America/Santiago", "CL", -3},
         {"Asia/Shanghai", "CN", 8},
@@ -73,14 +72,14 @@ void TimeZoneInfo::Init()
 {
     TIME_HILOGD(TIME_MODULE_SERVICE, "start.");
     std::string timezoneId;
-    float gmtOffset;
+    int gmtOffset;
     if (!InitStorage()) {
         TIME_HILOGE(TIME_MODULE_SERVICE, "end, InitStorage failed.");
         return;
     }
     if (!GetTimezoneFromFile(timezoneId)) {
         TIME_HILOGE(TIME_MODULE_SERVICE, "end, GetTimezoneFromFile failed.");
-        return;
+        timezoneId = "Asia/Shanghai";
     }
     if (!GetOffsetById(timezoneId, gmtOffset)) {
         TIME_HILOGE(TIME_MODULE_SERVICE, "end, GetOffsetById failed.");
@@ -117,12 +116,11 @@ bool TimeZoneInfo::InitStorage()
 
 bool TimeZoneInfo::SetTimezone(std::string timezoneId)
 {
-    float gmtOffset;
+    int gmtOffset;
     if (!GetOffsetById(timezoneId, gmtOffset)) {
         TIME_HILOGE(TIME_MODULE_SERVICE, "Timezone unsupport %{public}s.", timezoneId.c_str());
         return false;
     }
-    TIME_HILOGD(TIME_MODULE_SERVICE, "timezone :%{public}s , GMT Offset :%{public}f",  timezoneId.c_str(), gmtOffset);
     if (!SetOffsetToKernel(gmtOffset)) {
         TIME_HILOGE(TIME_MODULE_SERVICE, "Set kernel failed.");
         return false;
@@ -141,18 +139,19 @@ bool TimeZoneInfo::GetTimezone(std::string &timezoneId)
     return true;
 }
 
-bool TimeZoneInfo::SetOffsetToKernel(float offsetHour)
+bool TimeZoneInfo::SetOffsetToKernel(int offsetHour)
 {
-    struct timezone tz{};
-    tz.tz_minuteswest = static_cast<int>(offsetHour * HOURS_TO_MINUTES);
-    tz.tz_dsttime = 0;
-    TIME_HILOGD(TIME_MODULE_SERVICE, "settimeofday, Offset hours :%{public}f , Offset minutes :%{public}d",  offsetHour, tz.tz_minuteswest);
-    int result = settimeofday(NULL, &tz);
-    if (result < 0) {
-        TIME_HILOGE(TIME_MODULE_SERVICE, "settimeofday fail: %{public}d.", result);
-        return false;
+    std::stringstream TZstrs;
+    time_t timeNow;
+    TZstrs << "UTC-" << offsetHour;
+    (void)time(&timeNow);
+    if (setenv("TZ", TZstrs.str().data(), 1) == 0) {
+        tzset();
+        (void)time(&timeNow);
+        return true;
     }
-    return true;
+    TIME_HILOGE(TIME_MODULE_SERVICE, "Set timezone failed %{public}s", TZstrs.str().data());
+    return false;
 }
 
 bool TimeZoneInfo::GetTimezoneFromFile(std::string &timezoneId)
@@ -188,7 +187,7 @@ bool TimeZoneInfo::SaveTimezoneToFile(std::string timezoneId)
     return true;
 }
 
-bool TimeZoneInfo::GetOffsetById(const std::string timezoneId, float &offset)
+bool TimeZoneInfo::GetOffsetById(const std::string timezoneId, int &offset)
 {
     auto itEntry = timezoneInfoMap_.find(timezoneId);
     if (itEntry != timezoneInfoMap_.end()) {
