@@ -732,7 +732,7 @@ napi_value SystemTimeExport(napi_env env, napi_value exports)
         DECLARE_NAPI_FUNCTION("getRealTime", JSSystemTimeGetRealTime),
         DECLARE_NAPI_FUNCTION("getRealTimeNs", JSSystemTimeGetRealTimeNs),
         DECLARE_NAPI_FUNCTION("getDate", JSSystemTimeGetDate),
-        DECLARE_NAPI_FUNCTION("getTimeZone", JSSystemTimeGetTimeZone),
+        DECLARE_NAPI_FUNCTION("getTimezone", JSSystemTimeGetTimeZone),
     };
     NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));
     return exports;
