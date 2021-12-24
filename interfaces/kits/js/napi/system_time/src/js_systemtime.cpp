@@ -269,13 +269,470 @@ napi_value JSSystemTimeSetTimeZone(napi_env env, napi_callback_info info)
     }
 }
 
+napi_value ParseParametersGet(const napi_env &env, const napi_value (&argv)[SET_TIMEZONE_MAX_PARA],
+    const size_t &argc, napi_ref &callback)
+{
+    NAPI_ASSERT(env, argc >= SET_TIMEZONE_MAX_PARA - 1, "Wrong number of arguments");
+    napi_valuetype valueType = napi_undefined;
+    if (argc == 1) {
+        NAPI_CALL(env, napi_typeof(env, argv[0], &valueType));
+        NAPI_ASSERT(env, valueType == napi_function, "Wrong argument type. Function expected.");
+        napi_create_reference(env, argv[0], 1, &callback);
+    }
+    return TimeNapiGetNull(env);
+}
+
+napi_value JSSystemTimeGetCurrentTime(napi_env env, napi_callback_info info)
+{
+    size_t argc = SET_TIMEZONE_MAX_PARA;
+    napi_value argv[SET_TIMEZONE_MAX_PARA] = {0};
+    napi_value thisVar = nullptr;
+    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, NULL));
+    napi_ref callback = nullptr;
+    if (ParseParametersGet(env, argv, argc, callback) == nullptr) {
+        return TimeJSParaError(env, callback);
+    }
+    AsyncContext* asyncContext = new (std::nothrow)AsyncContext {.env = env};
+    if (!asyncContext) {
+        return TimeJSParaError(env, callback);
+    }
+    napi_value promise = nullptr;
+    TimePaddingAsyncCallbackInfo(env, asyncContext, callback, promise);
+    napi_value resource = nullptr;
+    napi_create_string_utf8(env, "JSSystemTimeGetCurrentTime", NAPI_AUTO_LENGTH, &resource);
+    napi_create_async_work(env,
+        nullptr,
+        resource,
+        [](napi_env env, void* data) {
+            AsyncContext* asyncContext = (AsyncContext*)data;
+            asyncContext->time = TimeServiceClient::GetInstance()->GetWallTimeMs();
+        },
+        [](napi_env env, napi_status status, void* data) {
+            AsyncContext* asyncContext = (AsyncContext*)data;
+            if (asyncContext->time < 0) {
+            }
+            TimeCallbackPromiseInfo info;
+            info.isCallback = asyncContext->isCallback;
+            info.callback = asyncContext->callbackRef;
+            info.deferred = asyncContext->deferred;
+            info.errorCode = asyncContext->errorCode;
+            napi_value result = nullptr;
+            napi_create_int64(env, asyncContext->time, &result);
+            TimeReturnCallbackPromise(env, info, result);
+            napi_delete_async_work(env, asyncContext->work);
+            if (asyncContext) {
+                delete asyncContext;
+                asyncContext = nullptr;
+            }
+        },
+        (void*)asyncContext,
+        &asyncContext->work);
+    NAPI_CALL(env, napi_queue_async_work(env, asyncContext->work));
+    if (asyncContext->isCallback) {
+        return TimeNapiGetNull(env);
+    } else {
+        return promise;
+    }
+}
+
+napi_value JSSystemTimeGetCurrentTimeNs(napi_env env, napi_callback_info info)
+{
+    size_t argc = SET_TIMEZONE_MAX_PARA;
+    napi_value argv[SET_TIMEZONE_MAX_PARA] = {0};
+    napi_value thisVar = nullptr;
+    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, NULL));
+    napi_ref callback = nullptr;
+    if (ParseParametersGet(env, argv, argc, callback) == nullptr) {
+        return TimeJSParaError(env, callback);
+    }
+    AsyncContext* asyncContext = new (std::nothrow)AsyncContext {.env = env};
+    if (!asyncContext) {
+        return TimeJSParaError(env, callback);
+    }
+    napi_value promise = nullptr;
+    TimePaddingAsyncCallbackInfo(env, asyncContext, callback, promise);
+    napi_value resource = nullptr;
+    napi_create_string_utf8(env, "JSSystemTimeGetCurrentTimeNs", NAPI_AUTO_LENGTH, &resource);
+    napi_create_async_work(env,
+        nullptr,
+        resource,
+        [](napi_env env, void* data) {
+            AsyncContext* asyncContext = (AsyncContext*)data;
+            asyncContext->time = TimeServiceClient::GetInstance()->GetWallTimeNs();
+        },
+        [](napi_env env, napi_status status, void* data) {
+            AsyncContext* asyncContext = (AsyncContext*)data;
+            if (asyncContext->time < 0) {
+                asyncContext->errorCode = ERROR;
+            }
+            TimeCallbackPromiseInfo info;
+            info.isCallback = asyncContext->isCallback;
+            info.callback = asyncContext->callbackRef;
+            info.deferred = asyncContext->deferred;
+            info.errorCode = asyncContext->errorCode;
+            napi_value result = nullptr;
+            napi_create_int64(env, asyncContext->time, &result);
+            TimeReturnCallbackPromise(env, info, result);
+            napi_delete_async_work(env, asyncContext->work);
+            if (asyncContext) {
+                delete asyncContext;
+                asyncContext = nullptr;
+            }
+        },
+        (void*)asyncContext,
+        &asyncContext->work);
+    NAPI_CALL(env, napi_queue_async_work(env, asyncContext->work));
+    if (asyncContext->isCallback) {
+        return TimeNapiGetNull(env);
+    } else {
+        return promise;
+    }
+}
+
+napi_value JSSystemTimeGetRealActiveTime(napi_env env, napi_callback_info info)
+{
+    size_t argc = SET_TIMEZONE_MAX_PARA;
+    napi_value argv[SET_TIMEZONE_MAX_PARA] = {0};
+    napi_value thisVar = nullptr;
+    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, NULL));
+    napi_ref callback = nullptr;
+    if (ParseParametersGet(env, argv, argc, callback) == nullptr) {
+        return TimeJSParaError(env, callback);
+    }
+    AsyncContext* asyncContext = new (std::nothrow)AsyncContext {.env = env};
+    if (!asyncContext) {
+        return TimeJSParaError(env, callback);
+    }
+    napi_value promise = nullptr;
+    TimePaddingAsyncCallbackInfo(env, asyncContext, callback, promise);
+    napi_value resource = nullptr;
+    napi_create_string_utf8(env, "JSSystemTimeGetRealActiveTime", NAPI_AUTO_LENGTH, &resource);
+    napi_create_async_work(env,
+        nullptr,
+        resource,
+        [](napi_env env, void* data) {
+            AsyncContext* asyncContext = (AsyncContext*)data;
+            asyncContext->time = TimeServiceClient::GetInstance()->GetMonotonicTimeMs();
+        },
+        [](napi_env env, napi_status status, void* data) {
+            AsyncContext* asyncContext = (AsyncContext*)data;
+            if (asyncContext->time < 0) {
+                asyncContext->errorCode = ERROR;
+            }
+            TimeCallbackPromiseInfo info;
+            info.isCallback = asyncContext->isCallback;
+            info.callback = asyncContext->callbackRef;
+            info.deferred = asyncContext->deferred;
+            info.errorCode = asyncContext->errorCode;
+            napi_value result = nullptr;
+            napi_create_int64(env, asyncContext->time, &result);
+            TimeReturnCallbackPromise(env, info, result);
+            napi_delete_async_work(env, asyncContext->work);
+            if (asyncContext) {
+                delete asyncContext;
+                asyncContext = nullptr;
+            }
+        },
+        (void*)asyncContext,
+        &asyncContext->work);
+    NAPI_CALL(env, napi_queue_async_work(env, asyncContext->work));
+    if (asyncContext->isCallback) {
+        return TimeNapiGetNull(env);
+    } else {
+        return promise;
+    }
+}
+
+napi_value JSSystemTimeGetRealActiveTimeNs(napi_env env, napi_callback_info info)
+{
+    size_t argc = SET_TIMEZONE_MAX_PARA;
+    napi_value argv[SET_TIMEZONE_MAX_PARA] = {0};
+    napi_value thisVar = nullptr;
+    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, NULL));
+    napi_ref callback = nullptr;
+    if (ParseParametersGet(env, argv, argc, callback) == nullptr) {
+        return TimeJSParaError(env, callback);
+    }
+    AsyncContext* asyncContext = new (std::nothrow)AsyncContext {.env = env};
+    if (!asyncContext) {
+        return TimeJSParaError(env, callback);
+    }
+    napi_value promise = nullptr;
+    TimePaddingAsyncCallbackInfo(env, asyncContext, callback, promise);
+    napi_value resource = nullptr;
+    napi_create_string_utf8(env, "JSSystemTimeGetRealActiveTimeNs", NAPI_AUTO_LENGTH, &resource);
+    napi_create_async_work(env,
+        nullptr,
+        resource,
+        [](napi_env env, void* data) {
+            AsyncContext* asyncContext = (AsyncContext*)data;
+            asyncContext->time = TimeServiceClient::GetInstance()->GetMonotonicTimeNs();
+        },
+        [](napi_env env, napi_status status, void* data) {
+            AsyncContext* asyncContext = (AsyncContext*)data;
+            if (asyncContext->time < 0) {
+                asyncContext->errorCode = ERROR;
+            }
+            TimeCallbackPromiseInfo info;
+            info.isCallback = asyncContext->isCallback;
+            info.callback = asyncContext->callbackRef;
+            info.deferred = asyncContext->deferred;
+            info.errorCode = asyncContext->errorCode;
+            napi_value result = nullptr;
+            napi_create_int64(env, asyncContext->time, &result);
+            TimeReturnCallbackPromise(env, info, result);
+            napi_delete_async_work(env, asyncContext->work);
+            if (asyncContext) {
+                delete asyncContext;
+                asyncContext = nullptr;
+            }
+        },
+        (void*)asyncContext,
+        &asyncContext->work);
+    NAPI_CALL(env, napi_queue_async_work(env, asyncContext->work));
+    if (asyncContext->isCallback) {
+        return TimeNapiGetNull(env);
+    } else {
+        return promise;
+    }
+}
+
+napi_value JSSystemTimeGetRealTime(napi_env env, napi_callback_info info)
+{
+    size_t argc = SET_TIMEZONE_MAX_PARA;
+    napi_value argv[SET_TIMEZONE_MAX_PARA] = {0};
+    napi_value thisVar = nullptr;
+    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, NULL));
+    napi_ref callback = nullptr;
+    if (ParseParametersGet(env, argv, argc, callback) == nullptr) {
+        return TimeJSParaError(env, callback);
+    }
+    AsyncContext* asyncContext = new (std::nothrow)AsyncContext {.env = env};
+    if (!asyncContext) {
+        return TimeJSParaError(env, callback);
+    }
+    napi_value promise = nullptr;
+    TimePaddingAsyncCallbackInfo(env, asyncContext, callback, promise);
+    napi_value resource = nullptr;
+    napi_create_string_utf8(env, "JSSystemTimeGetRealTime", NAPI_AUTO_LENGTH, &resource);
+    napi_create_async_work(env,
+        nullptr,
+        resource,
+        [](napi_env env, void* data) {
+            AsyncContext* asyncContext = (AsyncContext*)data;
+            asyncContext->time = TimeServiceClient::GetInstance()->GetBootTimeMs();
+        },
+        [](napi_env env, napi_status status, void* data) {
+            AsyncContext* asyncContext = (AsyncContext*)data;
+            if (asyncContext->time < 0) {
+                asyncContext->errorCode = ERROR;
+            }
+            TimeCallbackPromiseInfo info;
+            info.isCallback = asyncContext->isCallback;
+            info.callback = asyncContext->callbackRef;
+            info.deferred = asyncContext->deferred;
+            info.errorCode = asyncContext->errorCode;
+            napi_value result = nullptr;
+            napi_create_int64(env, asyncContext->time, &result);
+            TimeReturnCallbackPromise(env, info, result);
+            napi_delete_async_work(env, asyncContext->work);
+            if (asyncContext) {
+                delete asyncContext;
+                asyncContext = nullptr;
+            }
+        },
+        (void*)asyncContext,
+        &asyncContext->work);
+    NAPI_CALL(env, napi_queue_async_work(env, asyncContext->work));
+    if (asyncContext->isCallback) {
+        return TimeNapiGetNull(env);
+    } else {
+        return promise;
+    }
+}
+
+napi_value JSSystemTimeGetRealTimeNs(napi_env env, napi_callback_info info)
+{
+    size_t argc = SET_TIMEZONE_MAX_PARA;
+    napi_value argv[SET_TIMEZONE_MAX_PARA] = {0};
+    napi_value thisVar = nullptr;
+    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, NULL));
+    napi_ref callback = nullptr;
+    if (ParseParametersGet(env, argv, argc, callback) == nullptr) {
+        return TimeJSParaError(env, callback);
+    }
+    AsyncContext* asyncContext = new (std::nothrow)AsyncContext {.env = env};
+    if (!asyncContext) {
+        return TimeJSParaError(env, callback);
+    }
+    napi_value promise = nullptr;
+    TimePaddingAsyncCallbackInfo(env, asyncContext, callback, promise);
+    napi_value resource = nullptr;
+    napi_create_string_utf8(env, "JSSystemTimeGetRealTimeNs", NAPI_AUTO_LENGTH, &resource);
+    napi_create_async_work(env,
+        nullptr,
+        resource,
+        [](napi_env env, void* data) {
+            AsyncContext* asyncContext = (AsyncContext*)data;
+            asyncContext->time = TimeServiceClient::GetInstance()->GetBootTimeNs();
+        },
+        [](napi_env env, napi_status status, void* data) {
+            AsyncContext* asyncContext = (AsyncContext*)data;
+            if (asyncContext->time < 0) {
+                asyncContext->errorCode = ERROR;
+            }
+            TimeCallbackPromiseInfo info;
+            info.isCallback = asyncContext->isCallback;
+            info.callback = asyncContext->callbackRef;
+            info.deferred = asyncContext->deferred;
+            info.errorCode = asyncContext->errorCode;
+            napi_value result = nullptr;
+            napi_create_int64(env, asyncContext->time, &result);
+            TimeReturnCallbackPromise(env, info, result);
+            napi_delete_async_work(env, asyncContext->work);
+            if (asyncContext) {
+                delete asyncContext;
+                asyncContext = nullptr;
+            }
+        },
+        (void*)asyncContext,
+        &asyncContext->work);
+    NAPI_CALL(env, napi_queue_async_work(env, asyncContext->work));
+    if (asyncContext->isCallback) {
+        return TimeNapiGetNull(env);
+    } else {
+        return promise;
+    }
+}
+
+napi_value JSSystemTimeGetDate(napi_env env, napi_callback_info info)
+{
+    size_t argc = SET_TIMEZONE_MAX_PARA;
+    napi_value argv[SET_TIMEZONE_MAX_PARA] = {0};
+    napi_value thisVar = nullptr;
+    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, NULL));
+    napi_ref callback = nullptr;
+    if (ParseParametersGet(env, argv, argc, callback) == nullptr) {
+        return TimeJSParaError(env, callback);
+    }
+    AsyncContext* asyncContext = new (std::nothrow)AsyncContext {.env = env};
+    if (!asyncContext) {
+        return TimeJSParaError(env, callback);
+    }
+    napi_value promise = nullptr;
+    TimePaddingAsyncCallbackInfo(env, asyncContext, callback, promise);
+    napi_value resource = nullptr;
+    napi_create_string_utf8(env, "JSSystemTimeGetDate", NAPI_AUTO_LENGTH, &resource);
+    napi_create_async_work(env,
+        nullptr,
+        resource,
+        [](napi_env env, void* data) {
+            AsyncContext* asyncContext = (AsyncContext*)data;
+            asyncContext->time = TimeServiceClient::GetInstance()->GetWallTimeMs();
+        },
+        [](napi_env env, napi_status status, void* data) {
+            AsyncContext* asyncContext = (AsyncContext*)data;
+            if (asyncContext->time < 0) {
+                asyncContext->errorCode = ERROR;
+            }
+            TimeCallbackPromiseInfo info;
+            info.isCallback = asyncContext->isCallback;
+            info.callback = asyncContext->callbackRef;
+            info.deferred = asyncContext->deferred;
+            info.errorCode = asyncContext->errorCode;
+            std::string str = "new Date(" + std::to_string(asyncContext->time) + ");";
+            const char *scriptStr = str.c_str();
+            napi_value script = nullptr;
+            napi_create_string_utf8(env, scriptStr, strlen(scriptStr), &script);
+            napi_value result = nullptr;
+            napi_run_script(env, script, &result);
+            TimeReturnCallbackPromise(env, info, result);
+            napi_delete_async_work(env, asyncContext->work);
+            if (asyncContext) {
+                delete asyncContext;
+                asyncContext = nullptr;
+            }
+        },
+        (void*)asyncContext,
+        &asyncContext->work);
+    NAPI_CALL(env, napi_queue_async_work(env, asyncContext->work));
+    if (asyncContext->isCallback) {
+        return TimeNapiGetNull(env);
+    } else {
+        return promise;
+    }
+}
+
+napi_value JSSystemTimeGetTimeZone(napi_env env, napi_callback_info info)
+{
+    size_t argc = SET_TIMEZONE_MAX_PARA;
+    napi_value argv[SET_TIMEZONE_MAX_PARA] = {0};
+    napi_value thisVar = nullptr;
+    NAPI_CALL(env, napi_get_cb_info(env, info, &argc, argv, &thisVar, NULL));
+    napi_ref callback = nullptr;
+    if (ParseParametersGet(env, argv, argc, callback) == nullptr) {
+        return TimeJSParaError(env, callback);
+    }
+    AsyncContext* asyncContext = new (std::nothrow)AsyncContext {.env = env};
+    if (!asyncContext) {
+        return TimeJSParaError(env, callback);
+    }
+    TIME_HILOGI(TIME_MODULE_JS_NAPI, " jsgetTimezone start==");
+    napi_value promise = nullptr;
+    TimePaddingAsyncCallbackInfo(env, asyncContext, callback, promise);
+    napi_value resource = nullptr;
+    napi_create_string_utf8(env, "JSSystemTimeGetTimeZone", NAPI_AUTO_LENGTH, &resource);
+    napi_create_async_work(env,
+        nullptr,
+        resource,
+        [](napi_env env, void* data) {
+            AsyncContext* asyncContext = (AsyncContext*)data;
+            asyncContext->timeZone = TimeServiceClient::GetInstance()->GetTimeZone();
+        },
+        [](napi_env env, napi_status status, void* data) {
+            AsyncContext* asyncContext = (AsyncContext*)data;
+            if (asyncContext->timeZone == "") {
+                asyncContext->errorCode = ERROR;
+            }
+            TimeCallbackPromiseInfo info;
+            info.isCallback = asyncContext->isCallback;
+            info.callback = asyncContext->callbackRef;
+            info.deferred = asyncContext->deferred;
+            info.errorCode = asyncContext->errorCode;
+            napi_value result = nullptr;
+            napi_create_string_utf8(env, asyncContext->timeZone.c_str(), asyncContext->timeZone.length(), &result);
+            TimeReturnCallbackPromise(env, info, result);
+            napi_delete_async_work(env, asyncContext->work);
+            if (asyncContext) {
+                delete asyncContext;
+                asyncContext = nullptr;
+            }
+        },
+        (void*)asyncContext,
+        &asyncContext->work);
+    NAPI_CALL(env, napi_queue_async_work(env, asyncContext->work));
+    if (asyncContext->isCallback) {
+        return TimeNapiGetNull(env);
+    } else {
+        return promise;
+    }
+}
+
 EXTERN_C_START
 napi_value SystemTimeExport(napi_env env, napi_value exports)
 {
     static napi_property_descriptor desc[] = {
         DECLARE_NAPI_FUNCTION("setTime", JSSystemTimeSetTime), 
         DECLARE_NAPI_FUNCTION("setDate", JSSystemTimeSetTime),
-        DECLARE_NAPI_FUNCTION("setTimezone", JSSystemTimeSetTimeZone)
+        DECLARE_NAPI_FUNCTION("setTimezone", JSSystemTimeSetTimeZone),
+        DECLARE_NAPI_FUNCTION("getCurrentTime", JSSystemTimeGetCurrentTime),
+        DECLARE_NAPI_FUNCTION("getCurrentTimeNs", JSSystemTimeGetCurrentTimeNs),
+        DECLARE_NAPI_FUNCTION("getRealActiveTime", JSSystemTimeGetRealActiveTime),
+        DECLARE_NAPI_FUNCTION("getRealActiveTimeNs", JSSystemTimeGetRealActiveTimeNs),
+        DECLARE_NAPI_FUNCTION("getRealTime", JSSystemTimeGetRealTime),
+        DECLARE_NAPI_FUNCTION("getRealTimeNs", JSSystemTimeGetRealTimeNs),
+        DECLARE_NAPI_FUNCTION("getDate", JSSystemTimeGetDate),
+        DECLARE_NAPI_FUNCTION("getTimeZone", JSSystemTimeGetTimeZone),
     };
     NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));
     return exports;

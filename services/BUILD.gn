@@ -24,11 +24,19 @@ config("time_service_config") {
     "//third_party/json/include",
     "//base/hiviewdfx/hilog/interfaces/native/innerkits/include",
     "//foundation/distributeddatamgr/appdatamgr/interfaces/innerkits/native_rdb/include/",
-    "/foundation/distributeddatamgr/appdatamgr/interfaces/innerkits/native_appdatafwk/include/",
+    "//foundation/distributeddatamgr/appdatamgr/interfaces/innerkits/native_appdatafwk/include/",
   ]
 }
 
 ohos_shared_library("time_service") {
+  configs = [ "${time_utils_path}:utils_config" ]
+
+  public_configs = [
+    "//utils/native/base:utils_config",
+    "//third_party/jsoncpp:jsoncpp_public_config",
+    ":time_service_config",
+  ]
+
   sources = [
     "time_manager/src/itimer_info.cpp",
     "time_manager/src/time_service.cpp",
@@ -36,6 +44,7 @@ ohos_shared_library("time_service") {
     "time_manager/src/time_service_notify.cpp",
     "time_manager/src/time_service_proxy.cpp",
     "time_manager/src/time_service_stub.cpp",
+    "time_manager/src/time_tick_notify.cpp",
     "time_manager/src/time_zone_info.cpp",
     "time_manager/src/timer_call_back.cpp",
     "time_manager/src/timer_call_back_proxy.cpp",
@@ -45,19 +54,13 @@ ohos_shared_library("time_service") {
     "timer/src/timer_info.cpp",
     "timer/src/timer_manager.cpp",
   ]
-  configs = [ "${time_utils_path}:utils_config" ]
-  public_configs = [
-    "//utils/native/base:utils_config",
-    "//third_party/jsoncpp:jsoncpp_public_config",
-    ":time_service_config",
-  ]
+
   deps = [
     "${time_utils_path}:time_utils",
     "//base/notification/ans_standard/frameworks/wantagent:wantagent_innerkits",
     "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
     "//foundation/distributeddatamgr/appdatamgr/interfaces/innerkits/native_appdatafwk:native_appdatafwk",
     "//foundation/distributeddatamgr/appdatamgr/interfaces/innerkits/native_preferences:native_preferences",
-    "//foundation/distributeddatamgr/appdatamgr/interfaces/innerkits/native_rdb:native_rdb",
     "//third_party/jsoncpp:jsoncpp",
     "//utils/native/base:utils",
   ]

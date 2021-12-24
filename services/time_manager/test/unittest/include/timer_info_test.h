@@ -31,6 +31,9 @@
 
 namespace OHOS {
 namespace MiscServices {
+namespace {
+    constexpr uint64_t NANO_TO_MILESECOND = 100000;
+}
 class TimerInfoTest : public ITimerInfo {
 public:
     TimerInfoTest();

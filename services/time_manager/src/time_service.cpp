@@ -18,25 +18,27 @@
 #include <unistd.h>
 #include <sys/time.h>
 #include <cerrno>
+#include <chrono>
 #include <mutex>
 #include <dirent.h>
 #include <cstring>
 #include <fcntl.h>
 #include <fstream>
 #include <sstream>
-
+#include <singleton.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <sys/ioctl.h>
 #include <linux/rtc.h>
-
 #include "pthread.h"
 #include "time_zone_info.h"
 #include "time_common.h"
+#include "time_tick_notify.h"
 #include "system_ability.h"
 #include "system_ability_definition.h"
 #include "iservice_registry.h"
 #include "time_service.h"
+using namespace std::chrono;
 
 namespace OHOS {
 namespace MiscServices {
@@ -49,7 +51,6 @@ static const std::int32_t INIT_INTERVAL = 10000L;
 static const uint32_t TIMER_TYPE_REALTIME_MASK = 1 << 0;
 static const uint32_t TIMER_TYPE_REALTIME_WAKEUP_MASK = 1 << 1;
 static const uint32_t TIMER_TYPE_EXACT_MASK = 1 << 2;
-constexpr int MIN_TRIGGER_TIMES = 5000;
 constexpr int INVALID_TIMER_ID = 0;
 constexpr int MILLI_TO_MICR = MICR_TO_BASE / MILLI_TO_BASE;
 constexpr int NANO_TO_MILLI = NANO_TO_BASE / MILLI_TO_BASE;
@@ -60,7 +61,6 @@ REGISTER_SYSTEM_ABILITY_BY_ID(TimeService, TIME_SERVICE_ID, true);
 std::mutex TimeService::instanceLock_;
 sptr<TimeService> TimeService::instance_;
 std::shared_ptr<AppExecFwk::EventHandler> TimeService::serviceHandler_ = nullptr;
-std::shared_ptr<MiscServices::TimeServiceNotify> TimeService::timeServiceNotify_  = nullptr;
 std::shared_ptr<TimerManager> TimeService::timerManagerHandler_  = nullptr;
 
 TimeService::TimeService(int32_t systemAbilityId, bool runOnCreate)
@@ -100,6 +100,7 @@ void TimeService::OnStart()
     InitServiceHandler();
     InitTimerHandler();
     InitNotifyHandler();
+    DelayedSingleton<TimeTickNotify>::GetInstance()->Init();
     DelayedSingleton<TimeZoneInfo>::GetInstance()->Init();
     if (Init() != ERR_OK) {
         auto callback = [=]() { Init(); };
@@ -131,7 +132,7 @@ void TimeService::OnStop()
         return;
     }
     serviceHandler_ = nullptr;
-    timeServiceNotify_ = nullptr;
+    DelayedSingleton<TimeTickNotify>::GetInstance()->Stop();
     state_ = ServiceRunningState::STATE_NOT_START;
     TIME_HILOGI(TIME_MODULE_SERVICE, "OnStop End.");
 }
@@ -139,12 +140,7 @@ void TimeService::OnStop()
 void TimeService::InitNotifyHandler()
 {
     TIME_HILOGI(TIME_MODULE_SERVICE, "InitNotify started.");
-    if (timeServiceNotify_ != nullptr) {
-        TIME_HILOGE(TIME_MODULE_SERVICE, " Already init.");
-        return;
-    }
-    timeServiceNotify_ = std::make_shared<MiscServices::TimeServiceNotify>();
-    timeServiceNotify_->RegisterPublishEvents();
+    DelayedSingleton<TimeServiceNotify>::GetInstance()->RegisterPublishEvents();
 }
 
 void TimeService::InitServiceHandler()
@@ -241,6 +237,20 @@ uint64_t TimeService::CreateTimer(int32_t type, bool repeat, uint64_t interval,
                                              uid);
 }
 
+uint64_t TimeService::CreateTimer(int32_t type, uint64_t windowLength, uint64_t interval, int flag,
+    std::function<void (const uint64_t)> Callback)
+{
+    if (timerManagerHandler_ == nullptr) {
+        TIME_HILOGE(TIME_MODULE_SERVICE, "Timer manager nullptr.");
+        timerManagerHandler_ = TimerManager::Create();
+        if (timerManagerHandler_ == nullptr) {
+            TIME_HILOGE(TIME_MODULE_SERVICE, "Redo Timer manager Init Failed.");
+            return INVALID_TIMER_ID;
+        }
+    }
+    return timerManagerHandler_->CreateTimer(type, windowLength, interval, flag, Callback, 0);
+}
+
 bool TimeService::StartTimer(uint64_t timerId, uint64_t triggerTimes)
 {
     if (timerManagerHandler_ == nullptr) {
@@ -251,8 +261,7 @@ bool TimeService::StartTimer(uint64_t timerId, uint64_t triggerTimes)
             return false;
         }
     }
-    uint64_t triggerTimesIn = (triggerTimes < MIN_TRIGGER_TIMES) ? MIN_TRIGGER_TIMES : triggerTimes;
-    auto ret = timerManagerHandler_->StartTimer(timerId, triggerTimesIn);
+    auto ret = timerManagerHandler_->StartTimer(timerId, triggerTimes);
     if (!ret) {
         TIME_HILOGE(TIME_MODULE_SERVICE, "TimerId Not found.");
     }
@@ -320,12 +329,8 @@ int32_t TimeService::SetTime(const int64_t time)
         TIME_HILOGE(TIME_MODULE_SERVICE, "set rtc fail: %{public}d.", ret);
         return E_TIME_SET_RTC_FAILED;
     }
-    int64_t currentTime = 0;
-    GetWallTimeMs(currentTime);
-    if (timeServiceNotify_ != nullptr) {
-        timeServiceNotify_->PublishTimeChanageEvents(currentTime);
-    }
-    
+    auto currentTime = steady_clock::now().time_since_epoch().count();
+    DelayedSingleton<TimeServiceNotify>::GetInstance()->PublishTimeChanageEvents(currentTime);
     return  ERR_OK;
 }
 
@@ -441,11 +446,8 @@ int32_t TimeService::SetTimeZone(const std::string timeZoneId)
         TIME_HILOGE(TIME_MODULE_SERVICE, "Set timezone failed :%{public}s", timeZoneId.c_str());
         return E_TIME_DEAL_FAILED;
     }
-    int64_t currentTime = 0;
-    GetWallTimeMs(currentTime);
-    if (timeServiceNotify_ != nullptr) {
-        timeServiceNotify_->PublishTimeZoneChangeEvents(currentTime);
-    }
+    auto currentTime = steady_clock::now().time_since_epoch().count();
+    DelayedSingleton<TimeServiceNotify>::GetInstance()->PublishTimeZoneChangeEvents(currentTime);
     return ERR_OK;
 }
 
