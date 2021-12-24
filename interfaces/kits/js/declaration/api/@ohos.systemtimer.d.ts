@@ -12,6 +12,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import { AsyncCallback, ErrorCallback } from './basic';
 import { WantAgent } from './@ohos.wantAgent';
 
@@ -45,51 +46,48 @@ declare namespace systemTimer {
 
   /**
    * Creates a timer.
-   * @since 7
    * @Param options Indicates the timer options.
    * @Return timer ID.
-   * 
-   * @systemapi Hide this for inner system use.
    */
   function createTimer(options: TimerOptions, callback: AsyncCallback<number>): void;
   function createTimer(options: TimerOptions): Promise<number>;
 
   /**
    * Starts a timer.
-   *@since 7
+   *
    * @Param timer The timer ID.
    * @Param triggerTime Indicates the time at which the timer is triggered for the first time, in milliseconds.
-   * The time will be automatically set to 5000 milliseconds after the current time if the passed
-   * value is smaller than the current time plus 5000 milliseconds.
-   * @systemapi Hide this for inner system use.
+   *                    The time will be automatically set to 5000 milliseconds after the current time if the passed
+   *                    value is smaller than the current time plus 5000 milliseconds.
    */
   function startTimer(timer: number, triggerTime: number, callback: AsyncCallback<void>): void;
   function startTimer(timer: number, triggerTime: number): Promise<void>;
 
   /**
    * Stops a timer.
-   * @since 7
    * @Param timer The timer ID.
-   * @systemapi Hide this for inner system use.
    */
-  function stopTimer(timer: number, callback: AsyncCallback<void>):  void;
+  function stopTimer(timer: number, callback: AsyncCallback<void>): void;
   function stopTimer(timer: number): Promise<void>;
 
   /**
-   * Clears a timer.
-   * @since 7
+   * Destroy a timer.
    * @Param timer The timer ID.
-   * @systemapi Hide this for inner system use.
    */
   function destroyTimer(timer: number, callback: AsyncCallback<void>): void;
   function destroyTimer(timer: number): Promise<void>;
 
+    /**
+     * When the repeat is false,the interval is not needed, choose one of wantAgent and callback.
+     * When the repeat is true,the interval is required, the wantAgent is required, and the callback can be left blank.
+     *
+     */
   interface TimerOptions {
     /**
      * timer type.
      */
     type: number;
-    
+
     /**
      * Indicates a repeating timer
      */

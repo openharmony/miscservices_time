@@ -31,6 +31,7 @@ declare namespace systemTime {
      */
     function setTime(time : number, callback : AsyncCallback<void>) : void;
     function setTime(time : number) : Promise<void>;
+
     /**
      * Obtains the number of milliseconds that have elapsed since the Unix epoch.
      * @since 8
