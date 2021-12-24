@@ -30,42 +30,42 @@ declare namespace systemTime {
     function setTime(time : number) : Promise<void>;
     /**
      * Obtains the number of milliseconds that have elapsed since the Unix epoch.
-     * @since 7
+     * @since 8
      */
     function getCurrentTime(callback: AsyncCallback<number>): void;
     function getCurrentTime(): Promise<number>;
 
     /**
      * Obtains the number of nanoseconds that have elapsed since the Unix epoch.
-     * @since 7
+     * @since 8
      */
     function getCurrentTimeNs(callback: AsyncCallback<number>): void;
     function getCurrentTimeNs(): Promise<number>;
 
     /**
      * Obtains the number of milliseconds elapsed since the system was booted, not including deep sleep time.
-     * @since 7
+     * @since 8
      */
     function getRealActiveTime(callback: AsyncCallback<number>): void;
     function getRealActiveTime(): Promise<number>;
 
     /**
      * Obtains the number of nanoseconds elapsed since the system was booted, not including deep sleep time.
-     * @since 7
+     * @since 8
      */
     function getRealActiveTimeNs(callback: AsyncCallback<number>): void;
     function getRealActiveTimeNs(): Promise<number>;
 
     /**
      * Obtains the number of milliseconds elapsed since the system was booted, including deep sleep time.
-     * @since 7
+     * @since 8
      */
     function getRealTime(callback: AsyncCallback<number>): void;
     function getRealTime(): Promise<number>;
 
     /**
      * Obtains the number of nanoseconds elapsed since the system was booted, including deep sleep time.
-     * @since 7
+     * @since 8
      */
     function getRealTimeNs(callback: AsyncCallback<number>): void;
     function getRealTimeNs(): Promise<number>;
@@ -80,7 +80,7 @@ declare namespace systemTime {
 
     /**
      * Obtains the system date.
-     * @since 7
+     * @since 8
      */
     function getDate(callback: AsyncCallback<Date>): void;
     function getDate(): Promise<Date>;
@@ -95,10 +95,10 @@ declare namespace systemTime {
 
       /**
      * Obtains the system time zone.
-     * @since 7
+     * @since 8
      */  
-    function getTimeZone(callback: AsyncCallback<string>): void;
-    function getTimeZone(): Promise<string>;
+    function getTimezone(callback: AsyncCallback<string>): void;
+    function getTimezone(): Promise<string>;
 }
 
 export default systemTime;
