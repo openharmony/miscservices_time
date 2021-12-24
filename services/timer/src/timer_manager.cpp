@@ -185,7 +185,7 @@ void TimerManager::SetHandler(uint64_t id,
     }
     auto nowElapsed = steady_clock::now();
     auto nominalTrigger = ConvertToElapsed(milliseconds(triggerAtTime), type);
-    auto minTrigger =  (IsSystemUid(uid)) ? nowElapsed + ZERO_FUTURITY : nowElapsed + MIN_FUTURITY;
+    auto minTrigger =  (IsSystemUid(uid)) ? (nowElapsed + ZERO_FUTURITY) : (nowElapsed + MIN_FUTURITY);
     auto triggerElapsed = (nominalTrigger > minTrigger) ? nominalTrigger : minTrigger;
 
     steady_clock::time_point maxElapsed;

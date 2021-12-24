@@ -56,6 +56,8 @@ public:
     int32_t GetThreadTimeNs(int64_t &times) override;
 
     uint64_t CreateTimer(int32_t type, bool repeat, uint64_t interval, sptr<IRemoteObject> &timerCallback) override;
+    uint64_t CreateTimer(int32_t type, uint64_t windowLength, uint64_t interval, int flag,
+        std::function<void (const uint64_t)> Callback);
     bool StartTimer(uint64_t timerId, uint64_t triggerTime) override;
     bool StopTimer(uint64_t  timerId) override;
     bool DestroyTimer(uint64_t  timerId) override;
@@ -89,7 +91,6 @@ private:
     const std::string setTimePermName_ = "ohos.permission.SET_TIME";
     const std::string setTimezonePermName_ = "ohos.permission.SET_TIME_ZONE";
     const int rtc_id;
-    static std::shared_ptr<MiscServices::TimeServiceNotify> timeServiceNotify_;
     static std::shared_ptr<AppExecFwk::EventHandler> serviceHandler_;
     static std::shared_ptr<TimerManager> timerManagerHandler_;
 };

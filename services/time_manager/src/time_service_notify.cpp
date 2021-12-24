@@ -25,6 +25,8 @@ using namespace OHOS::EventFwk;
 
 namespace OHOS {
 namespace MiscServices {
+TimeServiceNotify::TimeServiceNotify() {};
+TimeServiceNotify::~TimeServiceNotify() {};
 void TimeServiceNotify::RegisterPublishEvents()
 {
     if (publishInfo_ != nullptr) {
@@ -36,6 +38,8 @@ void TimeServiceNotify::RegisterPublishEvents()
     timeChangeWant_->SetAction(CommonEventSupport::COMMON_EVENT_TIME_CHANGED);
     timeZoneChangeWant_ = new (std::nothrow)IntentWant();
     timeZoneChangeWant_->SetAction(CommonEventSupport::COMMON_EVENT_TIMEZONE_CHANGED);
+    timeTickWant_ = new (std::nothrow)IntentWant();
+    timeTickWant_->SetAction(CommonEventSupport::COMMON_EVENT_TIME_TICK);
 }
 
 void TimeServiceNotify::PublishEvents(int64_t eventTime, sptr<IntentWant> want)
@@ -60,6 +64,11 @@ void TimeServiceNotify::PublishTimeChanageEvents(int64_t eventTime)
 void TimeServiceNotify::PublishTimeZoneChangeEvents(int64_t eventTime)
 {
     PublishEvents(eventTime, timeZoneChangeWant_);
+}
+
+void TimeServiceNotify::PublishTimeTickEvents(int64_t eventTime)
+{
+    PublishEvents(eventTime, timeTickWant_);
 }
 } // MiscService 
 } // OHOS
