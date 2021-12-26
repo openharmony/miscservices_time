@@ -15,7 +15,7 @@
 #include <chrono>
 #include <thread>
 #include <cinttypes>
-#include <time.h>
+#include <ctime>
 #include "time_common.h"
 #include "time_service_notify.h"
 #include "timer_manager_interface.h"
@@ -64,9 +64,9 @@ void TimeTickNotify::Callback(const uint64_t timerId)
 
 void TimeTickNotify::RefreshNextTriggerTime()
 {
-    time_t t;
-    time(&t);
-    TIME_HILOGI(TIME_MODULE_SERVICE, "Time now: %{public}s", asctime(localtime(&t)));
+    time_t t = time(NULL);
+    struct tm *tblock = localtime(&t);
+    TIME_HILOGI(TIME_MODULE_SERVICE, "Time now: %{public}s", asctime(tblock));
     auto UTCTimeMicro = system_clock::now().time_since_epoch().count();
     auto BootTimeNano = steady_clock::now().time_since_epoch().count();
     auto BootTimeMilli = BootTimeNano / NANO_TO_MILESECOND;
@@ -93,7 +93,6 @@ uint64_t TimeTickNotify::GetMillisecondsFromUTC(uint64_t UTCtimeMicro)
     TIME_HILOGD(TIME_MODULE_SERVICE, "Time mili: %{public}" PRId64 "", miliseconds);
     return miliseconds;
 }
-
 } // MiscServices
 } // OHOS
 
