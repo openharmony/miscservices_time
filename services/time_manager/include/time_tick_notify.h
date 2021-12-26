@@ -31,7 +31,6 @@ private:
     void StartTimer();
     void RefreshNextTriggerTime();
     uint64_t GetMillisecondsFromUTC(uint64_t UTCtimeNano);
-    uint64_t GetSecondsFromUTC(uint64_t UTCtimeNano);
     uint64_t timerId_;
     uint64_t nextTriggerTime_;
 };
