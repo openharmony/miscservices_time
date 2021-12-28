@@ -15,6 +15,7 @@
 #include <chrono>
 #include <thread>
 #include <cinttypes>
+#include <ctime>
 #include "time_common.h"
 #include "time_service_notify.h"
 #include "timer_manager_interface.h"
@@ -25,11 +26,9 @@ using namespace std::chrono;
 namespace OHOS {
 namespace MiscServices {
 namespace {
-constexpr uint64_t SECOND_TO_MILESECOND = 1000;
-constexpr uint64_t MINUTE_TO_MILLISECOND = 6000;
-constexpr uint64_t NANO_TO_SECOND = 1000000000;
-constexpr uint64_t  NANO_TO_MILESECOND = 100000;
-constexpr uint64_t SECOND_TO_MINUTE = 60;
+constexpr uint64_t MINUTE_TO_MILLISECOND = 60000;
+constexpr uint64_t MICRO_TO_MILESECOND = 1000;
+constexpr uint64_t NANO_TO_MILESECOND = 1000000;
 }
 TimeTickNotify::TimeTickNotify() {};
 TimeTickNotify::~TimeTickNotify() {};
@@ -65,14 +64,14 @@ void TimeTickNotify::Callback(const uint64_t timerId)
 
 void TimeTickNotify::RefreshNextTriggerTime()
 {
-    uint64_t timeNowMilliseconds;
-    auto UTCTimeNano = system_clock::now().time_since_epoch().count();
+    time_t t = time(NULL);
+    struct tm *tblock = localtime(&t);
+    TIME_HILOGI(TIME_MODULE_SERVICE, "Time now: %{public}s", asctime(tblock));
+    auto UTCTimeMicro = system_clock::now().time_since_epoch().count();
     auto BootTimeNano = steady_clock::now().time_since_epoch().count();
     auto BootTimeMilli = BootTimeNano / NANO_TO_MILESECOND;
-    auto timeMilliseconds = GetMillisecondsFromUTC(UTCTimeNano);
-    auto timeSeconds = GetSecondsFromUTC(UTCTimeNano);
-    timeNowMilliseconds = timeSeconds * SECOND_TO_MILESECOND + timeMilliseconds;
-    nextTriggerTime_ = BootTimeMilli+ (MINUTE_TO_MILLISECOND - timeNowMilliseconds);
+    auto timeMilliseconds = GetMillisecondsFromUTC(UTCTimeMicro);
+    nextTriggerTime_ = BootTimeMilli + (MINUTE_TO_MILLISECOND - timeMilliseconds);
     return ;
 }
 
@@ -87,14 +86,12 @@ void TimeTickNotify::Stop()
     TimeService::GetInstance()->DestroyTimer(timerId_);
 }
 
-uint64_t TimeTickNotify::GetMillisecondsFromUTC(uint64_t UTCtimeNano)
+uint64_t TimeTickNotify::GetMillisecondsFromUTC(uint64_t UTCtimeMicro)
 {
-    return (UTCtimeNano / NANO_TO_MILESECOND) % SECOND_TO_MILESECOND;
-}
-
-uint64_t TimeTickNotify::GetSecondsFromUTC(uint64_t UTCtimeNano)
-{
-    return (UTCtimeNano / NANO_TO_SECOND) % SECOND_TO_MINUTE;
+    TIME_HILOGD(TIME_MODULE_SERVICE, "Time micro: %{public}" PRId64 "", UTCtimeMicro);
+    auto miliseconds = (UTCtimeMicro / MICRO_TO_MILESECOND) % MINUTE_TO_MILLISECOND;
+    TIME_HILOGD(TIME_MODULE_SERVICE, "Time mili: %{public}" PRId64 "", miliseconds);
+    return miliseconds;
 }
 } // MiscServices
 } // OHOS
