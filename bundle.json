@@ -24,20 +24,20 @@
     "ram":"1024KB",
     "deps": {
       "components": [
-      "ability_manager",
-      "aafwk_standard",
-      "appexecfwk_standard",
-      "ans_standard",
-      "ces_standard",
-      "distributeddatamgr",
-      "hisysevent_native",
-      "hiviewdfx_hilog_native",
-      "ipc",
-      "permission_standard",
-      "safwk",
-      "samgr_standard",
-      "startup_l2",
-      "utils_base"
+        "ability_manager",
+        "aafwk_standard",
+        "appexecfwk_standard",
+        "ans_standard",
+        "ces_standard",
+        "distributeddatamgr",
+        "hisysevent_native",
+        "hiviewdfx_hilog_native",
+        "ipc",
+        "permission_standard",
+        "safwk",
+        "samgr_standard",
+        "startup_l2",
+        "utils_base"
       ],
       "third_party": [
         "jsoncpp"
