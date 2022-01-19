@@ -21,9 +21,7 @@ ohos_shared_library("systemtime") {
     "//foundation/ace/napi/interfaces/kits",
   ]
 
-  configs = [
-    "${time_utils_path}:utils_config",
-  ]
+  configs = [ "${time_utils_path}:utils_config" ]
 
   cflags = [
     "-fPIC",
@@ -41,7 +39,7 @@ ohos_shared_library("systemtime") {
   ]
 
   external_deps = [
-    "aafwk_standard:want",
+    "ability_runtime:want",
     "appexecfwk_standard:appexecfwk_base",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
