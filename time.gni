@@ -14,7 +14,7 @@ import("//build/ohos.gni")
 
 time_root_path = "//base/miscservices/time"
 
-kits_path = "${time_root_path}/interface/kits"
+kits_path = "${time_root_path}/interfaces/kits"
 
 innerkits_path = "${time_root_path}/interfaces/innerkits"
 

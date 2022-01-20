@@ -1,0 +1,67 @@
+{
+  "name": "@ohos/time",
+  "description": "Allowing apps to use OS time get/set functions",
+  "version": "3.1",
+  "license": "Apache License 2.0",
+  "publishAs": "code-segment",
+  "segment": {
+    "destPath": "base/miscservices/time"
+  },
+  "dirs": {},
+  "scripts": {},
+  "component": {
+    "name": "time_native",
+    "subsystem": "miscservices",
+    "syscap": [
+      "SystemCapability.Miscservices.Time"
+    ],
+    "features": [
+    ],
+    "adapted_system_type": [
+      "standard"
+    ],
+    "rom":"300KB",
+    "ram":"1024KB",
+    "deps": {
+      "components": [
+        "ability_manager",
+        "aafwk_standard",
+        "appexecfwk_standard",
+        "ans_standard",
+        "ces_standard",
+        "distributeddatamgr",
+        "hisysevent_native",
+        "hiviewdfx_hilog_native",
+        "ipc",
+        "permission_standard",
+        "safwk",
+        "samgr_standard",
+        "startup_l2",
+        "utils_base"
+      ],
+      "third_party": [
+        "jsoncpp"
+      ]
+    },
+    "build": {
+      "sub_component": [
+        "//base/miscservices/time:time_native_packages"
+      ],
+      "inner_kits": [
+        {
+          "name": "//base/miscservices/time/services:time_service",
+          "header": {	
+            "header_files": [
+              "itimer_info.h",
+              "time_service_client.h"                                                               
+            ],
+            "header_base":"//base/miscservices/time/interfaces/innerkits/include"
+          }
+        }
+      ],
+      "test": [
+        "//base/miscservices/time/services/time_manager/test:TimeServiceTest"
+      ]
+    }
+  }
+}
