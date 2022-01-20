@@ -16,11 +16,7 @@ import("//build/ohos.gni")
 ################################################################################
 
 ohos_prebuilt_etc("timeservice.rc") {
-  if (use_musl) {
-    source = "timeservice.cfg"
-  } else {
-    source = "timeservice.rc"
-  }
+  source = "timeservice.cfg"
   relative_install_dir = "init"
   part_name = "time_native"
   subsystem_name = "miscservices"
