@@ -19,7 +19,7 @@
 #include <string>
 #include <singleton.h>
 
-#include "bundle_mgr_interface.h"
+#include "bundle_mgr_proxy.h"
 #include "time_common.h"
 #include "mock_permission.h"
 #include "system_ability_definition.h"
