@@ -24,8 +24,7 @@
     "ram":"1024KB",
     "deps": {
       "components": [
-        "ability_manager",
-        "aafwk_standard",
+        "ability_base",
         "appexecfwk_standard",
         "ans_standard",
         "ces_standard",
