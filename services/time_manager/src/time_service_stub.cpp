@@ -40,6 +40,8 @@ TimeServiceStub::TimeServiceStub()
     memberFuncMap_[START_TIMER] = &TimeServiceStub::OnStartTimer;
     memberFuncMap_[STOP_TIMER] = &TimeServiceStub::OnStopTimer;
     memberFuncMap_[DESTORY_TIMER] = &TimeServiceStub::OnDestoryTimer;
+    memberFuncMap_[NETWORK_TIME_ON] = &TimeServiceStub::OnNetworkTimeStatusOn;
+    memberFuncMap_[NETWORK_TIME_OFF] = &TimeServiceStub::OnNetworkTimeStatusOff;
 }
 
 TimeServiceStub::~TimeServiceStub()

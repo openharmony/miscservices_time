@@ -314,12 +314,16 @@ HWTEST_F(TimeServiceTest, CreateTimer006, TestSize.Level0)
 */
 HWTEST_F(TimeServiceTest, NetworkTime001, TestSize.Level0)
 {
+    TimeServiceClient::GetInstance()->NetworkTimeStatusOn();
+    sleep(5);
     auto UTCTimeMicro1 = system_clock::now().time_since_epoch().count();
     auto UTCTimeMillis = (UTCTimeMicro1 / 1000) + 86400000;
     TimeServiceClient::GetInstance()->SetTime(UTCTimeMillis);
-    TimeServiceClient::GetInstance()->NetworkTimeStatusOn();
-    sleep(5000);
     auto UTCTimeMicro2 = system_clock::now().time_since_epoch().count();
-    EXPECT_TRUE(UTCTimeMicro2 < UTCTimeMicro1);
+    TimeServiceClient::GetInstance()->NetworkTimeStatusOff();
+    TimeServiceClient::GetInstance()->NetworkTimeStatusOn();
+    sleep(5);
+    auto UTCTimeMicro3 = system_clock::now().time_since_epoch().count();
+    EXPECT_TRUE(UTCTimeMicro3 < UTCTimeMicro2);
     TimeServiceClient::GetInstance()->NetworkTimeStatusOff();
 }

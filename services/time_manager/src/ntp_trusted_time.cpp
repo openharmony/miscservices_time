@@ -14,6 +14,11 @@
  */
 
 #include <cstdint>
+#include <cinttypes>
+#include <cstdio>
+#include <cstring>
+#include <unistd.h>
+#include <securec.h>
 #include "time_common.h"
 #include "sntp_client.h"
 #include "ntp_trusted_time.h"
@@ -31,6 +36,9 @@ bool NtpTrustedTime::ForceRefresh(std::string ntpServer)
 {
     SNTPClient client;
     if (client.RequestTime(ntpServer)) {
+        if (mTimeResult != nullptr) {
+            mTimeResult->Clear();
+        }
         int64_t ntpCertainty = client.getRoundTripTime() / 2;
         mTimeResult = std::make_shared<TimeResult>(client.getNtpTIme(), client.getNtpTimeReference(), ntpCertainty);
         TIME_HILOGD(TIME_MODULE_SERVICE, "Get Ntp time result");
@@ -46,7 +54,7 @@ int64_t NtpTrustedTime::CurrentTimeMillis()
         TIME_HILOGD(TIME_MODULE_SERVICE, "Missing authoritative time source");
         return INVALID_MILLIS;
     }
-    return mTimeResult->CurrentTimeMillis();
+    return mTimeResult->GetTimeMillis();
 }
 
 bool NtpTrustedTime::HasCache()
@@ -108,6 +116,13 @@ NtpTrustedTime::TimeResult::TimeResult(int64_t mTimeMillis, int64_t mElapsedReal
     this->mTimeMillis = mTimeMillis;
     this->mElapsedRealtimeMillis = mElapsedRealtimeMills;
     this->mCertaintyMillis = mCertaintyMillis;
+}
+
+void NtpTrustedTime::TimeResult::Clear()
+{
+    TIME_HILOGD(TIME_MODULE_SERVICE, "start.");
+    (void)memset_s(this, sizeof(*this), 0, sizeof(*this));
+    TIME_HILOGD(TIME_MODULE_SERVICE, "end.");
 }
 } // MiscServices
 } // OHOS
