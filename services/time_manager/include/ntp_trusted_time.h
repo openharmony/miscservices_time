@@ -48,6 +48,7 @@ public:
         int64_t GetCertaintyMillis();
         int64_t CurrentTimeMillis();
         int64_t GetAgeMillis();
+        void Clear();
     private:
         int64_t mTimeMillis;
         int64_t mElapsedRealtimeMillis;

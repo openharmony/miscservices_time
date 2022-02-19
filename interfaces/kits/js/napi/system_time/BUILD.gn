@@ -39,6 +39,7 @@ ohos_shared_library("systemtime") {
   ]
 
   external_deps = [
+    "ability_base:base",
     "ability_base:want",
     "bundle_framework:appexecfwk_base",
     "hiviewdfx_hilog_native:libhilog",
