@@ -47,6 +47,7 @@ ohos_unittest("TimeServiceTest") {
     "ability_base:want",
     "ability_runtime:wantagent_innerkits",
     "bundle_framework:appexecfwk_base",
+    "bundle_framework:appexecfwk_core",
     "ces_standard:cesfwk_innerkits",
     "eventhandler:libeventhandler",
     "hisysevent_native:libhisysevent",
