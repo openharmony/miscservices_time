@@ -18,7 +18,7 @@ import { AsyncCallback, ErrorCallback } from './basic';
 /**
  * System time and timezone.
  * @since 7
- * @sysCap SystemCapability.Miscservices.Time
+ * @syscap SystemCapability.Miscservices.Time
  * @devices phone, tablet, tv, wearable, car
  * @import systemTime from '@ohos.systemTime';
  */
