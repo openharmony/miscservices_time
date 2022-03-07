@@ -163,7 +163,7 @@ uint64_t SNTPClient::GetNtpTimestamp64(int offset, char* buffer)
     uint64_t milliseconds;
     ret = memcpy_s(&milliseconds, sizeof(uint64_t), valueRx, sizeof(uint64_t));
     if (ret != EOK) {
-        TIME_HILOGE(TIME_MODULE_SERVICE, "memcpy_s failed, err = %d\n", ret1);
+        TIME_HILOGE(TIME_MODULE_SERVICE, "memcpy_s failed, err = %d\n", ret);
         return false;
     }
 
