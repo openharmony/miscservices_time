@@ -148,8 +148,7 @@ uint64_t SNTPClient::GetNtpTimestamp64(int offset, char* buffer)
 {
     const int _len = sizeof(uint64_t);
     char valueRx[_len];
-    errno_t ret;
-    ret = memset_s(valueRx, sizeof(uint64_t), 0, sizeof(uint64_t));
+    errno_t ret = memset_s(valueRx, sizeof(uint64_t), 0, sizeof(uint64_t));
     if (ret != EOK) {
         TIME_HILOGE(TIME_MODULE_SERVICE, "memcpy_s failed, err = %d\n", ret);
         return false;
