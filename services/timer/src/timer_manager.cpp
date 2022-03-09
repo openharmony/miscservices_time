@@ -39,7 +39,6 @@ const auto INTERVAL_HALF_DAY = hours(12);
 const auto MIN_FUZZABLE_INTERVAL = milliseconds(10000);
 }
 
-
 extern bool AddBatchLocked(std::vector<std::shared_ptr<Batch>> &list, const std::shared_ptr<Batch> &batch);
 extern steady_clock::time_point MaxTriggerTime(steady_clock::time_point now,
                                                steady_clock::time_point triggerAtTime,
@@ -509,7 +508,8 @@ void TimerManager::DeliverTimersLocked(const std::vector<std::shared_ptr<TimerIn
     TIME_HILOGI(TIME_MODULE_SERVICE, "start");
     for (const auto &alarm : triggerList) {
         if (alarm->callback) {
-            alarm->callback(alarm->id);
+            std::thread startTimerThread(alarm->callback, alarm->id);
+            startTimerThread.detach();
             TIME_HILOGI(TIME_MODULE_SERVICE, "Trigger id: %{public}" PRId64 "", alarm->id);
         }
     }

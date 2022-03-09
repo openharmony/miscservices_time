@@ -36,43 +36,22 @@ declare namespace systemTime {
      * Obtains the number of milliseconds that have elapsed since the Unix epoch.
      * @since 8
      */
-    function getCurrentTime(callback: AsyncCallback<number>): void;
-    function getCurrentTime(): Promise<number>;
-
-    /**
-     * Obtains the number of nanoseconds that have elapsed since the Unix epoch.
-     * @since 8
-     */
-    function getCurrentTimeNs(callback: AsyncCallback<number>): void;
-    function getCurrentTimeNs(): Promise<number>;
+    function getCurrentTime(isNano?: boolean, callback: AsyncCallback<number>): void;
+    function getCurrentTime(isNano?: boolean,): Promise<number>;
 
     /**
      * Obtains the number of milliseconds elapsed since the system was booted, not including deep sleep time.
      * @since 8
      */
-    function getRealActiveTime(callback: AsyncCallback<number>): void;
-    function getRealActiveTime(): Promise<number>;
-
-    /**
-     * Obtains the number of nanoseconds elapsed since the system was booted, not including deep sleep time.
-     * @since 8
-     */
-    function getRealActiveTimeNs(callback: AsyncCallback<number>): void;
-    function getRealActiveTimeNs(): Promise<number>;
+    function getRealActiveTime(isNano?: boolean, callback: AsyncCallback<number>): void;
+    function getRealActiveTime(isNano?: boolean, ): Promise<number>;
 
     /**
      * Obtains the number of milliseconds elapsed since the system was booted, including deep sleep time.
      * @since 8
      */
-    function getRealTime(callback: AsyncCallback<number>): void;
-    function getRealTime(): Promise<number>;
-
-    /**
-     * Obtains the number of nanoseconds elapsed since the system was booted, including deep sleep time.
-     * @since 8
-     */
-    function getRealTimeNs(callback: AsyncCallback<number>): void;
-    function getRealTimeNs(): Promise<number>;
+    function getRealTime(isNano?: boolean, callback: AsyncCallback<number>): void;
+    function getRealTime(isNano?: boolean, ): Promise<number>;
 
     /**
      * Sets the system time.

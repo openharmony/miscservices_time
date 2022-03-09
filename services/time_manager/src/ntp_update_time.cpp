@@ -132,6 +132,10 @@ void NtpUpdateTime::SetSystemTime()
         TIME_HILOGD(TIME_MODULE_SERVICE, "Ntp update time failed");
         return;
     }
+    if (currentTime <= 0) {
+        TIME_HILOGD(TIME_MODULE_SERVICE, "current time invalid.");
+        return;
+    }
     TimeService::GetInstance()->SetTime(currentTime);
     autoTimeInfo_.lastUpdateTime = currentTime;
     TIME_HILOGD(TIME_MODULE_SERVICE, "Ntp update currentTime: %{public}" PRId64 "", currentTime);
