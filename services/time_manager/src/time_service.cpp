@@ -569,9 +569,6 @@ bool TimeService::GetTimeByClockid(clockid_t clk_id, struct timespec &tv)
         TIME_HILOGE(TIME_MODULE_SERVICE, "Failed clock_gettime.");
         return false;
     }
-    auto times = tv.tv_sec * NANO_TO_BASE + tv.tv_nsec;
-    TIME_HILOGD(TIME_MODULE_SERVICE, "Clock ID: %{public}d", clk_id);
-    TIME_HILOGD(TIME_MODULE_SERVICE, "Time result: %{public}" PRId64 "", times);
     return true;
 }
 void TimeService::NetworkTimeStatusOff()
