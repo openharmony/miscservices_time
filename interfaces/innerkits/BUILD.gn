@@ -24,15 +24,14 @@ config("time_client_config") {
 }
 
 ohos_shared_library("time_client") {
-  
   sources = [
     "${time_service_path}/time_manager/src/itimer_info.cpp",
+    "${time_service_path}/time_manager/src/time_service_client.cpp",
     "${time_service_path}/time_manager/src/time_service_proxy.cpp",
     "${time_service_path}/time_manager/src/time_service_stub.cpp",
-    "${time_service_path}/time_manager/src/time_service_client.cpp",
+    "${time_service_path}/time_manager/src/timer_call_back.cpp",
     "${time_service_path}/time_manager/src/timer_call_back_proxy.cpp",
     "${time_service_path}/time_manager/src/timer_call_back_stub.cpp",
-    "${time_service_path}/time_manager/src/timer_call_back.cpp",
   ]
 
   configs = [ ":time_client_config" ]
