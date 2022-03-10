@@ -24,13 +24,11 @@
     "ram":"1024KB",
     "deps": {
       "components": [
-        "ability_base",
-        "ability_runtime",
+        "ability_manager",
+        "aafwk_standard",
         "appexecfwk_standard",
         "ans_standard",
         "ces_standard",
-        "distributeddatamgr",
-        "hisysevent_native",
         "hiviewdfx_hilog_native",
         "ipc",
         "permission_standard",
@@ -54,6 +52,16 @@
             "header_files": [
               "itimer_info.h",
               "time_service_client.h"                                                               
+            ],
+            "header_base":"//base/miscservices/time/interfaces/innerkits/include"
+          }
+        },
+        {
+          "name": "//base/miscservices/time/interfaces/innerkits:time_client",
+          "header": {	
+            "header_files": [
+              "itimer_info.h",
+              "time_service_client.h"
             ],
             "header_base":"//base/miscservices/time/interfaces/innerkits/include"
           }

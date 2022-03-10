@@ -24,8 +24,6 @@
 #include <sys/time.h>
 #include <thread>
 
-#include "napi/native_api.h"
-#include "napi/native_node_api.h"
 #include "time_common.h"
 #include "time_service_client.h"
 

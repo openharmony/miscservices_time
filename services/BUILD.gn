@@ -23,8 +23,6 @@ config("time_service_config") {
     "//utils/system/safwk/native/include",
     "//third_party/json/include",
     "//base/hiviewdfx/hilog/interfaces/native/innerkits/include",
-    "//foundation/distributeddatamgr/appdatamgr/interfaces/innerkits/native_rdb/include/",
-    "//foundation/distributeddatamgr/appdatamgr/interfaces/innerkits/native_appdatafwk/include/",
   ]
 }
 
@@ -62,19 +60,17 @@ ohos_shared_library("time_service") {
   deps = [
     "${time_utils_path}:time_utils",
     "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
-    "//foundation/distributeddatamgr/appdatamgr/interfaces/innerkits/native_appdatafwk:native_appdatafwk",
-    "//foundation/distributeddatamgr/appdatamgr/interfaces/innerkits/native_preferences:native_preferences",
+    "//foundation/aafwk/standard/interfaces/innerkits/base:base",
+    "//foundation/aafwk/standard/interfaces/innerkits/intent:intent",
+    "//foundation/aafwk/standard/interfaces/innerkits/want:want",
     "//third_party/jsoncpp:jsoncpp",
     "//utils/native/base:utils",
   ]
   external_deps = [
-    "ability_base:base",
-    "ability_base:want",
+    "ability_runtime:runtime",
     "ability_runtime:wantagent_innerkits",
-    "bundle_framework:appexecfwk_base",
     "ces_standard:cesfwk_innerkits",
     "eventhandler:libeventhandler",
-    "hisysevent_native:libhisysevent",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "safwk:system_ability_fwk",

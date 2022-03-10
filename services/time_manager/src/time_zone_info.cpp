@@ -20,6 +20,7 @@ namespace OHOS {
 namespace MiscServices {
 namespace {
 const std::string TIMEZONE_FILE_PATH = "/data/misc/zoneinfo/timezone.json";
+const int64_t HOUR_TO_MILLISECONDS = 3600000;
 }
 
 TimeZoneInfo::TimeZoneInfo()
@@ -137,6 +138,13 @@ bool TimeZoneInfo::GetTimezone(std::string &timezoneId)
 {
     timezoneId = curTimezoneId_;
     return true;
+}
+
+int64_t TimeZoneInfo::GetCurrentOffsetMs()
+{
+    int offsetHours;
+    GetOffsetById(curTimezoneId_, offsetHours);
+    return static_cast<int64_t>(offsetHours) * HOUR_TO_MILLISECONDS;
 }
 
 bool TimeZoneInfo::SetOffsetToKernel(int offsetHour)

@@ -68,7 +68,6 @@ bool SNTPClient::RequestTime(std::string host)
 {
     TIME_HILOGD(TIME_MODULE_SERVICE, "start.");
     int iResult;
-    errno_t ret;
     struct sockaddr_in RecvAddr;
     unsigned short Port = NTP_PORT;
     int BufLen = NTP_PACKAGE_SIZE;
@@ -92,7 +91,7 @@ bool SNTPClient::RequestTime(std::string host)
         return false;
     }
 
-    ret = memset_s((char*)& RecvAddr, sizeof(RecvAddr), 0, sizeof(RecvAddr));
+    errno_t ret = memset_s((char*)& RecvAddr, sizeof(RecvAddr), 0, sizeof(RecvAddr));
     if (ret != EOK) {
         TIME_HILOGE(TIME_MODULE_SERVICE, "memcpy_s failed, err = %d\n", ret);
         return false;
