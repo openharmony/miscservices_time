@@ -47,7 +47,7 @@ bool TimePermission::CheckCallingPermission(int32_t uid, std::string permName)
     if (!ret) {
         TIME_HILOGE(TIME_MODULE_COMMON, "get bundle name failed");
         // always true
-        return true;
+        return false;
     }
     auto userId = uid / UID_TO_USERID;
     TIME_HILOGI(TIME_MODULE_COMMON, "VerifyPermission bundleName: %{public}s, permission: %{public}s",

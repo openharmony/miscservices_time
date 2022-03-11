@@ -143,12 +143,12 @@ bool TimeServiceProxy::DestroyTimer(uint64_t  timerId)
     
     if (!data.WriteInterfaceToken(GetDescriptor())) {
         TIME_HILOGE(TIME_MODULE_CLIENT, "Failed to write parcelable");
-        return E_TIME_WRITE_PARCEL_ERROR;
+        return false;
     }
 
     if (!data.WriteUint64(timerId)) {
         TIME_HILOGE(TIME_MODULE_CLIENT, "Failed to write parcelable");
-        return E_TIME_WRITE_PARCEL_ERROR;
+        return false;
     }
     int32_t result = Remote()->SendRequest(DESTORY_TIMER, data, reply, option);
     if (result != ERR_NONE) {

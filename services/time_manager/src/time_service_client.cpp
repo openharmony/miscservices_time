@@ -44,7 +44,7 @@ TimeServiceClient::~TimeServiceClient()
 sptr<TimeServiceClient> TimeServiceClient::GetInstance()
 {
     if (instance_ == nullptr) {
-        std::lock_guard<std::mutex> lock(instanceLock_);
+        std::lock_guard<std::mutex> autoLock(instanceLock_);
         if (instance_ == nullptr) {
             instance_ = new TimeServiceClient;
         }

@@ -117,7 +117,7 @@ bool SNTPClient::RequestTime(std::string host)
         close(SendSocket);
         return false;
     }
-
+    TIME_HILOGD(TIME_MODULE_SERVICE, "RequestTime5.");
     char bufferRx[NTP_PACKAGE_SIZE] = { 0 };
     // Receive until the peer closes the connection
     iResult = recv(SendSocket, bufferRx, NTP_PACKAGE_SIZE, 0);
@@ -126,7 +126,7 @@ bool SNTPClient::RequestTime(std::string host)
         close(SendSocket);
         return false;
     }
-
+    TIME_HILOGD(TIME_MODULE_SERVICE, "RequestTime6.");
     ReceivedMessage(bufferRx);
     TIME_HILOGD(TIME_MODULE_SERVICE, "end.");
     return true;
@@ -145,6 +145,7 @@ int SNTPClient::GetClockOffset(void)
 
 uint64_t SNTPClient::GetNtpTimestamp64(int offset, char* buffer)
 {
+    TIME_HILOGD(TIME_MODULE_SERVICE, "start.");
     const int _len = sizeof(uint64_t);
     char valueRx[_len];
     errno_t ret = memset_s(valueRx, sizeof(uint64_t), 0, sizeof(uint64_t));
