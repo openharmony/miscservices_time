@@ -70,10 +70,10 @@ ohos_shared_library("time_service") {
     "ability_runtime:runtime",
     "ability_runtime:wantagent_innerkits",
     "ces_standard:cesfwk_innerkits",
-    "native_appdatamgr:native_rdb",
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
+    "native_appdatamgr:native_rdb",
     "safwk:system_ability_fwk",
     "samgr_standard:samgr_proxy",
   ]

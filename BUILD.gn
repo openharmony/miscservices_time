@@ -19,8 +19,8 @@ group("time_native_packages") {
   if (is_standard_system) {
     deps = [
       "etc/init:timeservice.cfg",
-      "interfaces/kits/js/declaration:time",
       "interfaces/innerkits:time_client",
+      "interfaces/kits/js/declaration:time",
       "interfaces/kits/js/napi/system_time:systemtime",
       "interfaces/kits/js/napi/system_timer:systemtimer",
       "profile:miscservices_time_sa_profiles",
