@@ -78,7 +78,7 @@ bool SNTPClient::RequestTime(std::string host)
         TIME_HILOGE(TIME_MODULE_SERVICE, "socket failed with error:  %{public}d", 0);
         return false;
     }
-
+    TIME_HILOGD(TIME_MODULE_SERVICE, "RequestTime1.");
     // Set send and recv function timeout
     struct timeval timeout = {TIME_OUT, 0};
     setsockopt(SendSocket, SOL_SOCKET, SO_SNDTIMEO, (char *)&timeout, sizeof(struct timeval));
@@ -90,13 +90,14 @@ bool SNTPClient::RequestTime(std::string host)
         TIME_HILOGE(TIME_MODULE_SERVICE, "Get host by name %{public}s but get nullptr.", host.c_str());
         return false;
     }
-
+    TIME_HILOGD(TIME_MODULE_SERVICE, "RequestTime2.");	
     errno_t ret = memset_s((char*)& RecvAddr, sizeof(RecvAddr), 0, sizeof(RecvAddr));
     if (ret != EOK) {
         TIME_HILOGE(TIME_MODULE_SERVICE, "memcpy_s failed, err = %d\n", ret);
         return false;
     }
     RecvAddr.sin_family = AF_INET;
+    TIME_HILOGD(TIME_MODULE_SERVICE, "RequestTime3.");
     ret = memcpy_s((char*)& RecvAddr.sin_addr.s_addr, hostV->h_length, (char*)hostV->h_addr, hostV->h_length);
     if (ret != EOK) {
         TIME_HILOGE(TIME_MODULE_SERVICE, "memcpy_s failed, err = %d\n", ret);
@@ -107,7 +108,7 @@ bool SNTPClient::RequestTime(std::string host)
         TIME_HILOGE(TIME_MODULE_SERVICE, "Connect socket failed with host: %{public}s", host.c_str());
         return false;
     }
-
+    TIME_HILOGD(TIME_MODULE_SERVICE, "RequestTime4.");
     // Create the NTP tx timestamp and fill the fields in the msg to be tx
     char SendBuf[NTP_PACKAGE_SIZE] = {0};
     CreateMessage(SendBuf);
