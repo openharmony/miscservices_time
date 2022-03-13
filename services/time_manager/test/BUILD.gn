@@ -46,14 +46,8 @@ ohos_unittest("TimeServiceTest") {
   ]
 
   external_deps = [
-    "ability_base:base",
-    "ability_base:want",
+    "ability_runtime:runtime",
     "ability_runtime:wantagent_innerkits",
-    "bundle_framework:appexecfwk_base",
-    "bundle_framework:appexecfwk_core",
-    "ces_standard:cesfwk_innerkits",
-    "eventhandler:libeventhandler",
-    "hisysevent_native:libhisysevent",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "safwk:system_ability_fwk",
