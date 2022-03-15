@@ -415,7 +415,7 @@ bool TimerManager::TriggerTimersLocked(std::vector<std::shared_ptr<TimerInfo>> &
                 auto nextElapsed = alarm->whenElapsed + delta;
                 SetHandlerLocked(alarm->id, alarm->type, alarm->when + delta, nextElapsed, alarm->windowLength,
                     MaxTriggerTime(nowElapsed, nextElapsed, alarm->repeatInterval), alarm->repeatInterval,
-                    nullptr, alarm->flags, true, alarm->uid);
+                    alarm->callback, alarm->flags, true, alarm->uid);
             }
             if (alarm->wakeup) {
                 hasWakeup = true;
@@ -508,8 +508,7 @@ void TimerManager::DeliverTimersLocked(const std::vector<std::shared_ptr<TimerIn
     TIME_HILOGI(TIME_MODULE_SERVICE, "start");
     for (const auto &alarm : triggerList) {
         if (alarm->callback) {
-            std::thread startTimerThread(alarm->callback, alarm->id);
-            startTimerThread.detach();
+            alarm->callback(alarm->id);
             TIME_HILOGI(TIME_MODULE_SERVICE, "Trigger id: %{public}" PRId64 "", alarm->id);
         }
     }

@@ -13,8 +13,8 @@
  * limitations under the License.
  */
 
+#include "permission/permission_kit.h"
 #include "time_permission.h"
-
 
 namespace OHOS {
 namespace MiscServices {
@@ -47,12 +47,12 @@ bool TimePermission::CheckCallingPermission(int32_t uid, std::string permName)
     if (!ret) {
         TIME_HILOGE(TIME_MODULE_COMMON, "get bundle name failed");
         // always true
-        return true;
+        return false;
     }
     auto userId = uid / UID_TO_USERID;
     TIME_HILOGI(TIME_MODULE_COMMON, "VerifyPermission bundleName: %{public}s, permission: %{public}s",
         bundleName.c_str(), permName.c_str());
-    return MockPermission::VerifyPermission(bundleName, permName, userId);
+    return OHOS::Security::Permission::PermissionKit::VerifyPermission(bundleName, permName, userId);
 }
 
 sptr<AppExecFwk::IBundleMgr> TimePermission::GetBundleManager()

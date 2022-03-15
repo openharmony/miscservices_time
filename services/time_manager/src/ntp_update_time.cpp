@@ -25,6 +25,7 @@
 #include "json/json.h"
 #include "time_service.h"
 #include "nitz_subscriber.h"
+#include "time_zone_info.h"
 #include "ntp_update_time.h"
 
 using namespace std::chrono;
@@ -50,7 +51,7 @@ void NtpUpdateTime::Init()
     if (!GetAutoTimeInfoFromFile(autoTimeInfo_)) {
         autoTimeInfo_.lastUpdateTime = INVALID_TIMES;
         autoTimeInfo_.NTP_SERVER = NTP_CN_SERVER;
-        autoTimeInfo_.status = NETWORK_TIME_STATUS_OFF;
+        autoTimeInfo_.status = NETWORK_TIME_STATUS_ON;
         if (!SaveAutoTimeInfoToFile(autoTimeInfo_)) {
             TIME_HILOGE(TIME_MODULE_SERVICE, "end, SaveAutoTimeInfoToFile failed.");
             return;
@@ -136,6 +137,10 @@ void NtpUpdateTime::SetSystemTime()
         TIME_HILOGD(TIME_MODULE_SERVICE, "current time invalid.");
         return;
     }
+    TIME_HILOGD(TIME_MODULE_SERVICE, "Ntp UTC Time: %{public}" PRId64 "", currentTime);
+    auto timeOffsetMs = DelayedSingleton<TimeZoneInfo>::GetInstance()->GetCurrentOffsetMs();
+    currentTime = currentTime + timeOffsetMs;
+    TIME_HILOGD(TIME_MODULE_SERVICE, "Ntp UTC+TIMEZONE tTime: %{public}" PRId64 "", currentTime);
     TimeService::GetInstance()->SetTime(currentTime);
     autoTimeInfo_.lastUpdateTime = currentTime;
     TIME_HILOGD(TIME_MODULE_SERVICE, "Ntp update currentTime: %{public}" PRId64 "", currentTime);

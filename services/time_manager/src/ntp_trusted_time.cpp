@@ -53,10 +53,12 @@ bool NtpTrustedTime::ForceRefresh(std::string ntpServer)
 
 int64_t NtpTrustedTime::CurrentTimeMillis()
 {
+    TIME_HILOGD(TIME_MODULE_SERVICE, "start.");
     if (mTimeResult == nullptr) {
         TIME_HILOGD(TIME_MODULE_SERVICE, "Missing authoritative time source");
         return INVALID_MILLIS;
     }
+    TIME_HILOGD(TIME_MODULE_SERVICE, "end.");
     return mTimeResult->CurrentTimeMillis();
 }
 

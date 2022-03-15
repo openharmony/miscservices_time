@@ -94,17 +94,17 @@ bool TimeServiceProxy::StartTimer(uint64_t timerId, uint64_t triggerTimes)
     
     if (!data.WriteInterfaceToken(GetDescriptor())) {
         TIME_HILOGE(TIME_MODULE_CLIENT, "Failed to write parcelable");
-        return E_TIME_WRITE_PARCEL_ERROR;
+        return false;
     }
 
     if (!data.WriteUint64(timerId)) {
         TIME_HILOGE(TIME_MODULE_CLIENT, "Failed to write parcelable");
-        return E_TIME_WRITE_PARCEL_ERROR;
+        return false;
     }
 
     if (!data.WriteUint64(triggerTimes)) {
         TIME_HILOGE(TIME_MODULE_CLIENT, "Failed to write parcelable");
-        return E_TIME_WRITE_PARCEL_ERROR;
+        return false;
     }
     int32_t result = Remote()->SendRequest(START_TIMER, data, reply, option);
     if (result != ERR_NONE) {
@@ -121,12 +121,12 @@ bool TimeServiceProxy::StopTimer(uint64_t  timerId)
 
     if (!data.WriteInterfaceToken(GetDescriptor())) {
         TIME_HILOGE(TIME_MODULE_CLIENT, "Failed to write parcelable");
-        return E_TIME_WRITE_PARCEL_ERROR;
+        return false;
     }
 
     if (!data.WriteUint64(timerId)) {
         TIME_HILOGE(TIME_MODULE_CLIENT, "Failed to write parcelable");
-        return E_TIME_WRITE_PARCEL_ERROR;
+        return false;
     }
     int32_t result = Remote()->SendRequest(STOP_TIMER, data, reply, option);
     if (result != ERR_NONE) {
@@ -143,12 +143,12 @@ bool TimeServiceProxy::DestroyTimer(uint64_t  timerId)
     
     if (!data.WriteInterfaceToken(GetDescriptor())) {
         TIME_HILOGE(TIME_MODULE_CLIENT, "Failed to write parcelable");
-        return E_TIME_WRITE_PARCEL_ERROR;
+        return false;
     }
 
     if (!data.WriteUint64(timerId)) {
         TIME_HILOGE(TIME_MODULE_CLIENT, "Failed to write parcelable");
-        return E_TIME_WRITE_PARCEL_ERROR;
+        return false;
     }
     int32_t result = Remote()->SendRequest(DESTORY_TIMER, data, reply, option);
     if (result != ERR_NONE) {
