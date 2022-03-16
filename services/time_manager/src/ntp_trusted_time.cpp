@@ -51,8 +51,8 @@ bool NtpTrustedTime::ForceRefresh(std::string ntpServer)
             if (mTimeResult != nullptr) {
                 mTimeResult->Clear();
             }
-            int64_t ntpCertaintyR = client.getRoundTripTime() / HALF;
-            mTimeResult = std::make_shared<TimeResult>(client.getNtpTIme(), client.getNtpTimeReference(), ntpCertaintyR);
+            int64_t ntpCertnR = client.getRoundTripTime() / HALF;
+            mTimeResult = std::make_shared<TimeResult>(client.getNtpTIme(), client.getNtpTimeReference(), ntpCertnR);
             TIME_HILOGD(TIME_MODULE_SERVICE, "Re Get Ntp time result");
             TIME_HILOGD(TIME_MODULE_SERVICE, "Re true end.");
             return true;
