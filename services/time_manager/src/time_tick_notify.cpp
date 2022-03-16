@@ -20,8 +20,8 @@
 #include "time_service_notify.h"
 #include "timer_manager_interface.h"
 #include "time_service.h"
-#include "time_tick_notify.h"
 #include "common_timer_errors.h"
+#include "time_tick_notify.h"
 
 using namespace std::chrono;
 

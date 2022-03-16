@@ -27,6 +27,7 @@ namespace OHOS {
 namespace MiscServices {
 namespace {
 constexpr int64_t INVALID_MILLIS = -1;
+constexpr int64_t HALF = 2;
 }
 
 NtpTrustedTime::NtpTrustedTime() {}
@@ -40,7 +41,7 @@ bool NtpTrustedTime::ForceRefresh(std::string ntpServer)
         if (mTimeResult != nullptr) {
             mTimeResult->Clear();
         }
-        int64_t ntpCertainty = client.getRoundTripTime() / 2;
+        int64_t ntpCertainty = client.getRoundTripTime() / HALF;
         mTimeResult = std::make_shared<TimeResult>(client.getNtpTIme(), client.getNtpTimeReference(), ntpCertainty);
         TIME_HILOGD(TIME_MODULE_SERVICE, "Get Ntp time result");
         TIME_HILOGD(TIME_MODULE_SERVICE, "true end.");
@@ -50,8 +51,8 @@ bool NtpTrustedTime::ForceRefresh(std::string ntpServer)
             if (mTimeResult != nullptr) {
                 mTimeResult->Clear();
             }
-            ntpCertainty = client.getRoundTripTime() / 2;
-            mTimeResult = std::make_shared<TimeResult>(client.getNtpTIme(), client.getNtpTimeReference(), ntpCertainty);
+            int64_t ntpCertaintyR = client.getRoundTripTime() / HALF;
+            mTimeResult = std::make_shared<TimeResult>(client.getNtpTIme(), client.getNtpTimeReference(), ntpCertaintyR);
             TIME_HILOGD(TIME_MODULE_SERVICE, "Re Get Ntp time result");
             TIME_HILOGD(TIME_MODULE_SERVICE, "Re true end.");
             return true;
