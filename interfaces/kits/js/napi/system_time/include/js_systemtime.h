@@ -47,6 +47,7 @@ typedef struct AsyncContext {
     napi_ref callbackRef = nullptr;
     bool isCallback = false;
     bool isOK = false;
+    bool isNano = false;
     int errorCode = NO_ERROR;
 } AsyncContext;
 

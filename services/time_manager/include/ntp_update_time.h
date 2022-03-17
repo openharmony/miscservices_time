@@ -42,6 +42,7 @@ private:
     void SubscriberNITZTimeChangeCommonEvent();
     void StartTimer();
     void SetSystemTime();
+    bool ThreadSetSystemTime();
     void RefreshNextTriggerTime();
     bool CheckStatus();
     bool IsNITZTimeInvalid();

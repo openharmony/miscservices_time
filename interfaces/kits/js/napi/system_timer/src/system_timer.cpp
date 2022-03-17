@@ -18,7 +18,7 @@
 #include <string>
 #include <vector>
 #include "timer_type.h"
-#include "want_agent.h"
+#include "want_agent_helper.h"
 #include "securec.h"
 #include "system_timer.h"
 
@@ -739,6 +739,13 @@ napi_value DestroyTimer(napi_env env, napi_callback_info info)
     }
 }
 
+napi_value CreateNapiNumber(napi_env env, int32_t objName)
+{
+    napi_value prop = nullptr;
+    napi_create_int32(env, objName, &prop);
+    return prop;
+}
+
 napi_value SystemtimerInit(napi_env env, napi_value exports)
 {
     napi_property_descriptor desc[] = {
@@ -746,11 +753,13 @@ napi_value SystemtimerInit(napi_env env, napi_value exports)
         DECLARE_NAPI_FUNCTION("startTimer", StartTimer),
         DECLARE_NAPI_FUNCTION("stopTimer", StopTimer),
         DECLARE_NAPI_FUNCTION("destroyTimer", DestroyTimer),
+        DECLARE_NAPI_PROPERTY("TIMER_TYPE_REALTIME", CreateNapiNumber(env, 1 << TIMER_TYPE_REALTIME)),
+        DECLARE_NAPI_PROPERTY("TIMER_TYPE_WAKEUP", CreateNapiNumber(env, 1 << TIMER_TYPE_WAKEUP)),
+        DECLARE_NAPI_PROPERTY("TIMER_TYPE_EXACT", CreateNapiNumber(env, 1 << TIMER_TYPE_EXACT)),
+        DECLARE_NAPI_PROPERTY("TIMER_TYPE_IDLE", CreateNapiNumber(env, 1 << TIMER_TYPE_IDLE)),
     };
 
     NAPI_CALL(env, napi_define_properties(env, exports, sizeof(desc) / sizeof(desc[0]), desc));
-
-    OHOS::MiscServicesNapi::TimerTypeInit(env, exports);
     return exports;
 }
 }  // namespace MiscServicesNapi

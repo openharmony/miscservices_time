@@ -144,18 +144,9 @@ private:
      * @param _ntpTs the NTP timestamp to be converted
      * Returns the milliseconds
      */
-    uint64_t ConvertNtpToStamp(uint64_t _ntpTs);
-
-    /**
-     * This function converts the NTP time to local time
-     *
-     * @param _ntpTs the NTP timestamp to be converted
-     * @param _outDataTs the structure Date where the [HH, MM, SS, MMMMMM] are stored
-     */
-    uint64_t ConvertNtpToDate(uint64_t _ntpTs, struct date_structure* _outDataTs);
-    
-    int m_clockOffset;
-    int64_t m_originateTimestamp;
+    int64_t ConvertNtpToStamp(uint64_t _ntpTs);
+    int64_t m_clockOffset;
+    uint64_t m_originateTimestamp;
     int64_t mNtpTime;
     int64_t mNtpTimeReference;
     int64_t mRoundTripTime;

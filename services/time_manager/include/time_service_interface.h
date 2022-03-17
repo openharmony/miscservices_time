@@ -17,7 +17,7 @@
 #define SERVICES_INCLUDE_TIME_SERVICE_INTERFACE_H
 
 #include "iremote_broker.h"
-#include "want_agent.h"
+#include "want_agent_helper.h"
 
 namespace OHOS {
 namespace MiscServices {

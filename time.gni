@@ -18,6 +18,8 @@ kits_path = "${time_root_path}/interfaces/kits"
 
 innerkits_path = "${time_root_path}/interfaces/innerkits"
 
+time_service_path = "${time_root_path}/services"
+
 time_utils_path = "${time_root_path}/utils"
 
 adapter_path = "${time_root_path}/adapter"

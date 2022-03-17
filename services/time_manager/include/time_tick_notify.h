@@ -17,21 +17,24 @@
 #define TIME_TICK_NOTIFY_H
 
 #include <singleton.h>
+#include "timer.h"
 
 namespace OHOS {
 namespace MiscServices {
 class TimeTickNotify : public DelayedSingleton<TimeTickNotify> {
-    DECLARE_DELAYED_SINGLETON(TimeTickNotify);
 public:
+    TimeTickNotify();
+    ~TimeTickNotify();
     DISALLOW_COPY_AND_MOVE(TimeTickNotify);
     void Init();
-    void Callback(const uint64_t timerid);
+    void Callback();
     void Stop();
 private:
     void StartTimer();
     void RefreshNextTriggerTime();
     uint64_t GetMillisecondsFromUTC(uint64_t UTCtimeNano);
-    uint64_t timerId_;
+    Utils::Timer timer_;
+    uint32_t timerId_;
     uint64_t nextTriggerTime_;
 };
 } // MiscServices

@@ -41,6 +41,7 @@ public:
     bool GetTimezone(std::string &timezoneId);
     bool SetTimezone(std::string timezoneId);
     void Init();
+    int64_t GetCurrentOffsetMs();
 private:
     bool InitStorage();
     bool SetOffsetToKernel(int offset);
