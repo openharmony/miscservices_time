@@ -408,6 +408,7 @@ bool TimerManager::TriggerTimersLocked(std::vector<std::shared_ptr<TimerInfo>> &
             auto alarm = batch->Get(i);
             alarm->count = 1;
             triggerList.push_back(alarm);
+            TIME_HILOGI(TIME_MODULE_SERVICE, "alarm uid= %{public}d", alarm->uid);
             if (alarm->repeatInterval > milliseconds::zero()) {
                 alarm->count += duration_cast<milliseconds>(nowElapsed -
                     alarm->expectedWhenElapsed) / alarm->repeatInterval;
