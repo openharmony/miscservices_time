@@ -64,20 +64,18 @@ void NtpUpdateTime::Init()
         }
     }
     if (autoTimeInfo_.status == NETWORK_TIME_STATUS_ON) {
-        SetSystemTime();
-    }
-
-    std::thread([this] {
-        for (int i = 0; i < MAX_RETRY; i++) {
-            if (!this->ThreadSetSystemTime()) {
-                TIME_HILOGE(TIME_MODULE_SERVICE, "thread set ntp time failed, retry");
-                std::this_thread::sleep_for(seconds(MINUTES_TO_SECOND));
-            } else {
-                TIME_HILOGD(TIME_MODULE_SERVICE, "thread set ntp time success");
-                break;
+        std::thread([this] {
+            for (int i = 0; i < MAX_RETRY; i++) {
+                if (!this->ThreadSetSystemTime()) {
+                    TIME_HILOGE(TIME_MODULE_SERVICE, "thread set ntp time failed, retry");
+                    std::this_thread::sleep_for(seconds(MINUTES_TO_SECOND));
+                } else {
+                    TIME_HILOGD(TIME_MODULE_SERVICE, "thread set ntp time success");
+                    break;
+                }
             }
-        }
-    }).detach();
+        }).detach();
+    }
 
     int32_t timerType = ITimerManager::TimerType::ELAPSED_REALTIME;
     auto callback = [this](uint64_t id) {

@@ -345,7 +345,7 @@ unsigned int SNTPClient::GetNtpField32(int offset, char* buffer)
     errno_t retValue = memcpy_s(&milliseconds, sizeof(int), valueRx, sizeof(int));
     if (retValue != EOK) {
         TIME_HILOGE(TIME_MODULE_SERVICE, "memcpy_s failed, err = %d\n", retValue);
-        return false; // 返回失败
+        return false;
     }
     TIME_HILOGD(TIME_MODULE_SERVICE, "end.");
     return milliseconds;
