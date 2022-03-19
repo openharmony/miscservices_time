@@ -33,8 +33,11 @@ ohos_unittest("TimeServiceTest") {
   configs = [ ":module_private_config" ]
 
   deps = [
-    "//base/miscservices/time/services:time_service",
-    "//foundation/ace/napi:ace_napi",
+    "//base/miscservices/time/interfaces/innerkits:time_client",
+    "//foundation/aafwk/standard/interfaces/innerkits/base:base",
+    "//foundation/aafwk/standard/interfaces/innerkits/intent:intent",
+    "//foundation/aafwk/standard/interfaces/innerkits/want:want",
+    "//foundation/appexecfwk/standard/interfaces/innerkits/appexecfwk_core:appexecfwk_core",
     "//foundation/distributedschedule/dmsfwk/services/dtbschedmgr:distributedschedsvr",
     "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk:system_ability_fwk",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
@@ -43,14 +46,8 @@ ohos_unittest("TimeServiceTest") {
   ]
 
   external_deps = [
-    "ability_base:base",
-    "ability_base:want",
+    "ability_runtime:runtime",
     "ability_runtime:wantagent_innerkits",
-    "bundle_framework:appexecfwk_base",
-    "bundle_framework:appexecfwk_core",
-    "ces_standard:cesfwk_innerkits",
-    "eventhandler:libeventhandler",
-    "hisysevent_native:libhisysevent",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "safwk:system_ability_fwk",

@@ -306,12 +306,6 @@ bool TimeService::DestroyTimer(uint64_t  timerId)
 
 int32_t TimeService::SetTime(const int64_t time)
 {
-    pid_t uid = IPCSkeleton::GetCallingUid();
-    auto hasPerm = DelayedSingleton<TimePermission>::GetInstance()->CheckCallingPermission(uid, setTimePermName_);
-    if (!hasPerm) {
-        TIME_HILOGE(TIME_MODULE_SERVICE, "Permission check failed, uid : %{public}d", uid);
-        return E_TIME_NO_PERMISSION;
-    }
     TIME_HILOGI(TIME_MODULE_SERVICE, "Setting time of day to milliseconds: %{public}" PRId64 "", time);
     if (time < 0 || time / 1000LL >= LONG_MAX) {
         TIME_HILOGE(TIME_MODULE_SERVICE, "input param error");

@@ -17,7 +17,7 @@
 #define TIMER_MANAGER_INTERFACE_H
 
 #include <memory>
-#include "want_agent.h"
+#include "want_agent_helper.h"
 
 namespace OHOS {
 namespace MiscServices {

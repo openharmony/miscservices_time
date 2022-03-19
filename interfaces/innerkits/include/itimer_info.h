@@ -16,7 +16,7 @@
 #define I_TIMER_INFO_H
 
 #include <mutex>
-#include "want_agent.h"
+#include "want_agent_helper.h"
 
 namespace OHOS {
 namespace MiscServices {

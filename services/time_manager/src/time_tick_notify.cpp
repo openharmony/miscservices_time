@@ -20,7 +20,9 @@
 #include "time_service_notify.h"
 #include "timer_manager_interface.h"
 #include "time_service.h"
+#include "common_timer_errors.h"
 #include "time_tick_notify.h"
+
 using namespace std::chrono;
 
 namespace OHOS {
@@ -28,38 +30,41 @@ namespace MiscServices {
 namespace {
 constexpr uint64_t MINUTE_TO_MILLISECOND = 60000;
 constexpr uint64_t MICRO_TO_MILESECOND = 1000;
-constexpr uint64_t NANO_TO_MILESECOND = 1000000;
 }
-TimeTickNotify::TimeTickNotify() {};
+
+TimeTickNotify::TimeTickNotify() : timer_("TickTimer") {};
 TimeTickNotify::~TimeTickNotify() {};
 
 void TimeTickNotify::Init()
 {
     TIME_HILOGD(TIME_MODULE_SERVICE, "Tick notify start.");
-    int32_t timerType = ITimerManager::TimerType::ELAPSED_REALTIME;
-    auto callback = [this](uint64_t id) {
-        this->Callback(id);
+    
+    uint32_t ret = timer_.Setup();
+    if (ret != Utils::TIMER_ERR_OK) {
+        TIME_HILOGE(TIME_MODULE_SERVICE, "Timer Setup failed: %{public}d", ret);
+        return;
+    }
+    auto callback = [this]() {
+        this->Callback();
     };
-    timerId_ = TimeService::GetInstance()->CreateTimer(timerType, 0, 0, 0, callback);
-    TIME_HILOGD(TIME_MODULE_SERVICE, "Tick notify timerId: %{public}" PRId64 "", timerId_);
     RefreshNextTriggerTime();
     TIME_HILOGD(TIME_MODULE_SERVICE, "Tick notify triggertime: %{public}" PRId64 "", nextTriggerTime_);
-    TimeService::GetInstance()->StartTimer(timerId_, nextTriggerTime_);
+    timerId_ = timer_.Register(callback, nextTriggerTime_);
+    TIME_HILOGD(TIME_MODULE_SERVICE, "Tick timer ID: %{public}d", timerId_);
 }
 
-void TimeTickNotify::Callback(const uint64_t timerId)
+void TimeTickNotify::Callback()
 {
-    TIME_HILOGD(TIME_MODULE_SERVICE, "Tick notify timerId: %{public}" PRId64 "", timerId);
     auto currentTime = steady_clock::now().time_since_epoch().count();
     DelayedSingleton<TimeServiceNotify>::GetInstance()->PublishTimeTickEvents(currentTime);
-    timerId_ = timerId;
+    timer_.Unregister(timerId_);
     RefreshNextTriggerTime();
-    auto startFunc = [this]() {
-        this->StartTimer();
+    auto callback = [this]() {
+        this->Callback();
     };
-    std::thread startTimerThread(startFunc);
-    startTimerThread.detach();
+    timerId_ = timer_.Register(callback, nextTriggerTime_);
     TIME_HILOGD(TIME_MODULE_SERVICE, "Tick notify triggertime: %{public}" PRId64 "", nextTriggerTime_);
+    TIME_HILOGD(TIME_MODULE_SERVICE, "Tick timer ID: %{public}d", timerId_);
 }
 
 void TimeTickNotify::RefreshNextTriggerTime()
@@ -67,23 +72,16 @@ void TimeTickNotify::RefreshNextTriggerTime()
     time_t t = time(NULL);
     struct tm *tblock = localtime(&t);
     TIME_HILOGI(TIME_MODULE_SERVICE, "Time now: %{public}s", asctime(tblock));
-    auto UTCTimeMicro = system_clock::now().time_since_epoch().count();
-    auto BootTimeNano = steady_clock::now().time_since_epoch().count();
-    auto BootTimeMilli = BootTimeNano / NANO_TO_MILESECOND;
+    auto UTCTimeMicro = duration_cast<microseconds>(system_clock::now().time_since_epoch()).count();
+    TIME_HILOGD(TIME_MODULE_SERVICE, "Time Now Mirc: %{public}" PRId64 "", UTCTimeMicro);
     auto timeMilliseconds = GetMillisecondsFromUTC(UTCTimeMicro);
-    nextTriggerTime_ = BootTimeMilli + (MINUTE_TO_MILLISECOND - timeMilliseconds);
-    return ;
-}
-
-void TimeTickNotify::StartTimer()
-{
-    TimeService::GetInstance()->StartTimer(timerId_, nextTriggerTime_);
+    nextTriggerTime_ = MINUTE_TO_MILLISECOND - timeMilliseconds;
 }
 
 void TimeTickNotify::Stop()
 {
     TIME_HILOGD(TIME_MODULE_SERVICE, "start.");
-    TimeService::GetInstance()->DestroyTimer(timerId_);
+    timer_.Shutdown();
 }
 
 uint64_t TimeTickNotify::GetMillisecondsFromUTC(uint64_t UTCtimeMicro)

@@ -14,6 +14,11 @@
  */
 
 #include <cstdint>
+#include <cinttypes>
+#include <cstdio>
+#include <cstring>
+#include <unistd.h>
+#include <securec.h>
 #include "time_common.h"
 #include "sntp_client.h"
 #include "ntp_trusted_time.h"
@@ -22,6 +27,7 @@ namespace OHOS {
 namespace MiscServices {
 namespace {
 constexpr int64_t INVALID_MILLIS = -1;
+constexpr int64_t HALF = 2;
 }
 
 NtpTrustedTime::NtpTrustedTime() {}
@@ -29,23 +35,42 @@ NtpTrustedTime::~NtpTrustedTime() {}
 
 bool NtpTrustedTime::ForceRefresh(std::string ntpServer)
 {
+    TIME_HILOGD(TIME_MODULE_SERVICE, "start.");
     SNTPClient client;
     if (client.RequestTime(ntpServer)) {
-        int64_t ntpCertainty = client.getRoundTripTime() / 2;
+        if (mTimeResult != nullptr) {
+            mTimeResult->Clear();
+        }
+        int64_t ntpCertainty = client.getRoundTripTime() / HALF;
         mTimeResult = std::make_shared<TimeResult>(client.getNtpTIme(), client.getNtpTimeReference(), ntpCertainty);
         TIME_HILOGD(TIME_MODULE_SERVICE, "Get Ntp time result");
+        TIME_HILOGD(TIME_MODULE_SERVICE, "true end.");
         return true;
     } else {
-        return false;
+        if (client.RequestTime(ntpServer)) {
+            if (mTimeResult != nullptr) {
+                mTimeResult->Clear();
+            }
+            int64_t ntpCertnR = client.getRoundTripTime() / HALF;
+            mTimeResult = std::make_shared<TimeResult>(client.getNtpTIme(), client.getNtpTimeReference(), ntpCertnR);
+            TIME_HILOGD(TIME_MODULE_SERVICE, "Re Get Ntp time result");
+            TIME_HILOGD(TIME_MODULE_SERVICE, "Re true end.");
+            return true;
+        } else {
+            TIME_HILOGD(TIME_MODULE_SERVICE, "false end.");
+            return false;
+        }
     }
 }
 
 int64_t NtpTrustedTime::CurrentTimeMillis()
 {
+    TIME_HILOGD(TIME_MODULE_SERVICE, "start.");
     if (mTimeResult == nullptr) {
         TIME_HILOGD(TIME_MODULE_SERVICE, "Missing authoritative time source");
         return INVALID_MILLIS;
     }
+    TIME_HILOGD(TIME_MODULE_SERVICE, "end.");
     return mTimeResult->CurrentTimeMillis();
 }
 
@@ -108,6 +133,16 @@ NtpTrustedTime::TimeResult::TimeResult(int64_t mTimeMillis, int64_t mElapsedReal
     this->mTimeMillis = mTimeMillis;
     this->mElapsedRealtimeMillis = mElapsedRealtimeMills;
     this->mCertaintyMillis = mCertaintyMillis;
+    TIME_HILOGD(TIME_MODULE_SERVICE, "mTimeMillis %{public}" PRId64 "", mTimeMillis);
+    TIME_HILOGD(TIME_MODULE_SERVICE, "mElapsedRealtimeMills %{public}" PRId64 "", mElapsedRealtimeMills);
+    TIME_HILOGD(TIME_MODULE_SERVICE, "mCertaintyMillis %{public}" PRId64 "", mCertaintyMillis);
+}
+
+void NtpTrustedTime::TimeResult::Clear()
+{
+    TIME_HILOGD(TIME_MODULE_SERVICE, "start.");
+    (void)memset_s(this, sizeof(*this), 0, sizeof(*this));
+    TIME_HILOGD(TIME_MODULE_SERVICE, "end.");
 }
 } // MiscServices
 } // OHOS

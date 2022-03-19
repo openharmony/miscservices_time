@@ -39,7 +39,6 @@ const auto INTERVAL_HALF_DAY = hours(12);
 const auto MIN_FUZZABLE_INTERVAL = milliseconds(10000);
 }
 
-
 extern bool AddBatchLocked(std::vector<std::shared_ptr<Batch>> &list, const std::shared_ptr<Batch> &batch);
 extern steady_clock::time_point MaxTriggerTime(steady_clock::time_point now,
                                                steady_clock::time_point triggerAtTime,
@@ -409,6 +408,7 @@ bool TimerManager::TriggerTimersLocked(std::vector<std::shared_ptr<TimerInfo>> &
             auto alarm = batch->Get(i);
             alarm->count = 1;
             triggerList.push_back(alarm);
+            TIME_HILOGI(TIME_MODULE_SERVICE, "alarm uid= %{public}d", alarm->uid);
             if (alarm->repeatInterval > milliseconds::zero()) {
                 alarm->count += duration_cast<milliseconds>(nowElapsed -
                     alarm->expectedWhenElapsed) / alarm->repeatInterval;
@@ -416,7 +416,7 @@ bool TimerManager::TriggerTimersLocked(std::vector<std::shared_ptr<TimerInfo>> &
                 auto nextElapsed = alarm->whenElapsed + delta;
                 SetHandlerLocked(alarm->id, alarm->type, alarm->when + delta, nextElapsed, alarm->windowLength,
                     MaxTriggerTime(nowElapsed, nextElapsed, alarm->repeatInterval), alarm->repeatInterval,
-                    nullptr, alarm->flags, true, alarm->uid);
+                    alarm->callback, alarm->flags, true, alarm->uid);
             }
             if (alarm->wakeup) {
                 hasWakeup = true;

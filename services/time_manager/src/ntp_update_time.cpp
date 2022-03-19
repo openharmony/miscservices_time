@@ -25,19 +25,22 @@
 #include "json/json.h"
 #include "time_service.h"
 #include "nitz_subscriber.h"
+#include "time_zone_info.h"
 #include "ntp_update_time.h"
 
 using namespace std::chrono;
 namespace OHOS {
 namespace MiscServices {
 namespace {
-constexpr uint64_t NANO_TO_MILESECOND = 1000000;
+constexpr uint64_t NANO_TO_MILLISECOND = 1000000;
 constexpr uint64_t DAY_TO_MILLISECOND = 86400000;
+constexpr uint64_t MINUTES_TO_SECOND = 60;
 const std::string AUTOTIME_FILE_PATH = "/data/misc/zoneinfo/autotime.json";
 const std::string NETWORK_TIME_STATUS_ON = "ON";
 const std::string NETWORK_TIME_STATUS_OFF = "OFF";
-const std::string NTP_CN_SERVER = "1.cn.pool.ntp.org";
+const std::string NTP_CN_SERVER = "ntp.aliyun.com";
 const int64_t INVALID_TIMES = -1;
+const int MAX_RETRY = 10;
 }
 
 NtpUpdateTime::NtpUpdateTime() {};
@@ -50,7 +53,7 @@ void NtpUpdateTime::Init()
     if (!GetAutoTimeInfoFromFile(autoTimeInfo_)) {
         autoTimeInfo_.lastUpdateTime = INVALID_TIMES;
         autoTimeInfo_.NTP_SERVER = NTP_CN_SERVER;
-        autoTimeInfo_.status = NETWORK_TIME_STATUS_OFF;
+        autoTimeInfo_.status = NETWORK_TIME_STATUS_ON;
         if (!SaveAutoTimeInfoToFile(autoTimeInfo_)) {
             TIME_HILOGE(TIME_MODULE_SERVICE, "end, SaveAutoTimeInfoToFile failed.");
             return;
@@ -61,13 +64,24 @@ void NtpUpdateTime::Init()
         }
     }
     if (autoTimeInfo_.status == NETWORK_TIME_STATUS_ON) {
-        SetSystemTime();
+        std::thread([this] {
+            for (int i = 0; i < MAX_RETRY; i++) {
+                if (!this->ThreadSetSystemTime()) {
+                    TIME_HILOGE(TIME_MODULE_SERVICE, "thread set ntp time failed, retry");
+                    std::this_thread::sleep_for(seconds(MINUTES_TO_SECOND));
+                } else {
+                    TIME_HILOGD(TIME_MODULE_SERVICE, "thread set ntp time success");
+                    break;
+                }
+            }
+        }).detach();
     }
+
     int32_t timerType = ITimerManager::TimerType::ELAPSED_REALTIME;
     auto callback = [this](uint64_t id) {
         this->RefreshNetworkTimeByTimer(id);
     };
-    timerId_ = TimeService::GetInstance()->CreateTimer(timerType, 0, 0, 0, callback);
+    timerId_ = TimeService::GetInstance()->CreateTimer(timerType, 0, DAY_TO_MILLISECOND, 0, callback);
     TIME_HILOGD(TIME_MODULE_SERVICE, "Ntp update timerId: %{public}" PRId64 "", timerId_);
     RefreshNextTriggerTime();
     TIME_HILOGD(TIME_MODULE_SERVICE, "Ntp update triggertime: %{public}" PRId64 "", nextTriggerTime_);
@@ -102,20 +116,13 @@ void NtpUpdateTime::RefreshNetworkTimeByTimer(const uint64_t timerId)
     }
     SetSystemTime();
     SaveAutoTimeInfoToFile(autoTimeInfo_);
-    timerId_ = timerId;
-    RefreshNextTriggerTime();
-    auto startFunc = [this]() {
-        this->StartTimer();
-    };
-    std::thread startTimerThread(startFunc);
-    startTimerThread.detach();
     TIME_HILOGD(TIME_MODULE_SERVICE, "Ntp update triggertime: %{public}" PRId64 "", nextTriggerTime_);
 }
 
 void NtpUpdateTime::UpdateNITZSetTime()
 {
     auto BootTimeNano = steady_clock::now().time_since_epoch().count();
-    auto BootTimeMilli = BootTimeNano / NANO_TO_MILESECOND;
+    auto BootTimeMilli = BootTimeNano / NANO_TO_MILLISECOND;
     TIME_HILOGD(TIME_MODULE_SERVICE, "nitz time changed.");
     nitzUpdateTimeMili_ = BootTimeMilli;
 }
@@ -132,18 +139,52 @@ void NtpUpdateTime::SetSystemTime()
         TIME_HILOGD(TIME_MODULE_SERVICE, "Ntp update time failed");
         return;
     }
+    if (currentTime <= 0) {
+        TIME_HILOGD(TIME_MODULE_SERVICE, "current time invalid.");
+        return;
+    }
+    TIME_HILOGD(TIME_MODULE_SERVICE, "Ntp UTC Time: %{public}" PRId64 "", currentTime);
+    auto timeOffsetMs = DelayedSingleton<TimeZoneInfo>::GetInstance()->GetCurrentOffsetMs();
+    currentTime = currentTime + timeOffsetMs;
+    TIME_HILOGD(TIME_MODULE_SERVICE, "Ntp UTC+TIMEZONE tTime: %{public}" PRId64 "", currentTime);
     TimeService::GetInstance()->SetTime(currentTime);
     autoTimeInfo_.lastUpdateTime = currentTime;
     TIME_HILOGD(TIME_MODULE_SERVICE, "Ntp update currentTime: %{public}" PRId64 "", currentTime);
     TIME_HILOGD(TIME_MODULE_SERVICE, "end.");
 }
 
+bool NtpUpdateTime::ThreadSetSystemTime()
+{
+    TIME_HILOGD(TIME_MODULE_SERVICE, "start.");
+    if (!DelayedSingleton<NtpTrustedTime>::GetInstance()->ForceRefresh(autoTimeInfo_.NTP_SERVER)) {
+        TIME_HILOGE(TIME_MODULE_SERVICE, "get ntp time failed.");
+        return false;
+    }
+    int64_t currentTime = DelayedSingleton<NtpTrustedTime>::GetInstance()->CurrentTimeMillis();
+    if (currentTime == INVALID_TIMES) {
+        TIME_HILOGD(TIME_MODULE_SERVICE, "Ntp update time failed");
+        return false;
+    }
+    if (currentTime <= 0) {
+        TIME_HILOGD(TIME_MODULE_SERVICE, "current time invalid.");
+        return false;
+    }
+    TIME_HILOGD(TIME_MODULE_SERVICE, "Ntp UTC Time: %{public}" PRId64 "", currentTime);
+    auto timeOffsetMs = DelayedSingleton<TimeZoneInfo>::GetInstance()->GetCurrentOffsetMs();
+    currentTime = currentTime + timeOffsetMs;
+    TIME_HILOGD(TIME_MODULE_SERVICE, "Ntp UTC+TIMEZONE tTime: %{public}" PRId64 "", currentTime);
+    TimeService::GetInstance()->SetTime(currentTime);
+    autoTimeInfo_.lastUpdateTime = currentTime;
+    TIME_HILOGD(TIME_MODULE_SERVICE, "Ntp update currentTime: %{public}" PRId64 "", currentTime);
+    TIME_HILOGD(TIME_MODULE_SERVICE, "end.");
+    return true;
+}
+
 void NtpUpdateTime::RefreshNextTriggerTime()
 {
     auto BootTimeNano = steady_clock::now().time_since_epoch().count();
-    auto BootTimeMilli = BootTimeNano / NANO_TO_MILESECOND;
-    nextTriggerTime_ = BootTimeMilli + DAY_TO_MILLISECOND;
-    return;
+    auto BootTimeMilli = BootTimeNano / NANO_TO_MILLISECOND;
+    nextTriggerTime_ = BootTimeMilli +  DAY_TO_MILLISECOND;
 }
 
 void NtpUpdateTime::UpdateStatusOff()
@@ -181,7 +222,7 @@ bool NtpUpdateTime::CheckStatus()
 bool NtpUpdateTime::IsNITZTimeInvalid()
 {
     auto BootTimeNano = steady_clock::now().time_since_epoch().count();
-    auto BootTimeMilli = BootTimeNano / NANO_TO_MILESECOND;
+    auto BootTimeMilli = BootTimeNano / NANO_TO_MILLISECOND;
     return (BootTimeMilli - nitzUpdateTimeMili_) < DAY_TO_MILLISECOND;
 }
 
