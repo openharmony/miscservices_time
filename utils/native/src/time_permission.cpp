@@ -38,7 +38,7 @@ bool TimePermission::CheckSelfPermission(std::string permName)
 bool TimePermission::CheckCallingPermission(int32_t uid, std::string permName)
 {
     if ((uid == SYSTEM_UID) || (uid == TEST_UID)) {
-        TIME_HILOGD(TIME_MODULE_COMMON, "root uid return true");
+        TIME_HILOGD(TIME_MODULE_COMMON, "system uid return true");
         return true;
     }
     if (IsSystemUid(uid)) {
