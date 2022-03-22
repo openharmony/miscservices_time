@@ -444,6 +444,7 @@ int32_t TimeService::SetTimeZone(const std::string timeZoneId)
         TIME_HILOGE(TIME_MODULE_SERVICE, "Permission check failed, uid : %{public}d", uid);
         return E_TIME_NO_PERMISSION;
     }
+
     if (!DelayedSingleton<TimeZoneInfo>::GetInstance()->SetTimezone(timeZoneId)) {
         TIME_HILOGE(TIME_MODULE_SERVICE, "Set timezone failed :%{public}s", timeZoneId.c_str());
         return E_TIME_DEAL_FAILED;
