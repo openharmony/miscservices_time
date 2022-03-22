@@ -15,6 +15,7 @@
 #ifndef TIME_PERMISSION_H
 #define TIME_PERMISSION_H
 
+#include <cstdint>
 #include <mutex>
 #include <string>
 #include <singleton.h>
@@ -35,7 +36,7 @@ public:
 
 private:
     sptr<AppExecFwk::IBundleMgr> GetBundleManager();
-
+    bool IsSystemUid(const int32_t &uid) const;
     static sptr<AppExecFwk::IBundleMgr> bundleMgrProxy_;
 };
 } // namespace MiscServices

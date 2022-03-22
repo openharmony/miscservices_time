@@ -204,8 +204,9 @@ napi_value ParseParametersBySetTimezone(const napi_env &env, const napi_value (&
     char timeZoneChars[MAX_TIME_ZONE_ID];
     size_t copied;
     napi_get_value_string_utf8(env, argv[0], timeZoneChars, MAX_TIME_ZONE_ID - 1, &copied);
-    NAPI_ASSERT(env, copied == 0, "Wrong argument timezone. timezoneid length >0 expected.");
-    timezoneId.assign(timeZoneChars, copied);
+    TIME_HILOGD(TIME_MODULE_JNI, "timezone str: %{public}s", timeZoneChars);
+
+    timezoneId = std::string(timeZoneChars);
 
     // argv[1]:callback
     if (argc >= SET_TIMEZONE_MAX_PARA) {

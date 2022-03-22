@@ -13,13 +13,17 @@
  * limitations under the License.
  */
 
-#include "permission/permission_kit.h"
+#include "ipc_skeleton.h"
+#include "accesstoken_kit.h"
 #include "time_permission.h"
 
 namespace OHOS {
 namespace MiscServices {
 namespace {
-static const int UID_TO_USERID = 100000;
+constexpr int32_t SYSTEM_UID = 1000;
+constexpr int32_t TEST_UID = 0;
+constexpr int32_t MIN_SYSTEM_UID = 2100;
+constexpr int32_t MAX_SYSTEM_UID = 2899;
 }
 sptr<AppExecFwk::IBundleMgr> TimePermission::bundleMgrProxy_;
 
@@ -33,26 +37,20 @@ bool TimePermission::CheckSelfPermission(std::string permName)
 
 bool TimePermission::CheckCallingPermission(int32_t uid, std::string permName)
 {
-    if (bundleMgrProxy_ == nullptr) {
-        bundleMgrProxy_ = GetBundleManager();
-        TIME_HILOGI(TIME_MODULE_COMMON, "get bundle mgr");
+    if ((uid == SYSTEM_UID) || (uid == TEST_UID)) {
+        TIME_HILOGD(TIME_MODULE_COMMON, "system uid return true");
+        return true;
     }
-
-    if (bundleMgrProxy_ == nullptr) {
-        TIME_HILOGE(TIME_MODULE_COMMON, "redo get bundle mgr failed");
+    if (IsSystemUid(uid)) {
+        TIME_HILOGD(TIME_MODULE_COMMON, "system uid 2100 ~ 2899");
+        return true;
+    }
+    auto callingToken = IPCSkeleton::GetCallingTokenID();
+    auto result = Security::AccessToken::AccessTokenKit::VerifyAccessToken(callingToken, permName);
+    if (result == Security::AccessToken::TypePermissionState::PERMISSION_DENIED) {
         return false;
     }
-    std::string bundleName;
-    auto ret = bundleMgrProxy_->GetBundleNameForUid(uid, bundleName);
-    if (!ret) {
-        TIME_HILOGE(TIME_MODULE_COMMON, "get bundle name failed");
-        // always true
-        return false;
-    }
-    auto userId = uid / UID_TO_USERID;
-    TIME_HILOGI(TIME_MODULE_COMMON, "VerifyPermission bundleName: %{public}s, permission: %{public}s",
-        bundleName.c_str(), permName.c_str());
-    return OHOS::Security::Permission::PermissionKit::VerifyPermission(bundleName, permName, userId);
+    return true;
 }
 
 sptr<AppExecFwk::IBundleMgr> TimePermission::GetBundleManager()
@@ -67,6 +65,17 @@ sptr<AppExecFwk::IBundleMgr> TimePermission::GetBundleManager()
         }
     }
     return bundleMgrProxy_;
+}
+
+bool TimePermission::IsSystemUid(const int32_t &uid) const
+{
+    TIME_HILOGE(TIME_MODULE_COMMON, "enter");
+
+    if (uid >= MIN_SYSTEM_UID && uid <= MAX_SYSTEM_UID) {
+        return true;
+    }
+
+    return false;
 }
 } // namespace MiscServices
 } // namespace OHOS
