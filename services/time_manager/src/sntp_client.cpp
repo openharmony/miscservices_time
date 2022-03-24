@@ -44,7 +44,7 @@ namespace {
     constexpr int INDEX_TWO = 2;
     constexpr int INDEX_THREE = 3;
     constexpr int INDEX_FOUR = 4;
-    constexpr int TIME_OUT = 10;
+    constexpr int TIME_OUT = 5;
     constexpr unsigned char MODE_THREE = 3;
     constexpr unsigned char VERSION_THREE = 3;
     constexpr double TEN_TO_MINUS_SIX_POWER = 1.0e-6;

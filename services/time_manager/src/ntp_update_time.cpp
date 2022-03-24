@@ -34,13 +34,13 @@ namespace MiscServices {
 namespace {
 constexpr uint64_t NANO_TO_MILLISECOND = 1000000;
 constexpr uint64_t DAY_TO_MILLISECOND = 86400000;
-constexpr uint64_t MINUTES_TO_SECOND = 60;
+constexpr uint64_t MINUTES_TO_SECOND = 20;
 const std::string AUTOTIME_FILE_PATH = "/data/misc/zoneinfo/autotime.json";
 const std::string NETWORK_TIME_STATUS_ON = "ON";
 const std::string NETWORK_TIME_STATUS_OFF = "OFF";
 const std::string NTP_CN_SERVER = "ntp.aliyun.com";
 const int64_t INVALID_TIMES = -1;
-const int MAX_RETRY = 10;
+const int MAX_RETRY = 30;
 }
 
 NtpUpdateTime::NtpUpdateTime() {};
