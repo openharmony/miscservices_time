@@ -91,7 +91,6 @@ void TimerCallback::NotifyTimer(const uint64_t timerId)
 
         if (it->second->wantAgent != nullptr) {
             TIME_HILOGD(TIME_MODULE_SERVICE, "trigger wantagent.");
-            std::shared_ptr<AppExecFwk::Context> context = std::make_shared<OHOS::AppExecFwk::AbilityContext>();
             std::shared_ptr<AAFwk::Want> want =
                 OHOS::AbilityRuntime::WantAgent::WantAgentHelper::GetWant(it->second->wantAgent);
             OHOS::AbilityRuntime::WantAgent::TriggerInfo paramsInfo("", nullptr, want, WANTAGENT_CODE_ELEVEN);
