@@ -179,9 +179,7 @@ void TimerManager::SetHandler(uint64_t id,
     } else if (intervalDuration > MAX_INTERVAL) {
         intervalDuration = MAX_INTERVAL;
     }
-    if (triggerAtTime < 0) {
-        triggerAtTime = 0;
-    }
+
     auto nowElapsed = steady_clock::now();
     auto nominalTrigger = ConvertToElapsed(milliseconds(triggerAtTime), type);
     auto minTrigger =  (IsSystemUid(uid)) ? (nowElapsed + ZERO_FUTURITY) : (nowElapsed + MIN_FUTURITY);

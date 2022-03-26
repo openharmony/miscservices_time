@@ -45,9 +45,13 @@ napi_value TimeNapiGetNull(napi_env env)
     return result;
 }
 
-void TimeSetPromise(const napi_env &env, const napi_deferred &deferred, const napi_value &result)
+void TimeSetPromise(const napi_env &env, const napi_deferred &deferred, const int &errorCode, const napi_value &result)
 {
-    napi_resolve_deferred(env, deferred, result);
+    if (errorCode == NO_ERROR) {
+        NAPI_CALL_RETURN_VOID(env, napi_resolve_deferred(env, deferred, result));
+        return;
+    }
+    NAPI_CALL_RETURN_VOID(env, napi_reject_deferred(env, deferred, result));
 }
 
 void TimeSetCallback(const napi_env &env, const napi_ref &callbackIn, const int &errorCode, const napi_value &result)
@@ -69,7 +73,7 @@ void TimeReturnCallbackPromise(const napi_env &env, const TimeCallbackPromiseInf
     if (info.isCallback) {
         TimeSetCallback(env, info.callback, info.errorCode, result);
     } else {
-        TimeSetPromise(env, info.deferred, result);
+        TimeSetPromise(env, info.deferred, info.errorCode, result);
     }
 }
 
@@ -81,7 +85,7 @@ napi_value TimeJSParaError(const napi_env &env, const napi_ref &callback)
         napi_value promise = nullptr;
         napi_deferred deferred = nullptr;
         napi_create_promise(env, &deferred, &promise);
-        TimeSetPromise(env, deferred, TimeNapiGetNull(env));
+        TimeSetPromise(env, deferred, ERROR, TimeNapiGetNull(env));
         return promise;
     }
 }

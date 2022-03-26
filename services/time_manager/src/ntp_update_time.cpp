@@ -26,24 +26,27 @@
 #include "time_service.h"
 #include "nitz_subscriber.h"
 #include "time_zone_info.h"
+#include "net_conn_callback_observer.h"
+#include "net_specifier.h"
+#include "net_conn_client.h"
 #include "ntp_update_time.h"
 
 using namespace std::chrono;
+using namespace OHOS::NetManagerStandard;
+
 namespace OHOS {
 namespace MiscServices {
 namespace {
 constexpr uint64_t NANO_TO_MILLISECOND = 1000000;
 constexpr uint64_t DAY_TO_MILLISECOND = 86400000;
-constexpr uint64_t MINUTES_TO_SECOND = 20;
 const std::string AUTOTIME_FILE_PATH = "/data/misc/zoneinfo/autotime.json";
 const std::string NETWORK_TIME_STATUS_ON = "ON";
 const std::string NETWORK_TIME_STATUS_OFF = "OFF";
 const std::string NTP_CN_SERVER = "ntp.aliyun.com";
 const int64_t INVALID_TIMES = -1;
-const int MAX_RETRY = 30;
 }
 
-NtpUpdateTime::NtpUpdateTime() {};
+NtpUpdateTime::NtpUpdateTime() : nitzUpdateTimeMili_(0) {};
 NtpUpdateTime::~NtpUpdateTime() {};
 
 void NtpUpdateTime::Init()
@@ -63,19 +66,15 @@ void NtpUpdateTime::Init()
             return;
         }
     }
-    if (autoTimeInfo_.status == NETWORK_TIME_STATUS_ON) {
-        std::thread([this] {
-            for (int i = 0; i < MAX_RETRY; i++) {
-                if (!this->ThreadSetSystemTime()) {
-                    TIME_HILOGE(TIME_MODULE_SERVICE, "thread set ntp time failed, retry");
-                    std::this_thread::sleep_for(seconds(MINUTES_TO_SECOND));
-                } else {
-                    TIME_HILOGD(TIME_MODULE_SERVICE, "thread set ntp time success");
-                    break;
-                }
-            }
-        }).detach();
-    }
+    // observer net connection
+    NetSpecifier netSpecifier;
+    NetAllCapabilities netAllCapabilities;
+    netAllCapabilities.netCaps_.insert(NetManagerStandard::NetCap::NET_CAPABILITY_INTERNET);
+    netSpecifier.ident_ = "wifi";
+    netSpecifier.netCapabilities_ = netAllCapabilities;
+    sptr<NetSpecifier> specifier = new NetSpecifier(netSpecifier);
+    sptr<NetConnCallbackObserver> observer = new NetConnCallbackObserver;
+    DelayedSingleton<NetConnClient>::GetInstance()->RegisterNetConnCallback(specifier, observer, 0);
 
     int32_t timerType = ITimerManager::TimerType::ELAPSED_REALTIME;
     auto callback = [this](uint64_t id) {
@@ -110,10 +109,7 @@ void NtpUpdateTime::RefreshNetworkTimeByTimer(const uint64_t timerId)
         TIME_HILOGD(TIME_MODULE_SERVICE, "Network time status off.");
         return;
     }
-    if (IsNITZTimeInvalid()) {
-        TIME_HILOGD(TIME_MODULE_SERVICE, "NITZ Time is valid.");
-        return;
-    }
+
     SetSystemTime();
     SaveAutoTimeInfoToFile(autoTimeInfo_);
     TIME_HILOGD(TIME_MODULE_SERVICE, "Ntp update triggertime: %{public}" PRId64 "", nextTriggerTime_);
@@ -130,6 +126,10 @@ void NtpUpdateTime::UpdateNITZSetTime()
 void NtpUpdateTime::SetSystemTime()
 {
     TIME_HILOGD(TIME_MODULE_SERVICE, "start.");
+    if (IsNITZTimeInvalid()) {
+        TIME_HILOGD(TIME_MODULE_SERVICE, "NITZ Time is valid.");
+        return;
+    }
     if (!DelayedSingleton<NtpTrustedTime>::GetInstance()->ForceRefresh(autoTimeInfo_.NTP_SERVER)) {
         TIME_HILOGE(TIME_MODULE_SERVICE, "get ntp time failed.");
         return;
@@ -147,37 +147,11 @@ void NtpUpdateTime::SetSystemTime()
     auto timeOffsetMs = DelayedSingleton<TimeZoneInfo>::GetInstance()->GetCurrentOffsetMs();
     currentTime = currentTime + timeOffsetMs;
     TIME_HILOGD(TIME_MODULE_SERVICE, "Ntp UTC+TIMEZONE tTime: %{public}" PRId64 "", currentTime);
-    TimeService::GetInstance()->SetTime(currentTime);
-    autoTimeInfo_.lastUpdateTime = currentTime;
-    TIME_HILOGD(TIME_MODULE_SERVICE, "Ntp update currentTime: %{public}" PRId64 "", currentTime);
-    TIME_HILOGD(TIME_MODULE_SERVICE, "end.");
-}
 
-bool NtpUpdateTime::ThreadSetSystemTime()
-{
-    TIME_HILOGD(TIME_MODULE_SERVICE, "start.");
-    if (!DelayedSingleton<NtpTrustedTime>::GetInstance()->ForceRefresh(autoTimeInfo_.NTP_SERVER)) {
-        TIME_HILOGE(TIME_MODULE_SERVICE, "get ntp time failed.");
-        return false;
-    }
-    int64_t currentTime = DelayedSingleton<NtpTrustedTime>::GetInstance()->CurrentTimeMillis();
-    if (currentTime == INVALID_TIMES) {
-        TIME_HILOGD(TIME_MODULE_SERVICE, "Ntp update time failed");
-        return false;
-    }
-    if (currentTime <= 0) {
-        TIME_HILOGD(TIME_MODULE_SERVICE, "current time invalid.");
-        return false;
-    }
-    TIME_HILOGD(TIME_MODULE_SERVICE, "Ntp UTC Time: %{public}" PRId64 "", currentTime);
-    auto timeOffsetMs = DelayedSingleton<TimeZoneInfo>::GetInstance()->GetCurrentOffsetMs();
-    currentTime = currentTime + timeOffsetMs;
-    TIME_HILOGD(TIME_MODULE_SERVICE, "Ntp UTC+TIMEZONE tTime: %{public}" PRId64 "", currentTime);
     TimeService::GetInstance()->SetTime(currentTime);
     autoTimeInfo_.lastUpdateTime = currentTime;
     TIME_HILOGD(TIME_MODULE_SERVICE, "Ntp update currentTime: %{public}" PRId64 "", currentTime);
     TIME_HILOGD(TIME_MODULE_SERVICE, "end.");
-    return true;
 }
 
 void NtpUpdateTime::RefreshNextTriggerTime()
@@ -221,6 +195,9 @@ bool NtpUpdateTime::CheckStatus()
 
 bool NtpUpdateTime::IsNITZTimeInvalid()
 {
+    if (nitzUpdateTimeMili_ == 0) {
+        return false;
+    }
     auto BootTimeNano = steady_clock::now().time_since_epoch().count();
     auto BootTimeMilli = BootTimeNano / NANO_TO_MILLISECOND;
     return (BootTimeMilli - nitzUpdateTimeMili_) < DAY_TO_MILLISECOND;
