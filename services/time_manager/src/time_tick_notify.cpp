@@ -73,7 +73,7 @@ void TimeTickNotify::RefreshNextTriggerTime()
     struct tm *tblock = localtime(&t);
     TIME_HILOGI(TIME_MODULE_SERVICE, "Time now: %{public}s", asctime(tblock));
     auto UTCTimeMicro = duration_cast<microseconds>(system_clock::now().time_since_epoch()).count();
-    TIME_HILOGD(TIME_MODULE_SERVICE, "Time Now Mirc: %{public}" PRId64 "", UTCTimeMicro);
+    TIME_HILOGD(TIME_MODULE_SERVICE, "Time Now Mirc: %{public}lld", UTCTimeMicro);
     auto timeMilliseconds = GetMillisecondsFromUTC(UTCTimeMicro);
     nextTriggerTime_ = MINUTE_TO_MILLISECOND - timeMilliseconds;
 }
