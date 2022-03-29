@@ -21,7 +21,7 @@ namespace OHOS {
 namespace MiscServices {
 namespace {
 constexpr int32_t SYSTEM_UID = 1000;
-constexpr int32_t TEST_UID = 0;
+constexpr int32_t ROOT_UID = 0;
 constexpr int32_t MIN_SYSTEM_UID = 2100;
 constexpr int32_t MAX_SYSTEM_UID = 2899;
 }
@@ -37,8 +37,8 @@ bool TimePermission::CheckSelfPermission(std::string permName)
 
 bool TimePermission::CheckCallingPermission(int32_t uid, std::string permName)
 {
-    if ((uid == SYSTEM_UID) || (uid == TEST_UID)) {
-        TIME_HILOGD(TIME_MODULE_COMMON, "system uid return true");
+    if ((uid == SYSTEM_UID) || (uid == ROOT_UID)) {
+        TIME_HILOGD(TIME_MODULE_COMMON, "root uid return true");
         return true;
     }
     if (IsSystemUid(uid)) {
@@ -46,7 +46,13 @@ bool TimePermission::CheckCallingPermission(int32_t uid, std::string permName)
         return true;
     }
     auto callingToken = IPCSkeleton::GetCallingTokenID();
-    auto result = Security::AccessToken::AccessTokenKit::VerifyAccessToken(callingToken, permName);
+    
+    auto tokenType = Security::AccessToken::AccessTokenKit::GetTokenTypeFlag(callingToken);
+    if (tokenType == Security::AccessToken::ATokenTypeEnum::TOKEN_NATIVE) {
+        TIME_HILOGD(TIME_MODULE_COMMON, "native token.");
+        return true;
+    }
+	auto result = Security::AccessToken::AccessTokenKit::VerifyAccessToken(callingToken, permName);
     if (result == Security::AccessToken::TypePermissionState::PERMISSION_DENIED) {
         return false;
     }
