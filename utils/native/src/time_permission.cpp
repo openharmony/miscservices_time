@@ -52,7 +52,7 @@ bool TimePermission::CheckCallingPermission(int32_t uid, std::string permName)
         TIME_HILOGD(TIME_MODULE_COMMON, "native token.");
         return true;
     }
-	auto result = Security::AccessToken::AccessTokenKit::VerifyAccessToken(callingToken, permName);
+    auto result = Security::AccessToken::AccessTokenKit::VerifyAccessToken(callingToken, permName);
     if (result == Security::AccessToken::TypePermissionState::PERMISSION_DENIED) {
         return false;
     }
