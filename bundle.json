@@ -13,7 +13,7 @@
     "name": "time_native",
     "subsystem": "miscservices",
     "syscap": [
-      "SystemCapability.MiscServices.Time"
+      "SystemCapability.Miscservices.Time"
     ],
     "features": [
     ],

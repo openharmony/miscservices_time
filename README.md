@@ -1,4 +1,4 @@
-# Timing and Time<a name="EN-US_TOPIC_0000001115554184"></a>
+﻿# Timing and Time<a name="EN-US_TOPIC_0000001115554184"></a>
 
 -   [Introduction](#section11660541593)
 -   [Directory Structure](#section161941989596)
@@ -27,6 +27,7 @@ The timing and time module provides APIs for managing the system time.
 ├── profile                  # System service configuration files
 └── services                 # Service implementation
 ```
+
 
 ## Usage<a name="section38521239153117"></a>
 
