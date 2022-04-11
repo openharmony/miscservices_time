@@ -179,11 +179,13 @@ void TimerManager::SetHandler(uint64_t id,
     } else if (intervalDuration > MAX_INTERVAL) {
         intervalDuration = MAX_INTERVAL;
     }
-    if (triggerAtTime < 0) {
-        triggerAtTime = 0;
-    }
+
     auto nowElapsed = steady_clock::now();
     auto nominalTrigger = ConvertToElapsed(milliseconds(triggerAtTime), type);
+    if (nominalTrigger < nowElapsed) {
+        TIME_HILOGI(TIME_MODULE_SERVICE, "invalid trigger time end.");
+        return;
+    }
     auto minTrigger =  (IsSystemUid(uid)) ? (nowElapsed + ZERO_FUTURITY) : (nowElapsed + MIN_FUTURITY);
     auto triggerElapsed = (nominalTrigger > minTrigger) ? nominalTrigger : minTrigger;
 
@@ -304,6 +306,10 @@ void TimerManager::ReAddTimerLocked(std::shared_ptr<TimerInfo> timer,
     TIME_HILOGI(TIME_MODULE_SERVICE, "start");
     timer->when = timer->origWhen;
     auto whenElapsed = ConvertToElapsed(timer->when, timer->type);
+    if (whenElapsed < nowElapsed) {
+        TIME_HILOGI(TIME_MODULE_SERVICE, "invalid timer end.");
+        return;
+    }
     steady_clock::time_point maxElapsed;
     if (timer->windowLength == milliseconds::zero()) {
         maxElapsed = whenElapsed;
@@ -321,10 +327,16 @@ std::chrono::steady_clock::time_point TimerManager::ConvertToElapsed(std::chrono
 {
     TIME_HILOGI(TIME_MODULE_SERVICE, "start");
     if (type == RTC || type == RTC_WAKEUP) {
-        auto offset = when - system_clock::now().time_since_epoch();
+        auto systemTimeNow = system_clock::now().time_since_epoch();
+        auto offset = when - systemTimeNow;
+        TIME_HILOGI(TIME_MODULE_SERVICE, "systemTimeNow : %{public}lld", systemTimeNow.count());
+        TIME_HILOGI(TIME_MODULE_SERVICE, "offset : %{public}lld", offset.count());
         return steady_clock::now() + offset;
     }
-    auto offset = when - steady_clock::now().time_since_epoch();
+    auto bootTimeNow = steady_clock::now().time_since_epoch();
+    auto offset = when - bootTimeNow;
+    TIME_HILOGI(TIME_MODULE_SERVICE, "bootTimeNow : %{public}lld", bootTimeNow.count());
+    TIME_HILOGI(TIME_MODULE_SERVICE, "offset : %{public}lld", offset.count());
     TIME_HILOGI(TIME_MODULE_SERVICE, "end");
     return steady_clock::now() + offset;
 }
@@ -441,9 +453,17 @@ void TimerManager::RescheduleKernelTimerLocked()
         auto firstWakeup = FindFirstWakeupBatchLocked();
         auto firstBatch = alarmBatches_.front();
         if (firstWakeup != nullptr) {
+            auto alarmPtr = firstWakeup->Get(0);
+            if (alarmPtr != nullptr) {
+                TIME_HILOGI(TIME_MODULE_SERVICE, "wake up alarm id :%{public}" PRId64 "", alarmPtr->id);
+            }
             SetLocked(ELAPSED_REALTIME_WAKEUP, firstWakeup->GetStart().time_since_epoch());
         }
         if (firstBatch != firstWakeup) {
+            auto alarmPtr = firstBatch->Get(0);
+            if (alarmPtr != nullptr) {
+                TIME_HILOGI(TIME_MODULE_SERVICE, "nonwakeup alarm id :%{public}" PRId64 "", alarmPtr->id);
+            }
             nextNonWakeup = firstBatch->GetStart();
         }
     }

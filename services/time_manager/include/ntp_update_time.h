@@ -34,15 +34,15 @@ public:
     void UpdateStatusOff();
     void UpdateStatusOn();
     void UpdateNITZSetTime();
+    void SetSystemTime();
     void Stop();
     void Init();
 private:
     bool GetAutoTimeInfoFromFile(autoTimeInfo &info);
     bool SaveAutoTimeInfoToFile(autoTimeInfo &info);
     void SubscriberNITZTimeChangeCommonEvent();
-    void StartTimer();
-    void SetSystemTime();
     bool ThreadSetSystemTime();
+    void StartTimer();
     void RefreshNextTriggerTime();
     bool CheckStatus();
     bool IsNITZTimeInvalid();
