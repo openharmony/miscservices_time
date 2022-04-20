@@ -19,7 +19,7 @@ config("module_private_config") {
   include_dirs = [
     "//base/miscservices/time/interfaces/innerkits/include",
     "unittest/include",
-    "//foundation/ace/napi/interfaces/kits/napi",
+    "//foundation/arkui/napi/interfaces/kits/napi",
   ]
 }
 

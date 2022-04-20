@@ -35,7 +35,7 @@ ohos_shared_library("systemtimer") {
   include_dirs = [
     "//base/miscservices/time/interfaces/innerkits/include",
     "./include",
-    "//foundation/ace/napi/interfaces/kits/napi",
+    "//foundation/arkui/napi/interfaces/kits/napi",
     "//third_party/node/src",
     "//third_party/libuv/include",
   ]
@@ -53,7 +53,7 @@ ohos_shared_library("systemtimer") {
     "//foundation/aafwk/standard/frameworks/kits/ability/native:abilitykit_native",
     "//foundation/aafwk/standard/interfaces/innerkits/base:base",
     "//foundation/aafwk/standard/interfaces/innerkits/want:want",
-    "//foundation/ace/napi:ace_napi",
+    "//foundation/arkui/napi:ace_napi",
     "//third_party/libuv:uv_static",
   ]
 
