@@ -23,8 +23,8 @@ config("time_service_config") {
     "//utils/system/safwk/native/include",
     "//third_party/json/include",
     "//base/hiviewdfx/hilog/interfaces/native/innerkits/include",
-    "//foundation/distributeddatamgr/appdatamgr/interfaces/innerkits/native_rdb/include/",
-    "//foundation/distributeddatamgr/appdatamgr/interfaces/innerkits/native_appdatafwk/include/",
+    "//foundation/distributeddatamgr/appdatamgr/interfaces/inner_api/native/rdb/include/",
+    "//foundation/distributeddatamgr/appdatamgr/interfaces/inner_api/native/appdatafwk/include/",
   ]
 }
 
