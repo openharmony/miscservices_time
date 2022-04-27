@@ -46,10 +46,10 @@ bool TimePermission::CheckCallingPermission(int32_t uid, std::string permName)
         return true;
     }
     auto callingToken = IPCSkeleton::GetCallingTokenID();
-    
+
     auto tokenType = Security::AccessToken::AccessTokenKit::GetTokenTypeFlag(callingToken);
     if (tokenType == Security::AccessToken::ATokenTypeEnum::TOKEN_NATIVE) {
-        TIME_HILOGD(TIME_MODULE_COMMON, "native token.");
+        TIME_HILOGD(TIME_MODULE_COMMON, "native taskId.");
         return true;
     }
     auto result = Security::AccessToken::AccessTokenKit::VerifyAccessToken(callingToken, permName);
