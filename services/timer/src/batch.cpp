@@ -124,7 +124,7 @@ bool Batch::HasPackage(const std::string &package_name)
 
 bool Batch::HasWakeups() const
 {
-    return std::any_of(alarms_.begin(), alarms_.begin(),
+    return std::any_of(alarms_.begin(), alarms_.end(),
         [] (const std::shared_ptr<TimerInfo> &item) {
             return (static_cast<uint32_t>(item->type) & TYPE_NONWAKEUP_MASK) == 0;
         });
