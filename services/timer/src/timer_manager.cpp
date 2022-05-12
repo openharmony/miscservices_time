@@ -156,12 +156,12 @@ bool TimerManager::IsSystemUid(int uid)
 {
     auto systemAbilityManager = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
     if (systemAbilityManager == nullptr) {
-        std::cout << "GetBundleMgr GetSystemAbilityManager is null";
+        std::cout << "GetSystemAbilityManager is null";
         return false;
     }
     auto bundleMgrSa = systemAbilityManager->GetSystemAbility(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID);
     if (bundleMgrSa == nullptr) {
-        std::cout << "[fuzz] GetBundleMgr GetSystemAbility is null";
+        std::cout << "GetBundleMgr GetSystemAbility is null";
         return false;
     }
     return iface_cast<IBundleMgr>(bundleMgrSa)->CheckIsSystemAppByUid(uid);
