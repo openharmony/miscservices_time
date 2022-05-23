@@ -339,7 +339,7 @@ napi_value JSSystemTimeGetCurrentTime(napi_env env, napi_callback_info info)
         },
         [](napi_env env, napi_status status, void* data) {
             AsyncContext* asyncContext = (AsyncContext*)data;
-            if(asyncContext == nullptr) {
+            if (asyncContext == nullptr) {
                 return;
             }
             if (asyncContext->time < 0) {

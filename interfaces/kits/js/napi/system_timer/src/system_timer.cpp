@@ -488,7 +488,7 @@ napi_value StartTimer(napi_env env, napi_callback_info info)
         [](napi_env env, napi_status status, void *data) {
             AsyncCallbackInfoStart *asynccallbackinfo = (AsyncCallbackInfoStart *)data;
 
-            if(asynccallbackinfo == nullptr) {
+            if (asynccallbackinfo == nullptr) {
                 return;
             }
             if (!asynccallbackinfo->isOK) {
@@ -704,7 +704,7 @@ napi_value DestroyTimer(napi_env env, napi_callback_info info)
         },
         [](napi_env env, napi_status status, void *data) {
             AsyncCallbackInfoDestroy *asynccallbackinfo = (AsyncCallbackInfoDestroy *)data;
-            if(asynccallbackinfo == nullptr) {
+            if (asynccallbackinfo == nullptr) {
                 return;
             }
 
