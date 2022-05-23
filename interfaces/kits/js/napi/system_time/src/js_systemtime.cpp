@@ -339,6 +339,9 @@ napi_value JSSystemTimeGetCurrentTime(napi_env env, napi_callback_info info)
         },
         [](napi_env env, napi_status status, void* data) {
             AsyncContext* asyncContext = (AsyncContext*)data;
+            if(asyncContext == nullptr) {
+                return;
+            }
             if (asyncContext->time < 0) {
             }
             TimeCallbackPromiseInfo info;
@@ -350,10 +353,9 @@ napi_value JSSystemTimeGetCurrentTime(napi_env env, napi_callback_info info)
             napi_create_int64(env, asyncContext->time, &result);
             TimeReturnCallbackPromise(env, info, result);
             napi_delete_async_work(env, asyncContext->work);
-            if (asyncContext) {
-                delete asyncContext;
-                asyncContext = nullptr;
-            }
+
+            delete asyncContext;
+            asyncContext = nullptr;
         },
         (void*)asyncContext,
         &asyncContext->work);
@@ -571,6 +573,9 @@ napi_value JSSystemTimeGetTimeZone(napi_env env, napi_callback_info info)
         },
         [](napi_env env, napi_status status, void* data) {
             AsyncContext* asyncContext = (AsyncContext*)data;
+            if (asyncContext == nullptr) {
+                return;
+            }
             if (asyncContext->timeZone == "") {
                 asyncContext->errorCode = ERROR;
             }
@@ -583,10 +588,9 @@ napi_value JSSystemTimeGetTimeZone(napi_env env, napi_callback_info info)
             napi_create_string_utf8(env, asyncContext->timeZone.c_str(), asyncContext->timeZone.length(), &result);
             TimeReturnCallbackPromise(env, info, result);
             napi_delete_async_work(env, asyncContext->work);
-            if (asyncContext) {
-                delete asyncContext;
-                asyncContext = nullptr;
-            }
+            
+            delete asyncContext;
+            asyncContext = nullptr;
         },
         (void*)asyncContext,
         &asyncContext->work);

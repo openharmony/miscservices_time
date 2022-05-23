@@ -488,6 +488,9 @@ napi_value StartTimer(napi_env env, napi_callback_info info)
         [](napi_env env, napi_status status, void *data) {
             AsyncCallbackInfoStart *asynccallbackinfo = (AsyncCallbackInfoStart *)data;
 
+            if(asynccallbackinfo == nullptr) {
+                return;
+            }
             if (!asynccallbackinfo->isOK) {
                 asynccallbackinfo->errorCode = ERROR;
             }
@@ -503,10 +506,9 @@ napi_value StartTimer(napi_env env, napi_callback_info info)
             ReturnCallbackPromise(env, info, result);
 
             napi_delete_async_work(env, asynccallbackinfo->asyncWork);
-            if (asynccallbackinfo) {
-                delete asynccallbackinfo;
-                asynccallbackinfo = nullptr;
-            }
+
+            delete asynccallbackinfo;
+            asynccallbackinfo = nullptr;
         },
         (void *)asynccallbackinfo,
         &asynccallbackinfo->asyncWork);
@@ -702,6 +704,9 @@ napi_value DestroyTimer(napi_env env, napi_callback_info info)
         },
         [](napi_env env, napi_status status, void *data) {
             AsyncCallbackInfoDestroy *asynccallbackinfo = (AsyncCallbackInfoDestroy *)data;
+            if(asynccallbackinfo == nullptr) {
+                return;
+            }
 
             if (asynccallbackinfo->isOK) {
                 for (auto it = asyncCallbackInfoCreateInfo.begin(); it != asyncCallbackInfoCreateInfo.end(); it++) {
@@ -726,10 +731,9 @@ napi_value DestroyTimer(napi_env env, napi_callback_info info)
             ReturnCallbackPromise(env, info, result);
 
             napi_delete_async_work(env, asynccallbackinfo->asyncWork);
-            if (asynccallbackinfo) {
-                delete asynccallbackinfo;
-                asynccallbackinfo = nullptr;
-            }
+
+            delete asynccallbackinfo;
+            asynccallbackinfo = nullptr;
         },
         (void *)asynccallbackinfo,
         &asynccallbackinfo->asyncWork);
