@@ -268,7 +268,6 @@ napi_value JSSystemTimeSetTimeZone(napi_env env, napi_callback_info info)
             napi_delete_async_work(env, asyncContext->work);
             delete asyncContext;
             asyncContext = nullptr;
-            }
         },
         (void*)asyncContext,
         &asyncContext->work);
@@ -357,7 +356,6 @@ napi_value JSSystemTimeGetCurrentTime(napi_env env, napi_callback_info info)
             napi_create_int64(env, asyncContext->time, &result);
             TimeReturnCallbackPromise(env, info, result);
             napi_delete_async_work(env, asyncContext->work);
-
             delete asyncContext;
             asyncContext = nullptr;
         },
@@ -421,7 +419,6 @@ napi_value JSSystemTimeGetRealActiveTime(napi_env env, napi_callback_info info)
             napi_delete_async_work(env, asyncContext->work);
             delete asyncContext;
             asyncContext = nullptr;
-            }
         },
         (void*)asyncContext,
         &asyncContext->work);
@@ -483,7 +480,6 @@ napi_value JSSystemTimeGetRealTime(napi_env env, napi_callback_info info)
             napi_delete_async_work(env, asyncContext->work);
             delete asyncContext;
             asyncContext = nullptr;
-            }
         },
         (void*)asyncContext,
         &asyncContext->work);
@@ -543,7 +539,6 @@ napi_value JSSystemTimeGetDate(napi_env env, napi_callback_info info)
             napi_delete_async_work(env, asyncContext->work);
             delete asyncContext;
             asyncContext = nullptr;
-            }
         },
         (void*)asyncContext,
         &asyncContext->work);
@@ -598,7 +593,6 @@ napi_value JSSystemTimeGetTimeZone(napi_env env, napi_callback_info info)
             napi_create_string_utf8(env, asyncContext->timeZone.c_str(), asyncContext->timeZone.length(), &result);
             TimeReturnCallbackPromise(env, info, result);
             napi_delete_async_work(env, asyncContext->work);
-            
             delete asyncContext;
             asyncContext = nullptr;
         },
