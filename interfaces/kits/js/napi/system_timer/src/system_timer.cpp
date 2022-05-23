@@ -506,7 +506,6 @@ napi_value StartTimer(napi_env env, napi_callback_info info)
             ReturnCallbackPromise(env, info, result);
 
             napi_delete_async_work(env, asynccallbackinfo->asyncWork);
-
             delete asynccallbackinfo;
             asynccallbackinfo = nullptr;
         },
@@ -620,7 +619,6 @@ napi_value StopTimer(napi_env env, napi_callback_info info)
             napi_delete_async_work(env, asynccallbackinfo->asyncWork);
             delete asynccallbackinfo;
             asynccallbackinfo = nullptr;
-            }
         },
         (void *)asynccallbackinfo,
         &asynccallbackinfo->asyncWork);
@@ -733,7 +731,6 @@ napi_value DestroyTimer(napi_env env, napi_callback_info info)
             ReturnCallbackPromise(env, info, result);
 
             napi_delete_async_work(env, asynccallbackinfo->asyncWork);
-
             delete asynccallbackinfo;
             asynccallbackinfo = nullptr;
         },
