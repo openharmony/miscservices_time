@@ -91,13 +91,12 @@ void NtpUpdateTime::Init()
     RefreshNextTriggerTime();
     TIME_HILOGD(TIME_MODULE_SERVICE, "Ntp update triggertime: %{public}" PRId64 "", nextTriggerTime_);
     TimeService::GetInstance()->StartTimer(timerId_, nextTriggerTime_);
-
 }
 
 int32_t NtpUpdateTime::MonitorNetwork()
 {
     // observer net connection
-    TIME_HILOGD(TIME_MODULE_SERVICE,"NtpUpdateTime::MonitorNetwork");
+    TIME_HILOGD(TIME_MODULE_SERVICE, "NtpUpdateTime::MonitorNetwork");
     NetSpecifier netSpecifier;
     NetAllCapabilities netAllCapabilities;
     netAllCapabilities.netCaps_.insert(NetManagerStandard::NetCap::NET_CAPABILITY_INTERNET);
@@ -105,11 +104,10 @@ int32_t NtpUpdateTime::MonitorNetwork()
     sptr<NetSpecifier> specifier = new NetSpecifier(netSpecifier);
     sptr<NetConnCallbackObserver> observer = new NetConnCallbackObserver;
     int nRet = DelayedSingleton<NetConnClient>::GetInstance()->RegisterNetConnCallback(specifier, observer, 0);
-    TIME_HILOGD(TIME_MODULE_SERVICE,"RegisterNetConnCallback retcode= %{public}d", nRet);
+    TIME_HILOGD(TIME_MODULE_SERVICE, "RegisterNetConnCallback retcode= %{public}d", nRet);
 
     return nRet;
 }
-
 
 void NtpUpdateTime::SubscriberNITZTimeChangeCommonEvent()
 {
