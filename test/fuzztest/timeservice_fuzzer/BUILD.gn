@@ -44,17 +44,17 @@ ohos_fuzztest("TimeServiceFuzzTest") {
     "//base/miscservices/time/services:time_service",
     "//foundation/bundlemanager/bundle_framework/interfaces/inner_api/appexecfwk_core:appexecfwk_core",
     "//third_party/jsoncpp:jsoncpp",
-    "//utils/native/base:utils",        
+    "//utils/native/base:utils",
   ]
 
   external_deps = [
-   "ability_runtime:wantagent_innerkits",
+    "ability_base:want",
+    "ability_runtime:wantagent_innerkits",
+    "common_event_service:cesfwk_innerkits",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
-    "samgr_standard:samgr_proxy",
-    "ability_base:want",
-    "common_event_service:cesfwk_innerkits",
     "safwk:system_ability_fwk",
+    "samgr_standard:samgr_proxy",
   ]
 }
 
