@@ -48,18 +48,13 @@ ohos_fuzztest("TimeServiceFuzzTest") {
   ]
 
   external_deps = [
-    "ability_base:want",
-    "ability_runtime:runtime",
-    "ability_runtime:wantagent_innerkits",
-    "common_event_service:cesfwk_innerkits",
-    "dataability:native_dataability",
-    "eventhandler:libeventhandler",
+   "ability_runtime:wantagent_innerkits",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
-    "relational_store:native_appdatafwk",
-    "relational_store:native_rdb",
-    "safwk:system_ability_fwk",
     "samgr_standard:samgr_proxy",
+    "ability_base:want",
+    "common_event_service:cesfwk_innerkits",
+    "safwk:system_ability_fwk",
   ]
 }
 
