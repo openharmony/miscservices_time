@@ -19,6 +19,7 @@
 #include <string>
 #include <fstream>
 #include <mutex>
+#include <unistd.h>
 
 #include "ntp_trusted_time.h"
 #include "time_common.h"
@@ -66,15 +67,20 @@ void NtpUpdateTime::Init()
             return;
         }
     }
-    // observer net connection
-    NetSpecifier netSpecifier;
-    NetAllCapabilities netAllCapabilities;
-    netAllCapabilities.netCaps_.insert(NetManagerStandard::NetCap::NET_CAPABILITY_INTERNET);
-    netSpecifier.ident_ = "wifi";
-    netSpecifier.netCapabilities_ = netAllCapabilities;
-    sptr<NetSpecifier> specifier = new NetSpecifier(netSpecifier);
-    sptr<NetConnCallbackObserver> observer = new NetConnCallbackObserver;
-    DelayedSingleton<NetConnClient>::GetInstance()->RegisterNetConnCallback(specifier, observer, 0);
+
+    std::thread th = std::thread([this]() {
+    constexpr int RETRY_MAX_TIMES = 100;
+    int retryCount = 0;
+    constexpr int RETRY_TIME_INTERVAL_MILLISECOND = 1 * 1000 * 1000; // retry after 2 second
+    do {
+        if (this->MonitorNetwork() == NET_CONN_SUCCESS) {
+            break;
+        }
+        retryCount++;
+        usleep(RETRY_TIME_INTERVAL_MILLISECOND);
+    } while (retryCount < RETRY_MAX_TIMES);
+    });
+    th.detach();
 
     int32_t timerType = ITimerManager::TimerType::ELAPSED_REALTIME;
     auto callback = [this](uint64_t id) {
@@ -85,6 +91,30 @@ void NtpUpdateTime::Init()
     RefreshNextTriggerTime();
     TIME_HILOGD(TIME_MODULE_SERVICE, "Ntp update triggertime: %{public}" PRId64 "", nextTriggerTime_);
     TimeService::GetInstance()->StartTimer(timerId_, nextTriggerTime_);
+}
+
+int32_t NtpUpdateTime::MonitorNetwork()
+{
+    // observer net connection
+    TIME_HILOGD(TIME_MODULE_SERVICE, "NtpUpdateTime::MonitorNetwork");
+    NetSpecifier netSpecifier;
+    NetAllCapabilities netAllCapabilities;
+    netAllCapabilities.netCaps_.insert(NetManagerStandard::NetCap::NET_CAPABILITY_INTERNET);
+    netSpecifier.netCapabilities_ = netAllCapabilities;
+    sptr<NetSpecifier> specifier = new(std::nothrow) NetSpecifier(netSpecifier);
+    if (specifier == nullptr) {
+        TIME_HILOGD(TIME_MODULE_SERVICE, "new operator error.specifier is nullptr");
+        return NET_CONN_ERR_INPUT_NULL_PTR;
+    }
+    sptr<NetConnCallbackObserver> observer = new(std::nothrow) NetConnCallbackObserver();
+    if (observer == nullptr) {
+        TIME_HILOGD(TIME_MODULE_SERVICE, "new operator error.observer is nullptr");
+        return NET_CONN_ERR_INPUT_NULL_PTR;
+    }
+    int nRet = DelayedSingleton<NetConnClient>::GetInstance()->RegisterNetConnCallback(specifier, observer, 0);
+    TIME_HILOGD(TIME_MODULE_SERVICE, "RegisterNetConnCallback retcode= %{public}d", nRet);
+
+    return nRet;
 }
 
 void NtpUpdateTime::SubscriberNITZTimeChangeCommonEvent()
