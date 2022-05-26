@@ -33,8 +33,8 @@ uint32_t ConvertToUint32(const uint8_t* ptr)
     if (ptr == nullptr) {
         return 0;
     }
-    uint32_t bigvar = (ptr[0] << 24) | (ptr[1] << 16) | (ptr[2] << 8) | (ptr[3]);
-    return bigvar;
+    uint32_t bigVar = (ptr[0] << 24) | (ptr[1] << 16) | (ptr[2] << 8) | (ptr[3]);
+    return bigVar;
 }
 
 bool FuzzTimeService(const uint8_t* rawData, size_t size)
