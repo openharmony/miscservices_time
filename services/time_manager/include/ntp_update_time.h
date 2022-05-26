@@ -37,6 +37,7 @@ public:
     void SetSystemTime();
     void Stop();
     void Init();
+    int32_t MonitorNetwork();
 private:
     bool GetAutoTimeInfoFromFile(autoTimeInfo &info);
     bool SaveAutoTimeInfoToFile(autoTimeInfo &info);
