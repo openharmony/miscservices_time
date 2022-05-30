@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -28,16 +28,15 @@
 
 namespace OHOS {
 namespace MiscServices {
-class TimePermission : public std::enable_shared_from_this<TimePermission> {
-    DECLARE_DELAYED_SINGLETON(TimePermission)
-public:
-    bool CheckSelfPermission(const std::string permName);
-    bool CheckCallingPermission(const int32_t uid, const std::string permName);
+    namespace Permission {
+        static const std::string SET_TIME = "ohos.permission.SET_TIME";
+        static const std::string SET_TIME_ZONE = "ohos.permission.SET_TIME_ZONE";
+    }
 
-private:
-    sptr<AppExecFwk::IBundleMgr> GetBundleManager();
-    bool IsSystemUid(const int32_t &uid) const;
-    static sptr<AppExecFwk::IBundleMgr> bundleMgrProxy_;
+class TimePermission {
+public:
+    static bool GetBundleNameByUid(int32_t uid, std::string &bundleName);
+    static bool CheckCallingPermission(const std::string &permissionName);
 };
 } // namespace MiscServices
 } // namespace OHOS

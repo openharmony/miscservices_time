@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 Huawei Device Co., Ltd.
+ * Copyright (c) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -19,69 +19,48 @@
 
 namespace OHOS {
 namespace MiscServices {
-namespace {
-constexpr int32_t SYSTEM_UID = 1000;
-constexpr int32_t ROOT_UID = 0;
-constexpr int32_t MIN_SYSTEM_UID = 2100;
-constexpr int32_t MAX_SYSTEM_UID = 2899;
-}
-sptr<AppExecFwk::IBundleMgr> TimePermission::bundleMgrProxy_;
-
-TimePermission::TimePermission() {};
-TimePermission::~TimePermission() {};
-
-bool TimePermission::CheckSelfPermission(std::string permName)
+bool TimePermission::GetBundleNameByUid(int32_t uid, std::string &bundleName)
 {
-    return true;
+    sptr<ISystemAbilityManager> systemAbilityManager =
+            SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
+    sptr<IRemoteObject> remoteObject =
+            systemAbilityManager->GetSystemAbility(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID);
+
+    sptr<AppExecFwk::IBundleMgr> iBundleMgr = iface_cast<AppExecFwk::IBundleMgr>(remoteObject);
+    if (iBundleMgr == nullptr) {
+        TIME_HILOGE(TIME_MODULE_COMMON, "permission check failed, cannot get IBundleMgr.");
+        return false;
+    }
+    return iBundleMgr->GetBundleNameForUid(uid, bundleName);
 }
 
-bool TimePermission::CheckCallingPermission(int32_t uid, std::string permName)
+bool TimePermission::CheckCallingPermission(const std::string &permissionName)
 {
-    if ((uid == SYSTEM_UID) || (uid == ROOT_UID)) {
-        TIME_HILOGD(TIME_MODULE_COMMON, "root uid return true");
-        return true;
+    if (permissionName.empty()) {
+        TIME_HILOGE(TIME_MODULE_COMMON, "permission check failed，permission name is empty.");
+        return false;
     }
-    if (IsSystemUid(uid)) {
-        TIME_HILOGD(TIME_MODULE_COMMON, "system uid 2100 ~ 2899");
-        return true;
-    }
-    auto callingToken = IPCSkeleton::GetCallingTokenID();
 
-    auto tokenType = Security::AccessToken::AccessTokenKit::GetTokenTypeFlag(callingToken);
+    auto callerToken = IPCSkeleton::GetCallingTokenID();
+    auto tokenType = Security::AccessToken::AccessTokenKit::GetTokenTypeFlag(callerToken);
+    int result = Security::AccessToken::PERMISSION_DENIED;
+
     if (tokenType == Security::AccessToken::ATokenTypeEnum::TOKEN_NATIVE) {
-        TIME_HILOGD(TIME_MODULE_COMMON, "native taskId.");
-        return true;
+        result = Security::AccessToken::AccessTokenKit::VerifyAccessToken(callerToken, permissionName);
+    } else if (tokenType == Security::AccessToken::ATokenTypeEnum::TOKEN_HAP) {
+        result = Security::AccessToken::AccessTokenKit::VerifyAccessToken(callerToken, permissionName);
+    } else {
+        TIME_HILOGE(TIME_MODULE_COMMON, "permission check failed, callerToken:%{public}u, tokenType:%{public}d",
+            callerToken, tokenType);
     }
-    auto result = Security::AccessToken::AccessTokenKit::VerifyAccessToken(callingToken, permName);
-    if (result == Security::AccessToken::TypePermissionState::PERMISSION_DENIED) {
+
+    if (result != Security::AccessToken::PERMISSION_GRANTED) {
+        TIME_HILOGE(TIME_MODULE_COMMON,
+                    "permission check failed, permission:%{public}s, callerToken:%{public}u, tokenType:%{public}d",
+                    permissionName.c_str(), callerToken, tokenType);
         return false;
     }
     return true;
-}
-
-sptr<AppExecFwk::IBundleMgr> TimePermission::GetBundleManager()
-{
-    if (bundleMgrProxy_ == nullptr) {
-        sptr<ISystemAbilityManager> systemManager = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
-        if (systemManager != nullptr) {
-            bundleMgrProxy_ =
-                iface_cast<AppExecFwk::IBundleMgr>(systemManager->GetSystemAbility(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID));
-        } else {
-            TIME_HILOGE(TIME_MODULE_COMMON, "fail to get SAMGR");
-        }
-    }
-    return bundleMgrProxy_;
-}
-
-bool TimePermission::IsSystemUid(const int32_t &uid) const
-{
-    TIME_HILOGE(TIME_MODULE_COMMON, "enter");
-
-    if (uid >= MIN_SYSTEM_UID && uid <= MAX_SYSTEM_UID) {
-        return true;
-    }
-
-    return false;
 }
 } // namespace MiscServices
 } // namespace OHOS
