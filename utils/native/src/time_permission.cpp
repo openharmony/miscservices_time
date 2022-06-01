@@ -27,8 +27,8 @@ bool TimePermission::CheckCallingPermission(const std::string &permissionName)
     }
 
     auto callerToken = IPCSkeleton::GetCallingTokenID();
-    int result = AccessTokenKit::VerifyAccessToken(callerToken, permissionName);
-    if (result == PERMISSION_GRANTED) {
+    int result = Security::AccessToken::AccessTokenKit::VerifyAccessToken(callerToken, permissionName);
+    if (result == Security::AccessToken::PERMISSION_GRANTED) {
         TIME_HILOGE(TIME_MODULE_COMMON, "permission check Success.");
         return true;
     } else {
