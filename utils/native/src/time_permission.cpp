@@ -35,7 +35,7 @@ bool TimePermission::CheckCallingPermission(const std::string &permissionName)
         TIME_HILOGE(TIME_MODULE_COMMON, "permission check failed, permission:%{public}s, callerToken:%{public}u",
                     permissionName.c_str(), callerToken);
         return false;
-	}
+    }
 }
 } // namespace MiscServices
 } // namespace OHOS
