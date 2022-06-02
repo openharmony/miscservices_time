@@ -28,14 +28,11 @@ bool TimePermission::CheckCallingPermission(const std::string &permissionName)
 
     auto callerToken = IPCSkeleton::GetCallingTokenID();
     int result = Security::AccessToken::AccessTokenKit::VerifyAccessToken(callerToken, permissionName);
-    if (result == Security::AccessToken::PERMISSION_GRANTED) {
-        TIME_HILOGE(TIME_MODULE_COMMON, "permission check Success.");
-        return true;
-    } else {
+    if (result != Security::AccessToken::PERMISSION_GRANTED) {
         TIME_HILOGE(TIME_MODULE_COMMON, "permission check failed, permission:%{public}s, callerToken:%{public}u",
                     permissionName.c_str(), callerToken);
-        return false;
     }
+    return result == Security::AccessToken::PERMISSION_GRANTED;
 }
 } // namespace MiscServices
 } // namespace OHOS
