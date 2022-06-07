@@ -306,10 +306,9 @@ bool TimeService::DestroyTimer(uint64_t  timerId)
 
 int32_t TimeService::SetTime(const int64_t time)
 {
-    std::int32_t uid = IPCSkeleton::GetCallingUid();
-    auto hasPerm = DelayedSingleton<TimePermission>::GetInstance()->CheckCallingPermission(uid, setTimePermName_);
+    auto hasPerm = DelayedSingleton<TimePermission>::GetInstance()->CheckCallingPermission(setTimePermName_);
     if (!hasPerm) {
-        TIME_HILOGE(TIME_MODULE_SERVICE, "Permission check failed, uid : %{public}d", uid);
+        TIME_HILOGE(TIME_MODULE_SERVICE, "Permission check setTime failed");
         return E_TIME_NO_PERMISSION;
     }
     TIME_HILOGI(TIME_MODULE_SERVICE, "Setting time of day to milliseconds: %{public}" PRId64 "", time);
@@ -438,10 +437,9 @@ int TimeService::get_wall_clock_rtc_id()
 
 int32_t TimeService::SetTimeZone(const std::string timeZoneId)
 {
-    std::int32_t uid = IPCSkeleton::GetCallingUid();
-    auto hasPerm = DelayedSingleton<TimePermission>::GetInstance()->CheckCallingPermission(uid, setTimezonePermName_);
+    auto hasPerm = DelayedSingleton<TimePermission>::GetInstance()->CheckCallingPermission(setTimezonePermName_);
     if (!hasPerm) {
-        TIME_HILOGE(TIME_MODULE_SERVICE, "Permission check failed, uid : %{public}d", uid);
+        TIME_HILOGE(TIME_MODULE_SERVICE, "Permission check setTimezone failed");
         return E_TIME_NO_PERMISSION;
     }
 
