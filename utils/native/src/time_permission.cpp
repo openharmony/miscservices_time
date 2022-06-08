@@ -34,8 +34,8 @@ bool TimePermission::CheckCallingPermission(const std::string &permissionName)
     } else if (tokenType == Security::AccessToken::ATokenTypeEnum::TOKEN_HAP) {
         result = Security::AccessToken::AccessTokenKit::VerifyAccessToken(callerToken, permissionName);
     } else {
-        TIME_HILOGE(TIME_MODULE_COMMON, "permission check failed, permission:%{public}s, callerToken:%{public}u",
-                    "permission check failed, callerToken:%{public}u, tokenType:%{public}d", callerToken, tokenType);
+        TIME_HILOGE(TIME_MODULE_COMMON, "permission check failed, callerToken:%{public}u,tokenType:%{public}d",
+                    callerToken, tokenType);
     }
 
     if (result != Security::AccessToken::PERMISSION_GRANTED) {
