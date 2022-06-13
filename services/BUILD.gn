@@ -23,8 +23,8 @@ config("time_service_config") {
     "//utils/system/safwk/native/include",
     "//third_party/json/include",
     "//base/hiviewdfx/hilog/interfaces/native/innerkits/include",
-    "//foundation/distributeddatamgr/appdatamgr/interfaces/inner_api/native/rdb/include/",
-    "//foundation/distributeddatamgr/appdatamgr/interfaces/inner_api/native/appdatafwk/include/",
+    "//foundation/distributeddatamgr/appdatamgr/relational_store/interfaces/inner_api/rdb/include/",
+    "//foundation/distributeddatamgr/appdatamgr/relational_store/interfaces/inner_api/appdatafwk/include/",
   ]
 }
 
@@ -72,11 +72,11 @@ ohos_shared_library("time_service") {
     "ability_runtime:runtime",
     "ability_runtime:wantagent_innerkits",
     "common_event_service:cesfwk_innerkits",
-    "dataability:native_dataability",
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "relational_store:native_appdatafwk",
+    "relational_store:native_dataability",
     "relational_store:native_rdb",
     "safwk:system_ability_fwk",
     "samgr_standard:samgr_proxy",
