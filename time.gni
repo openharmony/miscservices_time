@@ -17,6 +17,8 @@ aafwk_inner_api_path =
 
 aafwk_kits_path = "//foundation/ability/ability_runtime/frameworks/kits"
 
+aafwk_path = "//foundation/ability/ability_runtime"
+
 time_root_path = "//base/miscservices/time"
 
 kits_path = "${time_root_path}/interfaces/kits"

@@ -31,7 +31,7 @@ ohos_shared_library("systemtime") {
   sources = [ "src/js_systemtime.cpp" ]
 
   deps = [
-    "${aafwk_kits_path}/ability/native:abilitykit_native",
+    "${aafwk_path}/frameworks/native/ability/native:abilitykit_native",
     "//base/miscservices/time/services:time_service",
     "//foundation/arkui/napi/:ace_napi",
     "//utils/native/base:utils",
