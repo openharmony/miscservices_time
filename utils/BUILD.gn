@@ -43,7 +43,6 @@ ohos_source_set("time_utils") {
     "bundle_framework:appexecfwk_core",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
-    "permission_standard:libpermissionsdk_standard",
   ]
 
   part_name = "time_native"
