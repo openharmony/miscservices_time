@@ -86,6 +86,7 @@ private:
     std::shared_ptr<Batch> FindFirstWakeupBatchLocked();
     void SetLocked(int type, std::chrono::nanoseconds when);
     std::chrono::steady_clock::time_point ConvertToElapsed(std::chrono::milliseconds when, int type);
+    std::chrono::steady_clock::time_point GetBootTimeNs();
 
     std::map<uint64_t, std::shared_ptr<TimerEntry>> timerEntryMap_;
     std::default_random_engine random_;
