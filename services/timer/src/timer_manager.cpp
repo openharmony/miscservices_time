@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021 Huawei Device Co., Ltd.
+ * Copyright (C) 2022 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -28,7 +28,6 @@ namespace {
 static int TIME_CHANGED_BITS = 16;
 static uint32_t TIME_CHANGED_MASK = 1 << TIME_CHANGED_BITS;
 const int ONE_THOUSAND = 1000;
-const int FIRST_APPLICATION_UID = 10000;
 const float_t BATCH_WINDOW_COE = 0.75;
 const auto MIN_FUTURITY = seconds(5);
 const auto ZERO_FUTURITY = seconds(0);
@@ -149,14 +148,6 @@ bool TimerManager::DestroyTimer(uint64_t timerNumber)
     return true;
 }
 
-bool TimerManager::IsSystemUid(int uid)
-{
-    if (uid < FIRST_APPLICATION_UID) {
-        return true;
-    }
-    return false;
-}
-
 void TimerManager::SetHandler(uint64_t id,
                               int type,
                               uint64_t triggerAtTime,
@@ -269,7 +260,6 @@ void TimerManager::RemoveLocked(uint64_t id)
 
 void TimerManager::SetHandlerLocked(std::shared_ptr<TimerInfo> alarm, bool rebatching, bool doValidate)
 {
-    TIME_HILOGI(TIME_MODULE_SERVICE, "start");
     TIME_HILOGI(TIME_MODULE_SERVICE, "rebatching= %{public}d, doValidate= %{public}d", rebatching, doValidate);
     InsertAndBatchTimerLocked(std::move(alarm));
     if (!rebatching) {
@@ -502,7 +492,6 @@ std::shared_ptr<Batch> TimerManager::FindFirstWakeupBatchLocked()
 
 void TimerManager::SetLocked(int type, std::chrono::nanoseconds when)
 {
-    TIME_HILOGI(TIME_MODULE_SERVICE, "start");
     TIME_HILOGI(TIME_MODULE_SERVICE, "when.count= %{public}lld", when.count());
     handler_->Set(static_cast<uint32_t>(type), when);
     TIME_HILOGI(TIME_MODULE_SERVICE, "end");
