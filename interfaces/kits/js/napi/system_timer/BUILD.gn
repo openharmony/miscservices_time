@@ -61,6 +61,7 @@ ohos_shared_library("systemtimer") {
     "ability_runtime:wantagent_innerkits",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
+    "utils_base:utils",
   ]
 
   relative_install_dir = "module"
