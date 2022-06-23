@@ -415,7 +415,6 @@ steady_clock::time_point TimerManager::GetBootTimeNs()
     return tp_epoch;
 }
 
-
 bool TimerManager::TriggerTimersLocked(std::vector<std::shared_ptr<TimerInfo>> &triggerList,
                                        std::chrono::steady_clock::time_point nowElapsed)
 {
