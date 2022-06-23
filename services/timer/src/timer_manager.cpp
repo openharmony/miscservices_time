@@ -148,6 +148,21 @@ bool TimerManager::DestroyTimer(uint64_t timerNumber)
     return true;
 }
 
+bool TimerManager::IsSystemUid(int uid)
+{
+    auto systemAbilityManager = SystemAbilityManagerClient::GetInstance().GetSystemAbilityManager();
+    if (systemAbilityManager == nullptr) {
+        TIME_HILOGD(TIME_MODULE_SERVICE, "GetSystemAbilityManager is null.");
+        return false;
+    }
+    auto bundleMgrSa = systemAbilityManager->GetSystemAbility(BUNDLE_MGR_SERVICE_SYS_ABILITY_ID);
+    if (bundleMgrSa == nullptr) {
+        TIME_HILOGD(TIME_MODULE_SERVICE, "GetSystemAbility is null.");
+        return false;
+    }
+    return iface_cast<IBundleMgr>(bundleMgrSa)->CheckIsSystemAppByUid(uid);
+}
+
 void TimerManager::SetHandler(uint64_t id,
                               int type,
                               uint64_t triggerAtTime,
