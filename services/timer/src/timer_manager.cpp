@@ -25,7 +25,6 @@
 #include "system_ability_definition.h"
 #include "iservice_registry.h"
 
-
 namespace OHOS {
 namespace MiscServices {
 using namespace std::chrono;
@@ -281,7 +280,7 @@ void TimerManager::RemoveLocked(uint64_t id)
 
 void TimerManager::SetHandlerLocked(std::shared_ptr<TimerInfo> alarm, bool rebatching, bool doValidate)
 {
-    TIME_HILOGI(TIME_MODULE_SERVICE, "rebatching= %{public}d, doValidate= %{public}d", rebatching, doValidate);
+    TIME_HILOGI(TIME_MODULE_SERVICE, "start rebatching= %{public}d, doValidate= %{public}d", rebatching, doValidate);
     InsertAndBatchTimerLocked(std::move(alarm));
     if (!rebatching) {
         RescheduleKernelTimerLocked();
@@ -472,7 +471,7 @@ bool TimerManager::TriggerTimersLocked(std::vector<std::shared_ptr<TimerInfo>> &
 
 void TimerManager::RescheduleKernelTimerLocked()
 {
-    TIME_HILOGI(TIME_MODULE_SERVICE, "alarmBatches_.size= %{public}d", static_cast<int>(alarmBatches_.size()));
+    TIME_HILOGI(TIME_MODULE_SERVICE, "start alarmBatches_.size= %{public}d", static_cast<int>(alarmBatches_.size()));
     auto nextNonWakeup = std::chrono::steady_clock::time_point::min();
     if (!alarmBatches_.empty()) {
         auto firstWakeup = FindFirstWakeupBatchLocked();
@@ -511,7 +510,7 @@ std::shared_ptr<Batch> TimerManager::FindFirstWakeupBatchLocked()
 
 void TimerManager::SetLocked(int type, std::chrono::nanoseconds when)
 {
-    TIME_HILOGI(TIME_MODULE_SERVICE, "when.count= %{public}lld", when.count());
+    TIME_HILOGI(TIME_MODULE_SERVICE, "start when.count= %{public}lld", when.count());
     handler_->Set(static_cast<uint32_t>(type), when);
     TIME_HILOGI(TIME_MODULE_SERVICE, "end");
 }
