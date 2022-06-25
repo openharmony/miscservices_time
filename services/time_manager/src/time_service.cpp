@@ -579,5 +579,33 @@ void TimeService::NetworkTimeStatusOn()
 {
     DelayedSingleton<NtpUpdateTime>::GetInstance()->UpdateStatusOn();
 }
+
+bool TimeService::ProxyTimer(int32_t uid, bool isProxy)
+{
+    TIME_HILOGD(TIME_MODULE_CLIENT, "service ProxyTimer start uid: %{public}d, isProxy: %{public}d"
+        , uid, isProxy);
+    if (timerManagerHandler_ == nullptr) {
+        TIME_HILOGI(TIME_MODULE_SERVICE, "ProxyTimer Timer manager nullptr.");
+        timerManagerHandler_ = TimerManager::Create();
+        if (timerManagerHandler_ == nullptr) {
+            TIME_HILOGE(TIME_MODULE_SERVICE, "ProxyTimer Timer manager Init Failed.");
+            return false;
+        }
+    }
+    return timerManagerHandler_->ProxyTimer(uid, isProxy);
+}
+
+bool TimeService::ResetAllProxy()
+{
+    TIME_HILOGD(TIME_MODULE_CLIENT, "service ResetAllProxy");
+    if (timerManagerHandler_ == nullptr) {
+        timerManagerHandler_ = TimerManager::Create();
+        if (timerManagerHandler_ == nullptr) {
+            TIME_HILOGE(TIME_MODULE_SERVICE, "ResetAllProxy Timer manager init failed");
+            return false;
+        }
+    }
+    return timerManagerHandler_->ResetAllProxy();
+}
 } // namespace MiscServices
 } // namespace OHOS

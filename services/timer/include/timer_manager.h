@@ -41,6 +41,8 @@ public:
     bool StartTimer(uint64_t timerNumber, uint64_t triggerTime) override;
     bool StopTimer(uint64_t timerNumber) override;
     bool DestroyTimer(uint64_t timerNumber) override;
+    bool ProxyTimer(int32_t uid, bool isProxy) override;
+    bool ResetAllProxy() override;
     ~TimerManager() override;
 
 private:
@@ -86,6 +88,7 @@ private:
     std::shared_ptr<Batch> FindFirstWakeupBatchLocked();
     void SetLocked(int type, std::chrono::nanoseconds when);
     std::chrono::steady_clock::time_point ConvertToElapsed(std::chrono::milliseconds when, int type);
+    void CallbackAlarmIfNeed(std::shared_ptr<TimerInfo> alarm);
 
     std::map<uint64_t, std::shared_ptr<TimerEntry>> timerEntryMap_;
     std::default_random_engine random_;
@@ -97,6 +100,11 @@ private:
     std::mutex entryMapMutex_;
     std::chrono::system_clock::time_point lastTimeChangeClockTime_;
     std::chrono::steady_clock::time_point lastTimeChangeRealtime_;
+
+    // proxy uid
+    std::mutex proxyMutex_;
+    std::set<int32_t> proxyUids_;
+    std::map<int32_t, std::vector<std::shared_ptr<TimerInfo>>> proxyMap_;
 }; // timer_manager
 } // MiscServices
 } // OHOS

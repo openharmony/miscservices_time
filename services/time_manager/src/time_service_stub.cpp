@@ -40,6 +40,8 @@ TimeServiceStub::TimeServiceStub()
     memberFuncMap_[DESTORY_TIMER] = &TimeServiceStub::OnDestoryTimer;
     memberFuncMap_[NETWORK_TIME_ON] = &TimeServiceStub::OnNetworkTimeStatusOn;
     memberFuncMap_[NETWORK_TIME_OFF] = &TimeServiceStub::OnNetworkTimeStatusOff;
+    memberFuncMap_[PROXY_TIMER] = &TimeServiceStub::OnTimerProxy;
+    memberFuncMap_[RESET_ALL_PROXY] = &TimeServiceStub::OnAllProxyReset;
 }
 
 TimeServiceStub::~TimeServiceStub()
@@ -302,6 +304,29 @@ int32_t TimeServiceStub::OnNetworkTimeStatusOn(MessageParcel &data, MessageParce
 {
     TIME_HILOGI(TIME_MODULE_SERVICE, "start.");
     NetworkTimeStatusOn();
+    TIME_HILOGI(TIME_MODULE_SERVICE, "end.");
+    return ERR_OK;
+}
+
+int32_t TimeServiceStub::OnTimerProxy(MessageParcel &data, MessageParcel &reply)
+{
+    TIME_HILOGI(TIME_MODULE_SERVICE, "start.");
+    auto pkg = data.ReadString();
+    auto uid = data.ReadInt32();
+    auto isProxy = data.ReadBool();
+    if (!ProxyTimer(uid, isProxy)) {
+        return E_TIME_DEAL_FAILED;
+    }
+    TIME_HILOGI(TIME_MODULE_SERVICE, "end.");
+    return ERR_OK;
+}
+
+int32_t TimeServiceStub::OnAllProxyReset(MessageParcel &data, MessageParcel &reply)
+{
+    TIME_HILOGI(TIME_MODULE_SERVICE, "start.");
+    if (!ResetAllProxy()) {
+        return E_TIME_DEAL_FAILED;
+    }
     TIME_HILOGI(TIME_MODULE_SERVICE, "end.");
     return ERR_OK;
 }
