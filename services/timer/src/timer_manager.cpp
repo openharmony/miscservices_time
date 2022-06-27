@@ -19,7 +19,7 @@
 #include <algorithm>
 #include <ctime>
 #include <iostream>
-
+#include <sys/time.h>
 #include "bundle_mgr_interface.h"
 #include "if_system_ability_manager.h"
 #include "system_ability_definition.h"
@@ -42,6 +42,7 @@ const auto MAX_INTERVAL = hours(24 * 365);
 const auto INTERVAL_HOUR = hours(1);
 const auto INTERVAL_HALF_DAY = hours(12);
 const auto MIN_FUZZABLE_INTERVAL = milliseconds(10000);
+const int NANO_TO_SECOND =  1000000000;
 }
 
 extern bool AddBatchLocked(std::vector<std::shared_ptr<Batch>> &list, const std::shared_ptr<Batch> &batch);
@@ -192,7 +193,7 @@ void TimerManager::SetHandler(uint64_t id,
         intervalDuration = MAX_INTERVAL;
     }
 
-    auto nowElapsed = steady_clock::now();
+    auto nowElapsed = GetBootTimeNs();
     auto nominalTrigger = ConvertToElapsed(milliseconds(triggerAtTime), type);
     if (nominalTrigger < nowElapsed) {
         TIME_HILOGI(TIME_MODULE_SERVICE, "invalid trigger time end.");
@@ -299,7 +300,7 @@ void TimerManager::ReBatchAllTimersLocked(bool doValidate)
     TIME_HILOGI(TIME_MODULE_SERVICE, "start");
     auto oldSet = alarmBatches_;
     alarmBatches_.clear();
-    auto nowElapsed = steady_clock::now();
+    auto nowElapsed = GetBootTimeNs();
     for (const auto &batch : oldSet) {
         auto n = batch->Size();
         for (unsigned int i = 0; i < n; i++) {
@@ -336,20 +337,21 @@ void TimerManager::ReAddTimerLocked(std::shared_ptr<TimerInfo> timer,
 
 std::chrono::steady_clock::time_point TimerManager::ConvertToElapsed(std::chrono::milliseconds when, int type)
 {
+    auto bootTimePoint = GetBootTimeNs();
     TIME_HILOGI(TIME_MODULE_SERVICE, "start");
     if (type == RTC || type == RTC_WAKEUP) {
         auto systemTimeNow = system_clock::now().time_since_epoch();
         auto offset = when - systemTimeNow;
         TIME_HILOGI(TIME_MODULE_SERVICE, "systemTimeNow : %{public}lld", systemTimeNow.count());
         TIME_HILOGI(TIME_MODULE_SERVICE, "offset : %{public}lld", offset.count());
-        return steady_clock::now() + offset;
+        return bootTimePoint + offset;
     }
-    auto bootTimeNow = steady_clock::now().time_since_epoch();
+    auto bootTimeNow = bootTimePoint.time_since_epoch();
     auto offset = when - bootTimeNow;
     TIME_HILOGI(TIME_MODULE_SERVICE, "bootTimeNow : %{public}lld", bootTimeNow.count());
     TIME_HILOGI(TIME_MODULE_SERVICE, "offset : %{public}lld", offset.count());
     TIME_HILOGI(TIME_MODULE_SERVICE, "end");
-    return steady_clock::now() + offset;
+    return bootTimePoint + offset;
 }
 
 void TimerManager::TimerLooper()
@@ -364,13 +366,14 @@ void TimerManager::TimerLooper()
         TIME_HILOGI(TIME_MODULE_SERVICE, "result= %{public}d", result);
 
         auto nowRtc = std::chrono::system_clock::now();
-        auto nowElapsed = std::chrono::steady_clock::now();
+        auto nowElapsed = GetBootTimeNs();
         triggerList.clear();
 
         if ((result & TIME_CHANGED_MASK) != 0) {
             TIME_HILOGI(TIME_MODULE_SERVICE, "time changed");
             system_clock::time_point lastTimeChangeClockTime;
             system_clock::time_point expectedClockTime;
+            TIME_HILOGI(TIME_MODULE_SERVICE, "lock");
             std::lock_guard<std::mutex> lock(mutex_);
             lastTimeChangeClockTime = lastTimeChangeClockTime_;
             expectedClockTime = lastTimeChangeClockTime + (duration_cast<milliseconds>(nowElapsed.time_since_epoch()) -
@@ -378,6 +381,7 @@ void TimerManager::TimerLooper()
             if (lastTimeChangeClockTime == system_clock::time_point::min()
                 || nowRtc < (expectedClockTime - milliseconds(ONE_THOUSAND))
                 || nowRtc > (expectedClockTime + milliseconds(ONE_THOUSAND))) {
+                TIME_HILOGI(TIME_MODULE_SERVICE, "Time changed notification from kernel; rebatching");
                 ReBatchAllTimers();
                 lastTimeChangeClockTime_ = nowRtc;
                 lastTimeChangeRealtime_ = nowElapsed;
@@ -404,6 +408,18 @@ TimerManager::~TimerManager()
     }
 }
 
+steady_clock::time_point TimerManager::GetBootTimeNs()
+{
+    int64_t timeNow = -1;
+    struct timespec tv {};
+    if (clock_gettime(CLOCK_BOOTTIME, &tv) < 0) {
+        return steady_clock::now();
+    }
+    timeNow = tv.tv_sec * NANO_TO_SECOND + tv.tv_nsec;
+    steady_clock::time_point tp_epoch ((nanoseconds(timeNow)));
+    return tp_epoch;
+}
+
 bool TimerManager::TriggerTimersLocked(std::vector<std::shared_ptr<TimerInfo>> &triggerList,
                                        std::chrono::steady_clock::time_point nowElapsed)
 {
@@ -411,8 +427,9 @@ bool TimerManager::TriggerTimersLocked(std::vector<std::shared_ptr<TimerInfo>> &
     bool hasWakeup = false;
     while (!alarmBatches_.empty()) {
         auto batch = alarmBatches_.at(0);
-        TIME_HILOGI(TIME_MODULE_SERVICE, "batch->GetStart()= %{public}lld, nowElapsed= %{public}lld",
-            time_point_cast<nanoseconds>(batch->GetStart()).time_since_epoch().count(),
+        TIME_HILOGI(TIME_MODULE_SERVICE, "batch->GetStart()= %{public}lld",
+            time_point_cast<nanoseconds>(batch->GetStart()).time_since_epoch().count());
+        TIME_HILOGI(TIME_MODULE_SERVICE, "nowElapsed= %{public}lld",
             time_point_cast<nanoseconds>(nowElapsed).time_since_epoch().count());
         if (batch->GetStart() > nowElapsed) {
             TIME_HILOGI(TIME_MODULE_SERVICE, "break alarmBatches_.size= %{public}d",
