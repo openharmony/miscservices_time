@@ -605,7 +605,8 @@ bool TimerManager::ProxyTimer(int32_t uid, bool isProxy)
                     TIME_HILOGE(TIME_MODULE_SERVICE, "Callback is nullptr!");
                     return false;
                 }
-                TIME_HILOGD(TIME_MODULE_SERVICE, "Shut down proxy, proxyUid: %{public}d, alarmId: %{public}" PRId64 "", uid, alarm->id);
+                TIME_HILOGD(TIME_MODULE_SERVICE, "Shut down proxy, proxyUid: %{public}d, alarmId: %{public}" PRId64 "", 
+                    uid, alarm->id);
             }
             proxyMap_.erase(uid);
         }
@@ -629,7 +630,8 @@ bool TimerManager::ResetAllProxy()
                 return false;
             }
             alarm->callback(alarm->id);
-            TIME_HILOGD(TIME_MODULE_SERVICE, "Reset all proxy, proxyUid: %{public}d, alarmId: %{public}" PRId64 "", it->first, alarm->id);
+            TIME_HILOGD(TIME_MODULE_SERVICE, "Reset all proxy, proxyUid: %{public}d, alarmId: %{public}" PRId64 "", 
+                it->first, alarm->id);
         }
         timeInfoVec.clear();
     }

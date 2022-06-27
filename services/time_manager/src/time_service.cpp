@@ -582,8 +582,8 @@ void TimeService::NetworkTimeStatusOn()
 
 bool TimeService::ProxyTimer(int32_t uid, bool isProxy)
 {
-    TIME_HILOGD(TIME_MODULE_CLIENT, "service ProxyTimer start uid: %{public}d, isProxy: %{public}d"
-        , uid, isProxy);
+    TIME_HILOGD(TIME_MODULE_SERVICE, "service ProxyTimer start uid: %{public}d, isProxy: %{public}d",
+        uid, isProxy);
     if (timerManagerHandler_ == nullptr) {
         TIME_HILOGI(TIME_MODULE_SERVICE, "ProxyTimer Timer manager nullptr.");
         timerManagerHandler_ = TimerManager::Create();
@@ -597,7 +597,7 @@ bool TimeService::ProxyTimer(int32_t uid, bool isProxy)
 
 bool TimeService::ResetAllProxy()
 {
-    TIME_HILOGD(TIME_MODULE_CLIENT, "service ResetAllProxy");
+    TIME_HILOGD(TIME_MODULE_SERVICE, "service ResetAllProxy");
     if (timerManagerHandler_ == nullptr) {
         timerManagerHandler_ = TimerManager::Create();
         if (timerManagerHandler_ == nullptr) {
