@@ -437,8 +437,8 @@ void TimeSaDeathRecipient::OnRemoteDied(const wptr<IRemoteObject> &object)
 
 bool TimeServiceClient::ProxyTimer(int32_t uid, bool isProxy)
 {
-    TIME_HILOGD(TIME_MODULE_CLIENT, "ProxyTimer start uid: %{public}d, isProxy: %{public}d"
-    , uid, isProxy);
+    TIME_HILOGD(TIME_MODULE_CLIENT, "ProxyTimer start uid: %{public}d, isProxy: %{public}d",
+        uid, isProxy);
     if (timeServiceProxy_ == nullptr) {
         TIME_HILOGW(TIME_MODULE_CLIENT, "ProxyTimer ConnectService");
         timeServiceProxy_ = ConnectService();

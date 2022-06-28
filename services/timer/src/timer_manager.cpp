@@ -588,14 +588,14 @@ void TimerManager::CallbackAlarmIfNeed(std::shared_ptr<TimerInfo> alarm)
 bool TimerManager::ProxyTimer(int32_t uid, bool isProxy)
 {
     std::lock_guard<std::mutex> lock(proxyMutex_);
-    TIME_HILOGI(TIME_MODULE_SERVICE, "start");
+    TIME_HILOGD(TIME_MODULE_SERVICE, "start");
     if (isProxy) {
         proxyUids_.insert(uid);
     } else {
         if (proxyUids_.count(uid) > 0) {
             proxyUids_.erase(uid);
         } else {
-            TIME_HILOGI(TIME_MODULE_SERVICE, "Uid: %{public}d doesn't exist in the proxy list." PRId64 "", uid);
+            TIME_HILOGE(TIME_MODULE_SERVICE, "Uid: %{public}d doesn't exist in the proxy list." PRId64 "", uid);
             return false;
         }
         if (proxyMap_.count(uid) > 0) {
@@ -605,7 +605,8 @@ bool TimerManager::ProxyTimer(int32_t uid, bool isProxy)
                     TIME_HILOGE(TIME_MODULE_SERVICE, "Callback is nullptr!");
                     return false;
                 }
-                TIME_HILOGD(TIME_MODULE_SERVICE, "Shut down proxy, proxyUid: %{public}d, alarmId: %{public}" PRId64 "", 
+                alarm->callback(alarm->id);
+                TIME_HILOGD(TIME_MODULE_SERVICE, "Shut down proxy, proxyUid: %{public}d, alarmId: %{public}" PRId64 "",
                     uid, alarm->id);
             }
             proxyMap_.erase(uid);
@@ -630,7 +631,7 @@ bool TimerManager::ResetAllProxy()
                 return false;
             }
             alarm->callback(alarm->id);
-            TIME_HILOGD(TIME_MODULE_SERVICE, "Reset all proxy, proxyUid: %{public}d, alarmId: %{public}" PRId64 "", 
+            TIME_HILOGD(TIME_MODULE_SERVICE, "Reset all proxy, proxyUid: %{public}d, alarmId: %{public}" PRId64 "",
                 it->first, alarm->id);
         }
         timeInfoVec.clear();
