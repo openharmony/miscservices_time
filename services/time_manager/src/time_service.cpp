@@ -582,13 +582,18 @@ void TimeService::NetworkTimeStatusOn()
 
 bool TimeService::ProxyTimer(int32_t uid, bool isProxy)
 {
-    TIME_HILOGD(TIME_MODULE_SERVICE, "service ProxyTimer start uid: %{public}d, isProxy: %{public}d",
+    auto hasPerm = DelayedSingleton<TimePermission>::GetInstance()->CheckProxyCallingPermission();
+    if (!hasPerm) {
+        TIME_HILOGE(TIME_MODULE_SERVICE, "ProxyTimer permission check failed");
+        return E_TIME_NO_PERMISSION;
+    }
+    TIME_HILOGD(TIME_MODULE_SERVICE, "ProxyTimer service start uid: %{public}d, isProxy: %{public}d",
         uid, isProxy);
     if (timerManagerHandler_ == nullptr) {
-        TIME_HILOGI(TIME_MODULE_SERVICE, "ProxyTimer Timer manager nullptr.");
+        TIME_HILOGI(TIME_MODULE_SERVICE, "ProxyTimer manager nullptr.");
         timerManagerHandler_ = TimerManager::Create();
         if (timerManagerHandler_ == nullptr) {
-            TIME_HILOGE(TIME_MODULE_SERVICE, "ProxyTimer Timer manager Init Failed.");
+            TIME_HILOGE(TIME_MODULE_SERVICE, "Proxytimer manager init failed.");
             return false;
         }
     }
@@ -597,11 +602,16 @@ bool TimeService::ProxyTimer(int32_t uid, bool isProxy)
 
 bool TimeService::ResetAllProxy()
 {
-    TIME_HILOGD(TIME_MODULE_SERVICE, "service ResetAllProxy");
+    auto hasPerm = DelayedSingleton<TimePermission>::GetInstance()->CheckProxyCallingPermission();
+    if (!hasPerm) {
+        TIME_HILOGE(TIME_MODULE_SERVICE, "ResetAllProxy permission check failed");
+        return E_TIME_NO_PERMISSION;
+    }
+    TIME_HILOGD(TIME_MODULE_SERVICE, "ResetAllProxy service");
     if (timerManagerHandler_ == nullptr) {
         timerManagerHandler_ = TimerManager::Create();
         if (timerManagerHandler_ == nullptr) {
-            TIME_HILOGE(TIME_MODULE_SERVICE, "ResetAllProxy Timer manager init failed");
+            TIME_HILOGE(TIME_MODULE_SERVICE, "ResetAllProxy timer manager init failed");
             return false;
         }
     }

@@ -316,7 +316,7 @@ HWTEST_F(TimeServiceTest, CreateTimer006, TestSize.Level0)
 */
 HWTEST_F(TimeServiceTest, ProxyTimer001, TestSize.Level0)
 {
-    int32_t uid = IPCSkeleton::GetCallingUid();
+    int32_t uid = 99999;
     auto ret = TimeServiceClient::GetInstance()->ProxyTimer(uid, true);
     EXPECT_TRUE(ret);
     ret = TimeServiceClient::GetInstance()->ProxyTimer(uid, false);
@@ -331,7 +331,10 @@ HWTEST_F(TimeServiceTest, ProxyTimer001, TestSize.Level0)
 */
 HWTEST_F(TimeServiceTest, ProxyTimer002, TestSize.Level0)
 {
-    auto ret = TimeServiceClient::GetInstance()->ResetAllProxy();
+    int32_t uid = 99999;
+    auto ret = TimeServiceClient::GetInstance()->ProxyTimer(uid, true);
+    EXPECT_TRUE(ret);
+    ret = TimeServiceClient::GetInstance()->ResetAllProxy();
     EXPECT_TRUE(ret);
 }
 
@@ -343,7 +346,7 @@ HWTEST_F(TimeServiceTest, ProxyTimer002, TestSize.Level0)
 */
 HWTEST_F(TimeServiceTest, ProxyTimer003, TestSize.Level0)
 {
-    int32_t uid = IPCSkeleton::GetCallingUid();
+    int32_t uid = 99999;
     auto ret = TimeServiceClient::GetInstance()->ProxyTimer(uid, false);
     EXPECT_FALSE(ret);
 }
