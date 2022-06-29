@@ -312,6 +312,10 @@ int32_t TimeServiceStub::OnTimerProxy(MessageParcel &data, MessageParcel &reply)
 {
     TIME_HILOGI(TIME_MODULE_SERVICE, "start.");
     auto uid = data.ReadInt32();
+    if (uid == 0) {
+        TIME_HILOGE(TIME_MODULE_SERVICE, "Error param uid.");
+        return E_TIME_READ_PARCEL_ERROR;
+    }
     auto isProxy = data.ReadBool();
     if (!ProxyTimer(uid, isProxy)) {
         return E_TIME_DEAL_FAILED;
