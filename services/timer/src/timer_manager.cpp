@@ -588,28 +588,27 @@ bool TimerManager::ProxyTimer(int32_t uid, bool isProxy)
     if (isProxy) {
         proxyUids_.insert(uid);
         return true;
+    }
+    auto it = proxyUids_.find(uid);
+    if (it != proxyUids_.end()) {
+        proxyUids_.erase(uid);
     } else {
-        auto it = proxyUids_.find(uid);
-        if (it != proxyUids_.end()) {
-            proxyUids_.erase(uid);
-        } else {
-            TIME_HILOGE(TIME_MODULE_SERVICE, "Uid: %{public}d doesn't exist in the proxy list." PRId64 "", uid);
-            return false;
-        }
-        auto itMap = proxyMap_.find(uid);
-        if (itMap != proxyMap_.end()) {
-            auto timeInfoVec = itMap->second;
-            for (auto alarm : timeInfoVec) {
-                if (!alarm->callback) {
-                    TIME_HILOGE(TIME_MODULE_SERVICE, "Callback is nullptr!");
-                    continue;
-                }
-                alarm->callback(alarm->id);
-                TIME_HILOGD(TIME_MODULE_SERVICE, "Shut down proxy, proxyUid: %{public}d, alarmId: %{public}" PRId64 "",
-                    uid, alarm->id);
+        TIME_HILOGE(TIME_MODULE_SERVICE, "Uid: %{public}d doesn't exist in the proxy list." PRId64 "", uid);
+        return false;
+    }
+    auto itMap = proxyMap_.find(uid);
+    if (itMap != proxyMap_.end()) {
+        auto timeInfoVec = itMap->second;
+        for (auto alarm : timeInfoVec) {
+            if (!alarm->callback) {
+                TIME_HILOGE(TIME_MODULE_SERVICE, "Callback is nullptr!");
+                continue;
             }
-            proxyMap_.erase(uid);
+            alarm->callback(alarm->id);
+            TIME_HILOGD(TIME_MODULE_SERVICE, "Shut down proxy, proxyUid: %{public}d, alarmId: %{public}" PRId64 "",
+                uid, alarm->id);
         }
+        proxyMap_.erase(uid);
     }
     return true;
 }
