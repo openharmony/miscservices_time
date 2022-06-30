@@ -385,7 +385,7 @@ void TimerManager::TimerLooper()
 
         if (result != TIME_CHANGED_MASK) {
             std::lock_guard<std::mutex> lock(mutex_);
-            auto hasWakeup = TriggerTimersLocked(triggerList, nowElapsed);
+            TriggerTimersLocked(triggerList, nowElapsed);
             DeliverTimersLocked(triggerList, nowElapsed);
             RescheduleKernelTimerLocked();
         } else {
