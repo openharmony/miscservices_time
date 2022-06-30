@@ -361,7 +361,6 @@ void TimerManager::TimerLooper()
         do {
             result = handler_->WaitForAlarm();
         } while (result < 0 && errno == EINTR);
-        TIME_HILOGI(TIME_MODULE_SERVICE, "result= %{public}d", result);
 
         auto nowRtc = std::chrono::system_clock::now();
         auto nowElapsed = std::chrono::steady_clock::now();
@@ -386,8 +385,7 @@ void TimerManager::TimerLooper()
 
         if (result != TIME_CHANGED_MASK) {
             std::lock_guard<std::mutex> lock(mutex_);
-            auto hasWakeup = TriggerTimersLocked(triggerList, nowElapsed);
-            TIME_HILOGI(TIME_MODULE_SERVICE, "hasWakeup= %{public}d", hasWakeup);
+            TriggerTimersLocked(triggerList, nowElapsed);
             DeliverTimersLocked(triggerList, nowElapsed);
             RescheduleKernelTimerLocked();
         } else {
@@ -407,16 +405,10 @@ TimerManager::~TimerManager()
 bool TimerManager::TriggerTimersLocked(std::vector<std::shared_ptr<TimerInfo>> &triggerList,
                                        std::chrono::steady_clock::time_point nowElapsed)
 {
-    TIME_HILOGI(TIME_MODULE_SERVICE, "alarmBatches_.size= %{public}d", static_cast<int>(alarmBatches_.size()));
     bool hasWakeup = false;
     while (!alarmBatches_.empty()) {
         auto batch = alarmBatches_.at(0);
-        TIME_HILOGI(TIME_MODULE_SERVICE, "batch->GetStart()= %{public}lld, nowElapsed= %{public}lld",
-            time_point_cast<nanoseconds>(batch->GetStart()).time_since_epoch().count(),
-            time_point_cast<nanoseconds>(nowElapsed).time_since_epoch().count());
         if (batch->GetStart() > nowElapsed) {
-            TIME_HILOGI(TIME_MODULE_SERVICE, "break alarmBatches_.size= %{public}d",
-                static_cast<int>(alarmBatches_.size()));
             break;
         }
         alarmBatches_.erase(alarmBatches_.begin());
@@ -454,23 +446,16 @@ bool TimerManager::TriggerTimersLocked(std::vector<std::shared_ptr<TimerInfo>> &
 
 void TimerManager::RescheduleKernelTimerLocked()
 {
-    TIME_HILOGI(TIME_MODULE_SERVICE, "start alarmBatches_.size= %{public}d", static_cast<int>(alarmBatches_.size()));
     auto nextNonWakeup = std::chrono::steady_clock::time_point::min();
     if (!alarmBatches_.empty()) {
         auto firstWakeup = FindFirstWakeupBatchLocked();
         auto firstBatch = alarmBatches_.front();
         if (firstWakeup != nullptr) {
             auto alarmPtr = firstWakeup->Get(0);
-            if (alarmPtr != nullptr) {
-                TIME_HILOGI(TIME_MODULE_SERVICE, "wake up alarm id :%{public}" PRId64 "", alarmPtr->id);
-            }
             SetLocked(ELAPSED_REALTIME_WAKEUP, firstWakeup->GetStart().time_since_epoch());
         }
         if (firstBatch != firstWakeup) {
             auto alarmPtr = firstBatch->Get(0);
-            if (alarmPtr != nullptr) {
-                TIME_HILOGI(TIME_MODULE_SERVICE, "nonwakeup alarm id :%{public}" PRId64 "", alarmPtr->id);
-            }
             nextNonWakeup = firstBatch->GetStart();
         }
     }
@@ -478,7 +463,6 @@ void TimerManager::RescheduleKernelTimerLocked()
     if (nextNonWakeup != std::chrono::steady_clock::time_point::min()) {
         SetLocked(ELAPSED_REALTIME, nextNonWakeup.time_since_epoch());
     }
-    TIME_HILOGI(TIME_MODULE_SERVICE, "end");
 }
 
 std::shared_ptr<Batch> TimerManager::FindFirstWakeupBatchLocked()
@@ -493,9 +477,7 @@ std::shared_ptr<Batch> TimerManager::FindFirstWakeupBatchLocked()
 
 void TimerManager::SetLocked(int type, std::chrono::nanoseconds when)
 {
-    TIME_HILOGI(TIME_MODULE_SERVICE, "start when.count= %{public}lld", when.count());
     handler_->Set(static_cast<uint32_t>(type), when);
-    TIME_HILOGI(TIME_MODULE_SERVICE, "end");
 }
 
 void TimerManager::InsertAndBatchTimerLocked(std::shared_ptr<TimerInfo> alarm)
@@ -532,14 +514,12 @@ int64_t TimerManager::AttemptCoalesceLocked(std::chrono::steady_clock::time_poin
 void TimerManager::DeliverTimersLocked(const std::vector<std::shared_ptr<TimerInfo>> &triggerList,
                                        std::chrono::steady_clock::time_point nowElapsed)
 {
-    TIME_HILOGI(TIME_MODULE_SERVICE, "start");
     for (const auto &alarm : triggerList) {
         if (alarm->callback) {
             alarm->callback(alarm->id);
             TIME_HILOGI(TIME_MODULE_SERVICE, "Trigger id: %{public}" PRId64 "", alarm->id);
         }
     }
-    TIME_HILOGI(TIME_MODULE_SERVICE, "end");
 }
 
 bool AddBatchLocked(std::vector<std::shared_ptr<Batch>> &list, const std::shared_ptr<Batch> &newBatch)
