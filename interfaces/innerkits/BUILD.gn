@@ -37,7 +37,7 @@ ohos_shared_library("time_client") {
   configs = [ ":time_client_config" ]
   public_configs = [ ":time_client_config" ]
   deps = [
-    "${aafwk_path}/frameworks/native/ability/native:abilitykit_native",
+    "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
     "${time_utils_path}:time_utils",
     "//third_party/jsoncpp:jsoncpp",
     "//utils/native/base:utils",

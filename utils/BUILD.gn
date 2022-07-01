@@ -31,7 +31,7 @@ ohos_source_set("time_utils") {
   ]
 
   deps = [
-    "${aafwk_inner_api_path}/app_manager:app_manager",
+    "${ability_runtime_inner_api_path}/app_manager:app_manager",
     "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk:system_ability_fwk",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
     "//utils/native/base:utils",

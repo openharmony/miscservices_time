@@ -49,7 +49,7 @@ ohos_shared_library("systemtimer") {
   ]
 
   deps = [
-    "${aafwk_path}/frameworks/native/ability/native:abilitykit_native",
+    "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
     "//base/miscservices/time/services:time_service",
     "//foundation/arkui/napi:ace_napi",
     "//third_party/libuv:uv_static",

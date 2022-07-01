@@ -61,7 +61,7 @@ ohos_shared_library("time_service") {
   ]
 
   deps = [
-    "${aafwk_path}/frameworks/native/ability/native:abilitykit_native",
+    "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
     "${time_utils_path}:time_utils",
     "//foundation/communication/netmanager_base/interfaces/innerkits/netconnclient:net_conn_manager_if",
     "//third_party/jsoncpp:jsoncpp",
