@@ -63,7 +63,7 @@ public:
     bool DestroyTimer(uint64_t  timerId) override;
     void NetworkTimeStatusOff() override;
     void NetworkTimeStatusOn() override;
-    bool ProxyTimer(int32_t uid, bool isProxy) override;
+    bool ProxyTimer(int32_t uid, bool isProxy, bool needRetrigger) override;
     bool ResetAllProxy() override;
 
 protected:

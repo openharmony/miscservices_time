@@ -317,7 +317,8 @@ int32_t TimeServiceStub::OnTimerProxy(MessageParcel &data, MessageParcel &reply)
         return E_TIME_READ_PARCEL_ERROR;
     }
     auto isProxy = data.ReadBool();
-    if (!ProxyTimer(uid, isProxy)) {
+    auto needRetrigger = data.ReadBool();
+    if (!ProxyTimer(uid, isProxy, needRetrigger)) {
         return E_TIME_DEAL_FAILED;
     }
     TIME_HILOGI(TIME_MODULE_SERVICE, "end.");

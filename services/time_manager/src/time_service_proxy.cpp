@@ -390,7 +390,7 @@ void TimeServiceProxy::NetworkTimeStatusOff()
     return;
 }
 
-bool TimeServiceProxy::ProxyTimer(int32_t uid, bool isProxy)
+bool TimeServiceProxy::ProxyTimer(int32_t uid, bool isProxy, bool needRetrigger)
 {
     MessageParcel data, reply;
     MessageOption option;
@@ -404,6 +404,10 @@ bool TimeServiceProxy::ProxyTimer(int32_t uid, bool isProxy)
         return false;
     }
     if (!data.WriteBool(isProxy)) {
+        TIME_HILOGE(TIME_MODULE_CLIENT, "Failed to write parcelable");
+        return false;
+    }
+    if (!data.WriteBool(needRetrigger)) {
         TIME_HILOGE(TIME_MODULE_CLIENT, "Failed to write parcelable");
         return false;
     }

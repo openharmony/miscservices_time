@@ -186,7 +186,7 @@ public:
      * @param isProxy true if proxy, false if not proxy
      * @return bool true on success, false on failure.
      */
-    virtual bool ProxyTimer(int32_t uid, bool isProxy) = 0;
+    virtual bool ProxyTimer(int32_t uid, bool isProxy, bool needRetrigger) = 0;
 
     /**
      * ResetAllProxy

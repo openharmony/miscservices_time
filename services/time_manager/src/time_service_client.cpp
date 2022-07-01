@@ -435,7 +435,7 @@ void TimeSaDeathRecipient::OnRemoteDied(const wptr<IRemoteObject> &object)
     TimeServiceClient::GetInstance()->OnRemoteSaDied(object);
 }
 
-bool TimeServiceClient::ProxyTimer(int32_t uid, bool isProxy)
+bool TimeServiceClient::ProxyTimer(int32_t uid, bool isProxy, bool needRetrigger)
 {
     TIME_HILOGD(TIME_MODULE_CLIENT, "ProxyTimer start uid: %{public}d, isProxy: %{public}d",
         uid, isProxy);
@@ -447,7 +447,7 @@ bool TimeServiceClient::ProxyTimer(int32_t uid, bool isProxy)
         TIME_HILOGE(TIME_MODULE_CLIENT, "ProxyTimer ConnectService failed.");
         return false;
     }
-    return timeServiceProxy_->ProxyTimer(uid, isProxy);
+    return timeServiceProxy_->ProxyTimer(uid, isProxy, needRetrigger);
 }
 
 bool TimeServiceClient::ResetAllProxy()

@@ -134,6 +134,21 @@ bool TimerManager::StopTimer(uint64_t timerNumber)
         return false;
     }
     RemoveHandler(timerNumber);
+    int32_t uid = it->second->uid;
+    auto itMap = proxyMap_.find(uid);
+    if (itMap != proxyMap_.end()) {
+        auto alarms = itMap->second;
+        for (auto itAlarm = alarms.begin(); itAlarm != alarms.end();) {
+            if ((*itAlarm)->id == timerNumber) {
+                alarms.erase(itAlarm);
+            } else {
+                itAlarm++;
+            }
+        }
+        if (alarms.empty()) {
+            proxyMap_.erase(uid);
+        }
+    }
     TIME_HILOGD(TIME_MODULE_SERVICE, "end.");
     return true;
 }
@@ -148,6 +163,21 @@ bool TimerManager::DestroyTimer(uint64_t timerNumber)
         return false;
     }
     RemoveHandler(timerNumber);
+    int32_t uid = it->second->uid;
+    auto itMap = proxyMap_.find(uid);
+    if (itMap != proxyMap_.end()) {
+        auto alarms = itMap->second;
+        for (auto itAlarm = alarms.begin(); itAlarm != alarms.end();) {
+            if ((*itAlarm)->id == timerNumber) {
+                alarms.erase(itAlarm);
+            } else {
+                itAlarm++;
+            }
+        }
+        if (alarms.empty()) {
+            proxyMap_.erase(uid);
+        }
+    }
     timerEntryMap_.erase(it);
     TIME_HILOGD(TIME_MODULE_SERVICE, "end.");
     return true;
@@ -581,7 +611,7 @@ void TimerManager::CallbackAlarmIfNeed(std::shared_ptr<TimerInfo> alarm)
     }
 }
 
-bool TimerManager::ProxyTimer(int32_t uid, bool isProxy)
+bool TimerManager::ProxyTimer(int32_t uid, bool isProxy, bool needRetrigger)
 {
     std::lock_guard<std::mutex> lock(proxyMutex_);
     TIME_HILOGD(TIME_MODULE_SERVICE, "start");
@@ -596,15 +626,21 @@ bool TimerManager::ProxyTimer(int32_t uid, bool isProxy)
         TIME_HILOGE(TIME_MODULE_SERVICE, "Uid: %{public}d doesn't exist in the proxy list." PRId64 "", uid);
         return false;
     }
+    if (!needRetrigger) {
+        TIME_HILOGI(TIME_MODULE_SERVICE, "ProxyTimer doesn't need retrigger, clear all callbacks!");
+        proxyMap_.erase(uid);
+        return true;
+    }
     auto itMap = proxyMap_.find(uid);
     if (itMap != proxyMap_.end()) {
         auto timeInfoVec = itMap->second;
         for (auto alarm : timeInfoVec) {
             if (!alarm->callback) {
-                TIME_HILOGE(TIME_MODULE_SERVICE, "Callback is nullptr!");
+                TIME_HILOGE(TIME_MODULE_SERVICE, "ProxyTimer Callback is nullptr!");
                 continue;
             }
             alarm->callback(alarm->id);
+            timeInfoVec.clear();
             TIME_HILOGD(TIME_MODULE_SERVICE, "Shut down proxy, proxyUid: %{public}d, alarmId: %{public}" PRId64 "",
                 uid, alarm->id);
         }

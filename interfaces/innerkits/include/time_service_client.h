@@ -168,7 +168,7 @@ public:
      * @param isProxy true if set proxy, false if remove proxy.
      * @return bool true on success, false on failure.
      */
-    bool ProxyTimer(int32_t uid, bool isProxy);
+    bool ProxyTimer(int32_t uid, bool isProxy, bool needRetrigger);
 
     /**
      * ResetAllProxy

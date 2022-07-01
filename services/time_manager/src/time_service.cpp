@@ -580,7 +580,7 @@ void TimeService::NetworkTimeStatusOn()
     DelayedSingleton<NtpUpdateTime>::GetInstance()->UpdateStatusOn();
 }
 
-bool TimeService::ProxyTimer(int32_t uid, bool isProxy)
+bool TimeService::ProxyTimer(int32_t uid, bool isProxy, bool needRetrigger)
 {
     auto hasPerm = DelayedSingleton<TimePermission>::GetInstance()->CheckProxyCallingPermission();
     if (!hasPerm) {
@@ -597,7 +597,7 @@ bool TimeService::ProxyTimer(int32_t uid, bool isProxy)
             return false;
         }
     }
-    return timerManagerHandler_->ProxyTimer(uid, isProxy);
+    return timerManagerHandler_->ProxyTimer(uid, isProxy, needRetrigger);
 }
 
 bool TimeService::ResetAllProxy()

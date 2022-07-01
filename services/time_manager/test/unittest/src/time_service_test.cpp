@@ -317,9 +317,9 @@ HWTEST_F(TimeServiceTest, CreateTimer006, TestSize.Level0)
 HWTEST_F(TimeServiceTest, ProxyTimer001, TestSize.Level0)
 {
     int32_t uid = 99999;
-    auto ret = TimeServiceClient::GetInstance()->ProxyTimer(uid, true);
+    auto ret = TimeServiceClient::GetInstance()->ProxyTimer(uid, true, true);
     EXPECT_TRUE(ret);
-    ret = TimeServiceClient::GetInstance()->ProxyTimer(uid, false);
+    ret = TimeServiceClient::GetInstance()->ProxyTimer(uid, false, true);
     EXPECT_TRUE(ret);
 }
 
@@ -332,7 +332,7 @@ HWTEST_F(TimeServiceTest, ProxyTimer001, TestSize.Level0)
 HWTEST_F(TimeServiceTest, ProxyTimer002, TestSize.Level0)
 {
     int32_t uid = 99999;
-    auto ret = TimeServiceClient::GetInstance()->ProxyTimer(uid, true);
+    auto ret = TimeServiceClient::GetInstance()->ProxyTimer(uid, true, true);
     EXPECT_TRUE(ret);
     ret = TimeServiceClient::GetInstance()->ResetAllProxy();
     EXPECT_TRUE(ret);
@@ -347,6 +347,21 @@ HWTEST_F(TimeServiceTest, ProxyTimer002, TestSize.Level0)
 HWTEST_F(TimeServiceTest, ProxyTimer003, TestSize.Level0)
 {
     int32_t uid = 99999;
-    auto ret = TimeServiceClient::GetInstance()->ProxyTimer(uid, false);
+    auto ret = TimeServiceClient::GetInstance()->ProxyTimer(uid, false, true);
+    EXPECT_FALSE(ret);
+}
+
+/**
+* @tc.name: ProxyTimer004.
+* @tc.desc: proxy timer.
+* @tc.type: FUNC
+* @tc.require: SR000H0GQ6 AR000H2VTQ
+*/
+HWTEST_F(TimeServiceTest, ProxyTimer004, TestSize.Level0)
+{
+    int32_t uid = 99999;
+    auto ret = TimeServiceClient::GetInstance()->ProxyTimer(uid, true, false);
+    EXPECT_FALSE(ret);
+    auto ret = TimeServiceClient::GetInstance()->ProxyTimer(uid, false, false);
     EXPECT_FALSE(ret);
 }
