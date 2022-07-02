@@ -104,7 +104,6 @@ TimerHandler::~TimerHandler()
 
 int TimerHandler::Set(uint32_t type, std::chrono::nanoseconds when)
 {
-    TIME_HILOGI(TIME_MODULE_SERVICE, "type= %{public}d, when= %{public}lld", type, when.count());
     if (static_cast<size_t>(type) > ALARM_TYPE_COUNT) {
         errno = EINVAL;
         return -1;
