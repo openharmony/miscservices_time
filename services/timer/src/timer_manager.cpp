@@ -138,7 +138,6 @@ bool TimerManager::StopTimer(uint64_t timerNumber)
         int32_t uid = it->second->uid;
         RemoveProxy(timerNumber, uid);
     }
-    timerEntryMap_.erase(timerNumber);
     TIME_HILOGD(TIME_MODULE_SERVICE, "end.");
     return true;
 }
@@ -632,7 +631,7 @@ bool TimerManager::ProxyTimer(int32_t uid, bool isProxy, bool needRetrigger)
     auto itMap = proxyMap_.find(uid);
     if (itMap != proxyMap_.end()) {
         auto timeInfoVec = itMap->second;
-        for (const auto &alarm : timeInfoVec) {
+        for (const auto& alarm : timeInfoVec) {
             if (!alarm->callback) {
                 TIME_HILOGE(TIME_MODULE_SERVICE, "ProxyTimer Callback is nullptr!");
                 continue;
