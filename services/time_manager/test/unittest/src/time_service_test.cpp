@@ -364,6 +364,6 @@ HWTEST_F(TimeServiceTest, ProxyTimer004, TestSize.Level0)
     int32_t uid = RESERVED_UID;
     auto ret = TimeServiceClient::GetInstance()->ProxyTimer(uid, true, false);
     EXPECT_FALSE(ret);
-    auto ret = TimeServiceClient::GetInstance()->ProxyTimer(uid, false, false);
+    ret = TimeServiceClient::GetInstance()->ProxyTimer(uid, false, false);
     EXPECT_FALSE(ret);
 }
