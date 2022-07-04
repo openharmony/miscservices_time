@@ -156,7 +156,7 @@ bool TimerManager::DestroyTimer(uint64_t timerNumber)
         int32_t uid = it->second->uid;
         RemoveProxy(timerNumber, uid);
     }
-    timerEntryMap_.erase(timerNumber);
+    timerEntryMap_.erase(it);
     TIME_HILOGD(TIME_MODULE_SERVICE, "end.");
     return true;
 }
