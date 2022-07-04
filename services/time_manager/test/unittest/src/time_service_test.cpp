@@ -15,6 +15,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <chrono>
+#include "ipc_skeleton.h"
 #include "timer_info_test.h"
 #include "time_service_test.h"
 
@@ -22,6 +23,8 @@ using namespace testing::ext;
 using namespace OHOS;
 using namespace OHOS::MiscServices;
 using namespace std::chrono;
+
+const int RESERVED_UID = 99999;
 
 class TimeServiceTest : public testing::Test
 {
@@ -305,4 +308,62 @@ HWTEST_F(TimeServiceTest, CreateTimer006, TestSize.Level0)
 
     ret = TimeServiceClient::GetInstance()->StopTimer(timerId1);
     EXPECT_FALSE(ret);
+}
+
+/**
+* @tc.name: ProxyTimer001.
+* @tc.desc: proxy timer.
+* @tc.type: FUNC
+* @tc.require: SR000H0GQ6 AR000H2VTQ
+*/
+HWTEST_F(TimeServiceTest, ProxyTimer001, TestSize.Level0)
+{
+    int32_t uid = 99999;
+    auto ret = TimeServiceClient::GetInstance()->ProxyTimer(uid, true, true);
+    EXPECT_TRUE(ret);
+    ret = TimeServiceClient::GetInstance()->ProxyTimer(uid, false, true);
+    EXPECT_TRUE(ret);
+}
+
+/**
+* @tc.name: ProxyTimer002.
+* @tc.desc: proxy timer.
+* @tc.type: FUNC
+* @tc.require: SR000H0GQ6 AR000H2VTQ
+*/
+HWTEST_F(TimeServiceTest, ProxyTimer002, TestSize.Level0)
+{
+    int32_t uid = RESERVED_UID;
+    auto ret = TimeServiceClient::GetInstance()->ProxyTimer(uid, true, true);
+    EXPECT_TRUE(ret);
+    ret = TimeServiceClient::GetInstance()->ResetAllProxy();
+    EXPECT_TRUE(ret);
+}
+
+/**
+* @tc.name: ProxyTimer003.
+* @tc.desc: proxy timer.
+* @tc.type: FUNC
+* @tc.require: SR000H0GQ6 AR000H2VTQ
+*/
+HWTEST_F(TimeServiceTest, ProxyTimer003, TestSize.Level0)
+{
+    int32_t uid = RESERVED_UID;
+    auto ret = TimeServiceClient::GetInstance()->ProxyTimer(uid, false, true);
+    EXPECT_FALSE(ret);
+}
+
+/**
+* @tc.name: ProxyTimer004.
+* @tc.desc: proxy timer.
+* @tc.type: FUNC
+* @tc.require: SR000H0GQ6 AR000H2VTQ
+*/
+HWTEST_F(TimeServiceTest, ProxyTimer004, TestSize.Level0)
+{
+    int32_t uid = RESERVED_UID;
+    auto ret = TimeServiceClient::GetInstance()->ProxyTimer(uid, true, false);
+    EXPECT_TRUE(ret);
+    ret = TimeServiceClient::GetInstance()->ProxyTimer(uid, false, false);
+    EXPECT_TRUE(ret);
 }

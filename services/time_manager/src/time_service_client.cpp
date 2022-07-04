@@ -434,5 +434,34 @@ void TimeSaDeathRecipient::OnRemoteDied(const wptr<IRemoteObject> &object)
     TIME_HILOGE(TIME_MODULE_CLIENT, "TimeSaDeathRecipient on remote systemAbility died.");
     TimeServiceClient::GetInstance()->OnRemoteSaDied(object);
 }
+
+bool TimeServiceClient::ProxyTimer(int32_t uid, bool isProxy, bool needRetrigger)
+{
+    TIME_HILOGD(TIME_MODULE_CLIENT, "ProxyTimer start uid: %{public}d, isProxy: %{public}d",
+        uid, isProxy);
+    if (timeServiceProxy_ == nullptr) {
+        TIME_HILOGW(TIME_MODULE_CLIENT, "ProxyTimer ConnectService");
+        timeServiceProxy_ = ConnectService();
+    }
+    if (timeServiceProxy_ == nullptr) {
+        TIME_HILOGE(TIME_MODULE_CLIENT, "ProxyTimer ConnectService failed.");
+        return false;
+    }
+    return timeServiceProxy_->ProxyTimer(uid, isProxy, needRetrigger);
+}
+
+bool TimeServiceClient::ResetAllProxy()
+{
+    TIME_HILOGD(TIME_MODULE_CLIENT, "ResetAllProxy");
+    if (timeServiceProxy_ == nullptr) {
+        TIME_HILOGW(TIME_MODULE_CLIENT, "ResetAllProxy ConnectService");
+        timeServiceProxy_ = ConnectService();
+    }
+    if (timeServiceProxy_ == nullptr) {
+        TIME_HILOGE(TIME_MODULE_CLIENT, "ResetAllProxy ConnectService failed.");
+        return false;
+    }
+    return timeServiceProxy_->ResetAllProxy();
+}
 } // namespace MiscServices
 } // namespace OHOS

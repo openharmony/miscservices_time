@@ -45,5 +45,12 @@ bool TimePermission::CheckCallingPermission(const std::string &permissionName)
     }
     return true;
 }
+
+bool TimePermission::CheckProxyCallingPermission()
+{
+    auto callerToken = IPCSkeleton::GetCallingTokenID();
+    auto tokenType = Security::AccessToken::AccessTokenKit::GetTokenTypeFlag(callerToken);
+    return tokenType == Security::AccessToken::ATokenTypeEnum::TOKEN_NATIVE;
+}
 } // namespace MiscServices
 } // namespace OHOS

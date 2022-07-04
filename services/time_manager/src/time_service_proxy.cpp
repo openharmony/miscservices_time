@@ -389,5 +389,53 @@ void TimeServiceProxy::NetworkTimeStatusOff()
 
     return;
 }
+
+bool TimeServiceProxy::ProxyTimer(int32_t uid, bool isProxy, bool needRetrigger)
+{
+    MessageParcel data, reply;
+    MessageOption option;
+
+    if (!data.WriteInterfaceToken(GetDescriptor())) {
+        TIME_HILOGE(TIME_MODULE_CLIENT, "Failed to write parcelable");
+        return false;
+    }
+    if (!data.WriteInt32(uid)) {
+        TIME_HILOGE(TIME_MODULE_CLIENT, "Failed to write parcelable");
+        return false;
+    }
+    if (!data.WriteBool(isProxy)) {
+        TIME_HILOGE(TIME_MODULE_CLIENT, "Failed to write parcelable");
+        return false;
+    }
+    if (!data.WriteBool(needRetrigger)) {
+        TIME_HILOGE(TIME_MODULE_CLIENT, "Failed to write parcelable");
+        return false;
+    }
+
+    int32_t result = Remote()->SendRequest(PROXY_TIMER, data, reply, option);
+    if (result != ERR_NONE) {
+        TIME_HILOGE(TIME_MODULE_CLIENT, "ProxyTimer failed, error code is: %{public}d", result);
+        return false;
+    }
+    return true;
+}
+
+bool TimeServiceProxy::ResetAllProxy()
+{
+    MessageParcel data, reply;
+    MessageOption option;
+
+    if (!data.WriteInterfaceToken(GetDescriptor())) {
+        TIME_HILOGE(TIME_MODULE_CLIENT, "Failed to write parcelable");
+        return false;
+    }
+
+    int32_t result = Remote()->SendRequest(RESET_ALL_PROXY, data, reply, option);
+    if (result != ERR_NONE) {
+        TIME_HILOGE(TIME_MODULE_CLIENT, "ProxyTimer failed, error code is: %{public}d", result);
+        return false;
+    }
+    return true;
+}
 } // namespace MiscServices
 } // namespace OHOS

@@ -56,6 +56,8 @@ public:
     virtual bool StopTimer(uint64_t timerNumber) = 0;
     virtual bool DestroyTimer(uint64_t timerNumber) = 0;
     virtual ~ITimerManager() = default;
+    virtual bool ProxyTimer(int32_t uid, bool isProxy, bool needRetrigger) = 0;
+    virtual bool ResetAllProxy() = 0;
 }; // ITimerManager
 } // MiscService
 } // OHOS

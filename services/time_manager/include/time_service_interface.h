@@ -41,7 +41,9 @@ public:
         STOP_TIMER = 13,
         DESTORY_TIMER = 14,
         NETWORK_TIME_ON = 15,
-        NETWORK_TIME_OFF = 16
+        NETWORK_TIME_OFF = 16,
+        PROXY_TIMER = 17,
+        RESET_ALL_PROXY = 18
     };
       /**
      * SetTime
@@ -178,6 +180,21 @@ public:
      */
     virtual void NetworkTimeStatusOn() = 0;
     
+    /**
+     * ProxyTimer
+     * @param uid the uid
+     * @param isProxy true if proxy, false if not proxy
+     * @param needRetrigger true if need retrigger, false if not.
+     * @return bool true on success, false on failure.
+     */
+    virtual bool ProxyTimer(int32_t uid, bool isProxy, bool needRetrigger) = 0;
+
+    /**
+     * ResetAllProxy
+     * @return bool true on success, false on failure.
+     */
+    virtual bool ResetAllProxy() = 0;
+
     DECLARE_INTERFACE_DESCRIPTOR(u"ohos.miscservices.time.ITimeService");
 };
 } // namespace MiscServices

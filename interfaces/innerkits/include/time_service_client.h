@@ -162,6 +162,21 @@ public:
 
     void OnRemoteSaDied(const wptr<IRemoteObject> &object);
 
+    /**
+     * ProxyTimer
+     * @param uid the uid
+     * @param isProxy true if set proxy, false if remove proxy.
+     * @param needRetrigger true if need retrigger, false if not.
+     * @return bool true on success, false on failure.
+     */
+    bool ProxyTimer(int32_t uid, bool isProxy, bool needRetrigger);
+
+    /**
+     * ResetAllProxy
+     * @return bool true on success, false on failure.
+     */
+    bool ResetAllProxy();
+
 private:
     TimeServiceClient();
     ~TimeServiceClient();

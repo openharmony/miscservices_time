@@ -31,6 +31,7 @@ namespace MiscServices {
 class TimePermission {
 public:
     static bool CheckCallingPermission(const std::string &permissionName);
+    static bool CheckProxyCallingPermission();
 };
 } // namespace MiscServices
 } // namespace OHOS

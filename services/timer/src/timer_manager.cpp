@@ -134,6 +134,10 @@ bool TimerManager::StopTimer(uint64_t timerNumber)
         return false;
     }
     RemoveHandler(timerNumber);
+    if (it->second) {
+        int32_t uid = it->second->uid;
+        RemoveProxy(timerNumber, uid);
+    }
     TIME_HILOGD(TIME_MODULE_SERVICE, "end.");
     return true;
 }
@@ -148,9 +152,32 @@ bool TimerManager::DestroyTimer(uint64_t timerNumber)
         return false;
     }
     RemoveHandler(timerNumber);
+    if (it->second) {
+        int32_t uid = it->second->uid;
+        RemoveProxy(timerNumber, uid);
+    }
     timerEntryMap_.erase(it);
     TIME_HILOGD(TIME_MODULE_SERVICE, "end.");
     return true;
+}
+
+void TimerManager::RemoveProxy(uint64_t timerNumber, int32_t uid)
+{
+    std::lock_guard<std::mutex> lock(proxyMutex_);
+    auto itMap = proxyMap_.find(uid);
+    if (itMap != proxyMap_.end()) {
+        auto alarms = itMap->second;
+        for (auto itAlarm = alarms.begin(); itAlarm != alarms.end();) {
+            if ((*itAlarm)->id == timerNumber) {
+                alarms.erase(itAlarm);
+            } else {
+                itAlarm++;
+            }
+        }
+        if (alarms.empty()) {
+            proxyMap_.erase(uid);
+        }
+    }
 }
 
 bool TimerManager::IsSystemUid(int uid)
@@ -529,10 +556,92 @@ void TimerManager::DeliverTimersLocked(const std::vector<std::shared_ptr<TimerIn
 {
     for (const auto &alarm : triggerList) {
         if (alarm->callback) {
-            alarm->callback(alarm->id);
-            TIME_HILOGI(TIME_MODULE_SERVICE, "Trigger id: %{public}" PRId64 "", alarm->id);
+            CallbackAlarmIfNeed(alarm);
         }
     }
+}
+
+void TimerManager::CallbackAlarmIfNeed(std::shared_ptr<TimerInfo> alarm)
+{
+    int uid = alarm->uid;
+    std::lock_guard<std::mutex> lock(proxyMutex_);
+    auto it = proxyUids_.find(uid);
+    if (it == proxyUids_.end()) {
+        alarm->callback(alarm->id);
+        TIME_HILOGI(TIME_MODULE_SERVICE, "Trigger id: %{public}" PRId64 "", alarm->id);
+        return;
+    }
+    TIME_HILOGI(TIME_MODULE_SERVICE, "Alarm is proxy!");
+    auto itMap = proxyMap_.find(uid);
+    if (itMap == proxyMap_.end()) {
+        std::vector<std::shared_ptr<TimerInfo>> timeInfoVec;
+        timeInfoVec.push_back(alarm);
+        proxyMap_[uid] = timeInfoVec;
+    } else {
+        std::vector<std::shared_ptr<TimerInfo>> timeInfoVec = itMap->second;
+        timeInfoVec.push_back(alarm);
+        proxyMap_[uid] = timeInfoVec;
+    }
+}
+
+bool TimerManager::ProxyTimer(int32_t uid, bool isProxy, bool needRetrigger)
+{
+    std::lock_guard<std::mutex> lock(proxyMutex_);
+    TIME_HILOGD(TIME_MODULE_SERVICE, "start");
+    if (isProxy) {
+        proxyUids_.insert(uid);
+        return true;
+    }
+    auto it = proxyUids_.find(uid);
+    if (it != proxyUids_.end()) {
+        proxyUids_.erase(uid);
+    } else {
+        TIME_HILOGE(TIME_MODULE_SERVICE, "Uid: %{public}d doesn't exist in the proxy list." PRId64 "", uid);
+        return false;
+    }
+    if (!needRetrigger) {
+        TIME_HILOGI(TIME_MODULE_SERVICE, "ProxyTimer doesn't need retrigger, clear all callbacks!");
+        proxyMap_.erase(uid);
+        return true;
+    }
+    auto itMap = proxyMap_.find(uid);
+    if (itMap != proxyMap_.end()) {
+        auto timeInfoVec = itMap->second;
+        for (const auto& alarm : timeInfoVec) {
+            if (!alarm->callback) {
+                TIME_HILOGE(TIME_MODULE_SERVICE, "ProxyTimer Callback is nullptr!");
+                continue;
+            }
+            alarm->callback(alarm->id);
+            TIME_HILOGD(TIME_MODULE_SERVICE, "Shut down proxy, proxyUid: %{public}d, alarmId: %{public}" PRId64 "",
+                uid, alarm->id);
+        }
+        timeInfoVec.clear();
+        proxyMap_.erase(uid);
+    }
+    return true;
+}
+
+bool TimerManager::ResetAllProxy()
+{
+    std::lock_guard<std::mutex> lock(proxyMutex_);
+    TIME_HILOGD(TIME_MODULE_SERVICE, "start");
+    for (auto it = proxyMap_.begin(); it != proxyMap_.end(); it++) {
+        auto timeInfoVec = it->second;
+        for (const auto& alarm : timeInfoVec) {
+            if (!alarm->callback) {
+                TIME_HILOGE(TIME_MODULE_SERVICE, "Callback is nullptr!");
+                continue;
+            }
+            alarm->callback(alarm->id);
+            TIME_HILOGD(TIME_MODULE_SERVICE, "Reset all proxy, proxyUid: %{public}d, alarmId: %{public}" PRId64 "",
+                it->first, alarm->id);
+        }
+        timeInfoVec.clear();
+    }
+    proxyMap_.clear();
+    proxyUids_.clear();
+    return true;
 }
 
 bool AddBatchLocked(std::vector<std::shared_ptr<Batch>> &list, const std::shared_ptr<Batch> &newBatch)
