@@ -24,6 +24,8 @@ using namespace OHOS;
 using namespace OHOS::MiscServices;
 using namespace std::chrono;
 
+const int RESERVED_UID = 99999;
+
 class TimeServiceTest : public testing::Test
 {
 public:
@@ -331,7 +333,7 @@ HWTEST_F(TimeServiceTest, ProxyTimer001, TestSize.Level0)
 */
 HWTEST_F(TimeServiceTest, ProxyTimer002, TestSize.Level0)
 {
-    int32_t uid = 99999;
+    int32_t uid = RESERVED_UID;
     auto ret = TimeServiceClient::GetInstance()->ProxyTimer(uid, true, true);
     EXPECT_TRUE(ret);
     ret = TimeServiceClient::GetInstance()->ResetAllProxy();
@@ -346,7 +348,7 @@ HWTEST_F(TimeServiceTest, ProxyTimer002, TestSize.Level0)
 */
 HWTEST_F(TimeServiceTest, ProxyTimer003, TestSize.Level0)
 {
-    int32_t uid = 99999;
+    int32_t uid = RESERVED_UID;
     auto ret = TimeServiceClient::GetInstance()->ProxyTimer(uid, false, true);
     EXPECT_FALSE(ret);
 }
@@ -359,7 +361,7 @@ HWTEST_F(TimeServiceTest, ProxyTimer003, TestSize.Level0)
 */
 HWTEST_F(TimeServiceTest, ProxyTimer004, TestSize.Level0)
 {
-    int32_t uid = 99999;
+    int32_t uid = RESERVED_UID;
     auto ret = TimeServiceClient::GetInstance()->ProxyTimer(uid, true, false);
     EXPECT_FALSE(ret);
     auto ret = TimeServiceClient::GetInstance()->ProxyTimer(uid, false, false);

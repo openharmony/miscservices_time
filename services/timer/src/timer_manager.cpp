@@ -138,6 +138,7 @@ bool TimerManager::StopTimer(uint64_t timerNumber)
         int32_t uid = it->second->uid;
         RemoveProxy(timerNumber, uid);
     }
+    timerEntryMap_.erase(timerNumber);
     TIME_HILOGD(TIME_MODULE_SERVICE, "end.");
     return true;
 }
@@ -156,6 +157,7 @@ bool TimerManager::DestroyTimer(uint64_t timerNumber)
         int32_t uid = it->second->uid;
         RemoveProxy(timerNumber, uid);
     }
+    timerEntryMap_.erase(timerNumber);
     TIME_HILOGD(TIME_MODULE_SERVICE, "end.");
     return true;
 }
@@ -177,7 +179,6 @@ void TimerManager::RemoveProxy(uint64_t timerNumber, int32_t uid)
             proxyMap_.erase(uid);
         }
     }
-    timerEntryMap_.erase(timerNumber);
 }
 
 bool TimerManager::IsSystemUid(int uid)
@@ -631,16 +632,16 @@ bool TimerManager::ProxyTimer(int32_t uid, bool isProxy, bool needRetrigger)
     auto itMap = proxyMap_.find(uid);
     if (itMap != proxyMap_.end()) {
         auto timeInfoVec = itMap->second;
-        for (auto alarm : timeInfoVec) {
+        for (const auto &alarm : timeInfoVec) {
             if (!alarm->callback) {
                 TIME_HILOGE(TIME_MODULE_SERVICE, "ProxyTimer Callback is nullptr!");
                 continue;
             }
             alarm->callback(alarm->id);
-            timeInfoVec.clear();
             TIME_HILOGD(TIME_MODULE_SERVICE, "Shut down proxy, proxyUid: %{public}d, alarmId: %{public}" PRId64 "",
                 uid, alarm->id);
         }
+        timeInfoVec.clear();
         proxyMap_.erase(uid);
     }
     return true;
@@ -652,7 +653,7 @@ bool TimerManager::ResetAllProxy()
     TIME_HILOGD(TIME_MODULE_SERVICE, "start");
     for (auto it = proxyMap_.begin(); it != proxyMap_.end(); it++) {
         auto timeInfoVec = it->second;
-        for (auto alarm : timeInfoVec) {
+        for (const auto& alarm : timeInfoVec) {
             if (!alarm->callback) {
                 TIME_HILOGE(TIME_MODULE_SERVICE, "Callback is nullptr!");
                 continue;
