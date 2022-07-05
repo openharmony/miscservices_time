@@ -680,7 +680,7 @@ bool TimerManager::ShowtimerEntryMap(int fd)
         dprintf(fd, " * timer id            = %d\n", iter->second->id);
         dprintf(fd, " * timer type          = %d\n", iter->second->type);
         dprintf(fd, " * timer window Length = %d\n", iter->second->windowLength);
-        dprintf(fd, " * timer interval      = %d\n", iter->second->flag);
+        dprintf(fd, " * timer interval      = %d\n", iter->second->interval);
         dprintf(fd, " * timer uid           = %d\n\n", iter->second->uid);
     }
     TIME_HILOGD(TIME_MODULE_SERVICE, "end.");

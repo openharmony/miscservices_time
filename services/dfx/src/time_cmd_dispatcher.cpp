@@ -60,6 +60,5 @@ TimeCmdDispatcher &TimeCmdDispatcher::GetInstance()
     static TimeCmdDispatcher instance;
     return instance;
 }
-
 } // namespace MiscServices
 } // namespace OHOS
