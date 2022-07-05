@@ -17,6 +17,6 @@ MISC_TIME_STATISTIC_REPORT:
   __BASE: {type: STATISTIC, level: MINOR, tag: PowerStatus, desc: trigger timer report}
   CALLER_PID: {type: INT32, desc: the process id}
   CALLER_UID: {type: INT32, desc: the user id}
-  TIMER_TYPE: {type: INT32,desc: the timer type}
-  TRIGGER_TIME: {type:INT64,desc the trigger time}
-  INTERVAL: {type: INT32, desc: the trigger time}
+  TIMER_TYPE: {type: INT32, desc: the timer type}
+  TRIGGER_TIME: {type: INT64, desc: the trigger time}
+  INTERVAL: {type: INT32, desc: the interval time}
