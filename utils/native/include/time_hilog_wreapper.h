@@ -32,8 +32,7 @@ enum TimeSubModule {
     TIME_MODULE_BUTT,
 };
 
-// 0xD001C00: subsystem:TIME module:TimeManager, 8 bits reserved.
-static constexpr unsigned int BASE_TIME_DOMAIN_ID = 0xD001C00;
+static constexpr unsigned int BASE_TIME_DOMAIN_ID = 0xD001C04;
 
 enum TimeDomainId {
     TIME_INNERKIT_DOMAIN = BASE_TIME_DOMAIN_ID + TIME_MODULE_INNERKIT,
