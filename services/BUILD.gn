@@ -20,6 +20,7 @@ config("time_service_config") {
     "../utils/native/include",
     "time_manager/include",
     "timer/include",
+    "dfx/include",
     "//utils/system/safwk/native/include",
     "//third_party/json/include",
     "//base/hiviewdfx/hilog/interfaces/native/innerkits/include",
@@ -38,6 +39,10 @@ ohos_shared_library("time_service") {
   ]
 
   sources = [
+    "dfx/src/time_cmd_dispatcher.cpp",
+    "dfx/src/time_cmd_parse.cpp",
+    "dfx/src/time_sysevent.cpp",
+    "dfx/src/time_trace.cpp",
     "time_manager/src/itimer_info.cpp",
     "time_manager/src/net_conn_callback_observer.cpp",
     "time_manager/src/nitz_subscriber.cpp",
@@ -73,6 +78,9 @@ ohos_shared_library("time_service") {
     "ability_runtime:wantagent_innerkits",
     "common_event_service:cesfwk_innerkits",
     "eventhandler:libeventhandler",
+    "hisysevent_native:libhisysevent",
+    "hitrace_native:hitrace_meter",
+    "hitrace_native:libhitrace",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
     "relational_store:native_appdatafwk",

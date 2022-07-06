@@ -669,5 +669,58 @@ steady_clock::time_point MaxTriggerTime(steady_clock::time_point now,
     }
     return triggerAtTime + milliseconds(static_cast<long>(BATCH_WINDOW_COE * futurity.count()));
 }
+
+bool TimerManager::ShowtimerEntryMap(int fd)
+{
+    TIME_HILOGD(TIME_MODULE_SERVICE, "start.");
+    std::lock_guard<std::mutex> lock(entryMapMutex_);
+    std::map<uint64_t, std::shared_ptr<TimerEntry>>::iterator iter = timerEntryMap_.begin();
+    for (; iter != timerEntryMap_.end(); iter++) {
+        dprintf(fd, " - dump timer number   = %d\n", iter->first);
+        dprintf(fd, " * timer id            = %d\n", iter->second->id);
+        dprintf(fd, " * timer type          = %d\n", iter->second->type);
+        dprintf(fd, " * timer window Length = %d\n", iter->second->windowLength);
+        dprintf(fd, " * timer interval      = %d\n", iter->second->interval);
+        dprintf(fd, " * timer uid           = %d\n\n", iter->second->uid);
+    }
+    TIME_HILOGD(TIME_MODULE_SERVICE, "end.");
+    return true;
+}
+
+bool TimerManager::ShowTimerEntryById(int fd, uint64_t timerId)
+{
+    TIME_HILOGD(TIME_MODULE_SERVICE, "start.");
+    std::lock_guard<std::mutex> lock(entryMapMutex_);
+    std::map<uint64_t, std::shared_ptr<TimerEntry>>::iterator iter = timerEntryMap_.find(timerId);
+    if (iter == timerEntryMap_.end()) {
+        TIME_HILOGD(TIME_MODULE_SERVICE, "end.");
+        return false;
+    } else {
+        dprintf(fd, " - dump timer number   = %d\n", iter->first);
+        dprintf(fd, " * timer id            = %d\n", iter->second->id);
+        dprintf(fd, " * timer type          = %d\n", iter->second->type);
+        dprintf(fd, " * timer window Length = %d\n", iter->second->windowLength);
+        dprintf(fd, " * timer interval      = %d\n", iter->second->flag);
+        dprintf(fd, " * timer uid           = %d\n\n", iter->second->uid);
+    }
+    TIME_HILOGD(TIME_MODULE_SERVICE, "end.");
+    return true;
+}
+
+bool TimerManager::ShowTimerTriggerById(int fd, uint64_t timerId)
+{
+    TIME_HILOGD(TIME_MODULE_SERVICE, "start.");
+    std::lock_guard<std::mutex> lock(entryMapMutex_);
+    for (size_t i = 0; i < alarmBatches_.size(); i++) {
+        for (size_t j = 0; j < alarmBatches_[i]->Size(); j++) {
+            if (alarmBatches_[i]->Get(j)->id == timerId) {
+                dprintf(fd, " - dump timer id   = %d\n", alarmBatches_[i]->Get(j)->id);
+                dprintf(fd, " * timer trigger   = %d\n", alarmBatches_[i]->Get(j)->origWhen);
+            }
+        }
+    }
+    TIME_HILOGD(TIME_MODULE_SERVICE, "end.");
+    return true;
+}
 } // MiscServices
 } // OHOS

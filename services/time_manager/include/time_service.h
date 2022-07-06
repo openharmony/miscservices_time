@@ -27,6 +27,9 @@
 #include "event_handler.h"
 #include "time.h"
 #include "securec.h"
+#include "time_cmd_dispatcher.h"
+#include "time_cmd_parse.h"
+#include "time_sysevent.h"
 
 namespace OHOS {
 namespace MiscServices {
@@ -65,6 +68,12 @@ public:
     void NetworkTimeStatusOn() override;
     bool ProxyTimer(int32_t uid, bool isProxy, bool needRetrigger) override;
     bool ResetAllProxy() override;
+    int Dump(int fd, const std::vector<std::u16string> &args) override;
+    void DumpAllTimeInfo(int fd, const std::vector<std::string> &input);
+    void DumpTimerInfo(int fd, const std::vector<std::string> &input);
+    void DumpTimerInfoById(int fd, const std::vector<std::string> &input);
+    void DumpTimerTriggerById(int fd, const std::vector<std::string> &input);
+    void InitDumpCmd();
 
 protected:
     void OnStart() override;

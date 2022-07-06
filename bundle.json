@@ -17,6 +17,9 @@
     ],
     "features": [
     ],
+    "hisysevent_config": [
+        "//base/miscservices/time/hisysevent.yaml"
+    ],
     "adapted_system_type": [
       "standard"
     ],

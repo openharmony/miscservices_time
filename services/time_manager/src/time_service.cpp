@@ -90,6 +90,28 @@ sptr<TimeService> TimeService::GetInstance()
     return instance_;
 }
 
+void TimeService::InitDumpCmd()
+{
+    auto cmdTime = std::make_shared<TimeCmdParse>(std::vector<std::string>({ "-time" }),
+        "dump current time info,include localtime,timezone info",
+        [this](int fd, const std::vector<std::string> &input) { DumpAllTimeInfo(fd, input); });
+    TimeCmdDispatcher::GetInstance().RegisterCommand(cmdTime);
+
+    auto cmdTimerAll = std::make_shared<TimeCmdParse>(std::vector<std::string>({ "-timer", "-a" }),
+        "dump all timer info", [this](int fd, const std::vector<std::string> &input) { DumpTimerInfo(fd, input); });
+    TimeCmdDispatcher::GetInstance().RegisterCommand(cmdTimerAll);
+
+    auto cmdTimerInfo = std::make_shared<TimeCmdParse>(std::vector<std::string>({ "-timer", "-i", "[n]" }),
+        "dump the timer info with timer id",
+        [this](int fd, const std::vector<std::string> &input) { DumpTimerInfoById(fd, input); });
+    TimeCmdDispatcher::GetInstance().RegisterCommand(cmdTimerInfo);
+
+    auto cmdTimerTrigger = std::make_shared<TimeCmdParse>(std::vector<std::string>({ "-timer", "-s", "[n]" }),
+        "dump current time info,include localtime,timezone info",
+        [this](int fd, const std::vector<std::string> &input) { DumpTimerTriggerById(fd, input); });
+    TimeCmdDispatcher::GetInstance().RegisterCommand(cmdTimerTrigger);
+}
+
 void TimeService::OnStart()
 {
     TIME_HILOGI(TIME_MODULE_SERVICE, " TimeService OnStart.");
@@ -110,7 +132,7 @@ void TimeService::OnStart()
         TIME_HILOGE(TIME_MODULE_SERVICE, "Init failed. Try again 10s later.");
         return;
     }
-
+    InitDumpCmd();
     TIME_HILOGI(TIME_MODULE_SERVICE, "Start TimeService success.");
     return;
 }
@@ -222,7 +244,9 @@ uint64_t TimeService::CreateTimer(int32_t type, bool repeat, uint64_t interval,
     auto callbackFunc = [timerCallback](uint64_t id) {
         timerCallback->NotifyTimer(id);
     };
-    
+    int64_t triggerTime = 0;
+    GetWallTimeMs(triggerTime);
+    StatisticReporter(IPCSkeleton::GetCallingPid(), uid, type, triggerTime, interval);
     if (timerManagerHandler_ == nullptr) {
         TIME_HILOGE(TIME_MODULE_SERVICE, "Timer manager nullptr.");
         timerManagerHandler_ = TimerManager::Create();
@@ -333,6 +357,89 @@ int32_t TimeService::SetTime(const int64_t time)
     auto currentTime = steady_clock::now().time_since_epoch().count();
     DelayedSingleton<TimeServiceNotify>::GetInstance()->PublishTimeChanageEvents(currentTime);
     return  ERR_OK;
+}
+
+int TimeService::Dump(int fd, const std::vector<std::u16string> &args)
+{
+    int uid = static_cast<int>(IPCSkeleton::GetCallingUid());
+    const int maxUid = 10000;
+    if (uid > maxUid) {
+        return E_TIME_DEAL_FAILED;
+    }
+
+    std::vector<std::string> argsStr;
+    for (auto item : args) {
+        argsStr.emplace_back(Str16ToStr8(item));
+    }
+
+    TimeCmdDispatcher::GetInstance().Dispatch(fd, argsStr);
+    return ERR_OK;
+}
+
+void TimeService::DumpAllTimeInfo(int fd, const std::vector<std::string> &input)
+{
+    dprintf(fd, "\n - dump all time info :\n");
+    struct timespec ts;
+    struct tm timestr;
+    char date_time[64];
+    if (GetTimeByClockid(CLOCK_BOOTTIME, ts)) {
+        strftime(date_time, sizeof(date_time), "%Y-%m-%d %H:%M:%S", localtime_r(&ts.tv_sec, &timestr));
+        dprintf(fd, " * date time = %s\n", date_time);
+    } else {
+        dprintf(fd, " * dump date time error.\n");
+    }
+    dprintf(fd, " - dump the time Zone:\n");
+    std::string timeZone = "";
+    int32_t bRet = GetTimeZone(timeZone);
+    if (bRet == ERR_OK) {
+        dprintf(fd, " * time zone = %s\n", timeZone.c_str());
+    } else {
+        dprintf(fd, " * dump time zone error,is %s\n", timeZone.c_str());
+    }
+}
+
+void TimeService::DumpTimerInfo(int fd, const std::vector<std::string> &input)
+{
+    dprintf(fd, "\n - dump all timer info :\n");
+    if (timerManagerHandler_ == nullptr) {
+        TIME_HILOGE(TIME_MODULE_SERVICE, "Timer manager nullptr.");
+        timerManagerHandler_ = TimerManager::Create();
+        if (timerManagerHandler_ == nullptr) {
+            TIME_HILOGE(TIME_MODULE_SERVICE, "Redo Timer manager Init Failed.");
+            return;
+        }
+    }
+    timerManagerHandler_->ShowtimerEntryMap(fd);
+}
+
+void TimeService::DumpTimerInfoById(int fd, const std::vector<std::string> &input)
+{
+    dprintf(fd, "\n - dump the timer info with timer id:\n");
+    if (timerManagerHandler_ == nullptr) {
+        TIME_HILOGE(TIME_MODULE_SERVICE, "Timer manager nullptr.");
+        timerManagerHandler_ = TimerManager::Create();
+        if (timerManagerHandler_ == nullptr) {
+            TIME_HILOGE(TIME_MODULE_SERVICE, "Redo Timer manager Init Failed.");
+            return;
+        }
+    }
+    int paramNumPos = 2;
+    timerManagerHandler_->ShowTimerEntryById(fd, std::atoi(input.at(paramNumPos).c_str()));
+}
+
+void TimeService::DumpTimerTriggerById(int fd, const std::vector<std::string> &input)
+{
+    dprintf(fd, "\n - dump timer trigger statics with timer id:\n");
+    if (timerManagerHandler_ == nullptr) {
+        TIME_HILOGE(TIME_MODULE_SERVICE, "Timer manager nullptr.");
+        timerManagerHandler_ = TimerManager::Create();
+        if (timerManagerHandler_ == nullptr) {
+            TIME_HILOGE(TIME_MODULE_SERVICE, "Redo Timer manager Init Failed.");
+            return;
+        }
+    }
+    int paramNumPos = 2;
+    timerManagerHandler_->ShowTimerTriggerById(fd, std::atoi(input.at(paramNumPos).c_str()));
 }
 
 int TimeService::set_rtc_time(time_t sec)

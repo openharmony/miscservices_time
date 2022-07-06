@@ -43,6 +43,9 @@ public:
     bool DestroyTimer(uint64_t timerNumber) override;
     bool ProxyTimer(int32_t uid, bool isProxy, bool needRetrigger) override;
     bool ResetAllProxy() override;
+    bool ShowtimerEntryMap(int fd);
+    bool ShowTimerEntryById(int fd, uint64_t timerId);
+    bool ShowTimerTriggerById(int fd, uint64_t timerId);
     ~TimerManager() override;
 
 private:
