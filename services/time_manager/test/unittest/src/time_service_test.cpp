@@ -88,24 +88,6 @@ HWTEST_F(TimeServiceTest, SetTimeZone001, TestSize.Level0)
 }
 
 /**
-* @tc.name: SetTimeZone002
-* @tc.desc: set system time zone.
-* @tc.type: FUNC
-*/
-HWTEST_F(TimeServiceTest, SetTimeZone002, TestSize.Level0)
-{
-    time_t t;
-    (void)time(&t);
-    TIME_HILOGI(TIME_MODULE_CLIENT, "Time before: %{public}s", asctime(localtime(&t)));
-    std::string timeZoneSet("Asia/Ulaanbaatar");
-
-    bool result = TimeServiceClient::GetInstance()->SetTimeZone(timeZoneSet);
-    EXPECT_TRUE(result);
-    auto timeZoneRes = TimeServiceClient::GetInstance()->GetTimeZone();
-    EXPECT_EQ(timeZoneRes, timeZoneSet);
-}
-
-/**
 * @tc.name: GetTime001
 * @tc.desc: get system time.
 * @tc.type: FUNC
@@ -115,97 +97,6 @@ HWTEST_F(TimeServiceTest, GetTime001, TestSize.Level0)
     auto time1 = TimeServiceClient::GetInstance()->GetWallTimeMs();
     EXPECT_TRUE(time1 != -1);
     auto time2 = TimeServiceClient::GetInstance()->GetWallTimeMs();
-    EXPECT_TRUE(time2 >= time1);
-}
-
-/**
-* @tc.name: GetTime002
-* @tc.desc: get system time.
-* @tc.type: FUNC
-*/
-HWTEST_F(TimeServiceTest, GetTime002, TestSize.Level0)
-{
-    auto time1 = TimeServiceClient::GetInstance()->GetWallTimeNs();
-    EXPECT_TRUE(time1 != -1);
-    auto time2 = TimeServiceClient::GetInstance()->GetWallTimeNs();
-    EXPECT_TRUE(time2 >= time1);
-}
-
-/**
-* @tc.name: GetTime003
-* @tc.desc: get system time.
-* @tc.type: FUNC
-*/
-HWTEST_F(TimeServiceTest, GetTime003, TestSize.Level0)
-{
-    auto time1 = TimeServiceClient::GetInstance()->GetBootTimeMs();
-    EXPECT_TRUE(time1 != -1);
-    auto time2 = TimeServiceClient::GetInstance()->GetBootTimeMs();
-    EXPECT_TRUE(time2 >= time1);
-}
-
-/**
-* @tc.name: GetTime004
-* @tc.desc: get system time.
-* @tc.type: FUNC
-*/
-HWTEST_F(TimeServiceTest, GetTime004, TestSize.Level0)
-{
-    auto time1 = TimeServiceClient::GetInstance()->GetMonotonicTimeMs();
-    EXPECT_TRUE(time1 != -1);
-    auto time2 = TimeServiceClient::GetInstance()->GetMonotonicTimeMs();
-    EXPECT_TRUE(time2 >= time1);
-}
-
-/**
-* @tc.name: GetTime005
-* @tc.desc: get system time.
-* @tc.type: FUNC
-*/
-HWTEST_F(TimeServiceTest, GetTime005, TestSize.Level0)
-{
-    auto time1 = TimeServiceClient::GetInstance()->GetBootTimeNs();
-    EXPECT_TRUE(time1 != -1);
-    auto time2 = TimeServiceClient::GetInstance()->GetBootTimeNs();
-    EXPECT_TRUE(time2 >= time1);
-}
-
-/**
-* @tc.name: GetTime006
-* @tc.desc: get system time.
-* @tc.type: FUNC
-*/
-HWTEST_F(TimeServiceTest, GetTime006, TestSize.Level0)
-{
-    auto time1 = TimeServiceClient::GetInstance()->GetMonotonicTimeNs();
-    EXPECT_TRUE(time1 != -1);
-    auto time2 = TimeServiceClient::GetInstance()->GetMonotonicTimeNs();
-    EXPECT_TRUE(time2 != -1);
-}
-
-/**
-* @tc.name: GetTime007
-* @tc.desc: get system time.
-* @tc.type: FUNC
-*/
-HWTEST_F(TimeServiceTest, GetTime007, TestSize.Level0)
-{
-    auto time1 = TimeServiceClient::GetInstance()->GetThreadTimeMs();
-    EXPECT_TRUE(time1 != -1);
-    auto time2 = TimeServiceClient::GetInstance()->GetThreadTimeMs();
-    EXPECT_TRUE(time2 >= time1);
-}
-
-/**
-* @tc.name: GetTime008
-* @tc.desc: get system time.
-* @tc.type: FUNC
-*/
-HWTEST_F(TimeServiceTest, GetTime008, TestSize.Level0)
-{
-    auto time1 = TimeServiceClient::GetInstance()->GetThreadTimeNs();
-    EXPECT_TRUE(time1 != -1);
-    auto time2 = TimeServiceClient::GetInstance()->GetThreadTimeNs();
     EXPECT_TRUE(time2 >= time1);
 }
 
