@@ -19,6 +19,7 @@
 #include "timer_info_test.h"
 #include "time_service_test.h"
 
+namespace {
 using namespace testing::ext;
 using namespace OHOS;
 using namespace OHOS::MiscServices;
@@ -366,4 +367,5 @@ HWTEST_F(TimeServiceTest, ProxyTimer004, TestSize.Level0)
     EXPECT_TRUE(ret);
     ret = TimeServiceClient::GetInstance()->ProxyTimer(uid, false, false);
     EXPECT_TRUE(ret);
+}
 }
