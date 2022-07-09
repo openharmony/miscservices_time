@@ -31,7 +31,7 @@ TimeServiceStub::TimeServiceStub()
     memberFuncMap_[GET_BOOT_TIME_MILLI] = &TimeServiceStub::OnGetBootTimeMs;
     memberFuncMap_[GET_BOOT_TIME_NANO] = &TimeServiceStub::OnGetBootTimeNs;
     memberFuncMap_[GET_MONO_TIME_MILLI] = &TimeServiceStub::OnGetMonotonicTimeMs;
-    memberFuncMap_[GET_MONO_TIME_NANO] = &TimeServiceStub::OnGetMonotonicTimeMs;
+    memberFuncMap_[GET_MONO_TIME_NANO] = &TimeServiceStub::OnGetMonotonicTimeNs;
     memberFuncMap_[GET_THREAD_TIME_MILLI] = &TimeServiceStub::OnGetThreadTimeMs;
     memberFuncMap_[GET_THREAD_TIME_NANO] = &TimeServiceStub::OnGetThreadTimeNs;
     memberFuncMap_[CREATE_TIMER] = &TimeServiceStub::OnCreateTimer;
