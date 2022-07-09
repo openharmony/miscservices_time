@@ -55,7 +55,7 @@
       "inner_kits": [
         {
           "name": "//base/miscservices/time/services:time_service",
-          "header": {	
+          "header": {
             "header_files": [
               "itimer_info.h",
               "time_service_client.h"                                                               
@@ -65,7 +65,7 @@
         },
         {
           "name": "//base/miscservices/time/interfaces/innerkits:time_client",
-          "header": {	
+          "header": {
             "header_files": [
               "itimer_info.h",
               "time_service_client.h"
@@ -75,6 +75,7 @@
         }
       ],
       "test": [
+        "//base/miscservices/time/interfaces/kits/js/napi/system_time/test:unittest",
         "//base/miscservices/time/services/time_manager/test:TimeServiceTest",
         "//base/miscservices/time/test/fuzztest:fuzztest"
       ]
