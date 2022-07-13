@@ -136,7 +136,8 @@ bool TimerManager::DestroyTimer(uint64_t timerNumber)
 
 bool TimerManager::StopTimerInner(uint64_t timerNumber, bool needDestroy)
 {
-    TIME_HILOGD(TIME_MODULE_SERVICE, "start id: %{public}" PRId64 "", timerNumber);
+    TIME_HILOGD(TIME_MODULE_SERVICE, "start id: %{public}" PRId64 ", needDestroy: %{public}d" PRId64 "",
+        timerNumber, needDestroy);
     std::lock_guard<std::mutex> lock(entryMapMutex_);
     auto it = timerEntryMap_.find(timerNumber);
     if (it == timerEntryMap_.end()) {
