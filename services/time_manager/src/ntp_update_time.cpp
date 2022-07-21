@@ -40,6 +40,7 @@ namespace MiscServices {
 namespace {
 constexpr uint64_t NANO_TO_MILLISECOND = 1000000;
 constexpr uint64_t DAY_TO_MILLISECOND = 86400000;
+constexpr uint64_t EIGHTHOUR_TO_MILLISECONDS = 28800000;
 const std::string AUTOTIME_FILE_PATH = "/data/service/el1/public/time/autotime.json";
 const std::string NETWORK_TIME_STATUS_ON = "ON";
 const std::string NETWORK_TIME_STATUS_OFF = "OFF";
@@ -148,7 +149,7 @@ void NtpUpdateTime::RefreshNetworkTimeByTimer(const uint64_t timerId)
 void NtpUpdateTime::UpdateNITZSetTime()
 {
     auto BootTimeNano = steady_clock::now().time_since_epoch().count();
-    auto BootTimeMilli = BootTimeNano / NANO_TO_MILLISECOND;
+    auto BootTimeMilli = BootTimeNano / NANO_TO_MILLISECOND + EIGHTHOUR_TO_MILLISECONDS;
     TIME_HILOGD(TIME_MODULE_SERVICE, "nitz time changed.");
     nitzUpdateTimeMili_ = BootTimeMilli;
 }
