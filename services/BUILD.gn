@@ -12,6 +12,8 @@
 # limitations under the License.
 
 import("//base/miscservices/time/time.gni")
+import(
+    "//foundation/distributeddatamgr/appdatamgr/relational_store/relational_store.gni")
 
 config("time_service_config") {
   visibility = [ ":*" ]
@@ -24,8 +26,8 @@ config("time_service_config") {
     "//utils/system/safwk/native/include",
     "//third_party/json/include",
     "//base/hiviewdfx/hilog/interfaces/native/innerkits/include",
-    "//foundation/distributeddatamgr/appdatamgr/relational_store/interfaces/inner_api/rdb/include/",
-    "//foundation/distributeddatamgr/appdatamgr/relational_store/interfaces/inner_api/appdatafwk/include/",
+    "${relational_store_innerapi_path}/rdb/include/",
+    "${relational_store_innerapi_path}/appdatafwk/include/",
   ]
 }
 
