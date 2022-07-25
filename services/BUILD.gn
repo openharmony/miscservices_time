@@ -11,13 +11,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import("//base/miscservices/time/time.gni")
+import("//base/time/time_service/time.gni")
 import("//foundation/distributeddatamgr/relational_store/relational_store.gni")
 
 config("time_service_config") {
   visibility = [ ":*" ]
   include_dirs = [
-    "//base/miscservices/time/interfaces/innerkits/include",
+    "//base/time/time_service/interfaces/innerkits/include",
     "../utils/native/include",
     "time_manager/include",
     "timer/include",
@@ -87,6 +87,6 @@ ohos_shared_library("time_service") {
     "safwk:system_ability_fwk",
     "samgr_standard:samgr_proxy",
   ]
-  part_name = "time_native"
-  subsystem_name = "miscservices"
+  part_name = "time_service"
+  subsystem_name = "time"
 }

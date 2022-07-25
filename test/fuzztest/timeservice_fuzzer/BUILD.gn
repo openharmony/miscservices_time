@@ -18,16 +18,16 @@ import("//build/test.gni")
 
 ##############################fuzztest##########################################
 ohos_fuzztest("TimeServiceFuzzTest") {
-  module_out_path = "miscservices/time"
+  module_out_path = "time/time_service"
 
-  fuzz_config_file = "//base/miscservices/time/test/fuzztest/timeservice_fuzzer"
+  fuzz_config_file = "//base/time/time_service/test/fuzztest/timeservice_fuzzer"
 
   include_dirs = [
-    "//base/miscservices/time/services/time_manager/include",
-    "//base/miscservices/time/services/time_manager/include",
-    "//base/miscservices/time/services/timer/include",
-    "//base/miscservices/time/utils/mock/include",
-    "//base/miscservices/time/interfaces/innerkits/include",
+    "//base/time/time_service/services/time_manager/include",
+    "//base/time/time_service/services/time_manager/include",
+    "//base/time/time_service/services/timer/include",
+    "//base/time/time_service/utils/mock/include",
+    "//base/time/time_service/interfaces/innerkits/include",
   ]
 
   cflags = [
@@ -40,8 +40,8 @@ ohos_fuzztest("TimeServiceFuzzTest") {
   sources = [ "timeservice_fuzzer.cpp" ]
 
   deps = [
-    "//base/miscservices/time/interfaces/innerkits:time_client",
-    "//base/miscservices/time/services:time_service",
+    "//base/time/time_service/interfaces/innerkits:time_client",
+    "//base/time/time_service/services:time_service",
     "//foundation/bundlemanager/bundle_framework/interfaces/inner_api/appexecfwk_core:appexecfwk_core",
     "//third_party/jsoncpp:jsoncpp",
     "//utils/native/base:utils",

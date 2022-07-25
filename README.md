@@ -18,7 +18,7 @@ The timing and time module provides APIs for managing the system time.
 ## Directory Structure<a name="section161941989596"></a>
 
 ```
-/base/miscservices/time
+/base/time/time_service
 ├── etc                      # Process configuration files
 ├── figures                  # Architecture diagram
 ├── interfaces               # APIs for external systems and applications
@@ -239,5 +239,5 @@ console.log('end');
 
 **Misc services subsystem**
 
-[miscservices\_time](https://gitee.com/openharmony/miscservices_time/tree/master/)
+[time\_time\_service](https://gitee.com/openharmony/time_time_service/tree/master/)
 

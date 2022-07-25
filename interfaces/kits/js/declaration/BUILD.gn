@@ -15,7 +15,7 @@ import("//build/ohos.gni")
 import("//build/ohos/ace/ace.gni")
 
 js_declaration("time") {
-  part_name = "time_native"
+  part_name = "time_service"
   sources = [ "./api" ]
 }
 

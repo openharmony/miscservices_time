@@ -5,20 +5,20 @@
   "license": "Apache License 2.0",
   "publishAs": "code-segment",
   "segment": {
-    "destPath": "base/miscservices/time"
+    "destPath": "base/time/time_service"
   },
   "dirs": {},
   "scripts": {},
   "component": {
-    "name": "time_native",
-    "subsystem": "miscservices",
+    "name": "time_service",
+    "subsystem": "time",
     "syscap": [
       "SystemCapability.MiscServices.Time"
     ],
     "features": [
     ],
     "hisysevent_config": [
-        "//base/miscservices/time/hisysevent.yaml"
+        "//base/time/time_service/hisysevent.yaml"
     ],
     "adapted_system_type": [
       "standard"
@@ -50,34 +50,34 @@
     },
     "build": {
       "sub_component": [
-        "//base/miscservices/time:time_native_packages"
+        "//base/time/time_service:time_native_packages"
       ],
       "inner_kits": [
         {
-          "name": "//base/miscservices/time/services:time_service",
+          "name": "//base/time/time_service/services:time_service",
           "header": {
             "header_files": [
               "itimer_info.h",
               "time_service_client.h"                                                               
             ],
-            "header_base":"//base/miscservices/time/interfaces/innerkits/include"
+            "header_base":"//base/time/time_service/interfaces/innerkits/include"
           }
         },
         {
-          "name": "//base/miscservices/time/interfaces/innerkits:time_client",
+          "name": "//base/time/time_service/interfaces/innerkits:time_client",
           "header": {
             "header_files": [
               "itimer_info.h",
               "time_service_client.h"
             ],
-            "header_base":"//base/miscservices/time/interfaces/innerkits/include"
+            "header_base":"//base/time/time_service/interfaces/innerkits/include"
           }
         }
       ],
       "test": [
-        "//base/miscservices/time/interfaces/kits/js/napi/system_time/test:unittest",
-        "//base/miscservices/time/services/time_manager/test:TimeServiceTest",
-        "//base/miscservices/time/test/fuzztest:fuzztest"
+        "//base/time/time_service/interfaces/kits/js/napi/system_time/test:unittest",
+        "//base/time/time_service/services/time_manager/test:TimeServiceTest",
+        "//base/time/time_service/test/fuzztest:fuzztest"
       ]
     }
   }

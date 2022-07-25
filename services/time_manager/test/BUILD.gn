@@ -17,7 +17,7 @@ config("module_private_config") {
   visibility = [ ":*" ]
 
   include_dirs = [
-    "//base/miscservices/time/interfaces/innerkits/include",
+    "//base/time/time_service/interfaces/innerkits/include",
     "unittest/include",
     "//foundation/arkui/napi/interfaces/kits/napi",
   ]
@@ -33,7 +33,7 @@ ohos_unittest("TimeServiceTest") {
   configs = [ ":module_private_config" ]
 
   deps = [
-    "//base/miscservices/time/interfaces/innerkits:time_client",
+    "//base/time/time_service/interfaces/innerkits:time_client",
     "//foundation/distributedschedule/safwk/interfaces/innerkits/safwk:system_ability_fwk",
     "//foundation/distributedschedule/samgr/interfaces/innerkits/samgr_proxy:samgr_proxy",
     "//third_party/googletest:gtest_main",

@@ -18,7 +18,7 @@
 ## 目录<a name="section161941989596"></a>
 
 ```
-/base/miscservices/time
+/base/time/time_service
 ├── etc                      # 组件包含的进程的配置文件
 ├── figures                  # 构架图
 ├── interfaces               # 组件对外提供的接口代码
@@ -241,5 +241,5 @@ console.log('end');
 
 **Misc软件服务子系统**
 
-[miscservices\_time](https://gitee.com/openharmony/miscservices_time/tree/master/)
+[time\_time\_service](https://gitee.com/openharmony/time_time_service/tree/master/)
 

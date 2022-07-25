@@ -13,7 +13,7 @@
 
 import("//build/test.gni")
 
-module_output_path = "miscservices/time"
+module_output_path = "time/time_service"
 
 ohos_js_unittest("SystemTimeTest") {
   module_out_path = module_output_path
