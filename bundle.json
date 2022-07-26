@@ -41,7 +41,7 @@
         "hiviewdfx_hilog_native",
         "libuv",
         "safwk",
-        "utils_base",
+        "c_utils",
         "access_token"
       ],
       "third_party": [

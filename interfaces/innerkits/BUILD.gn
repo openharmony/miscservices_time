@@ -18,7 +18,7 @@ config("time_client_config") {
   include_dirs = [
     "${time_service_path}/time_manager/include",
     "include",
-    "//utils/native/base/include",
+    "//commonlibrary/c_utils/base/include",
     "${time_utils_path}/native/include",
   ]
 }
@@ -40,12 +40,12 @@ ohos_shared_library("time_client") {
     "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
     "${time_utils_path}:time_utils",
     "//third_party/jsoncpp:jsoncpp",
-    "//utils/native/base:utils",
   ]
   external_deps = [
     "ability_base:want",
     "ability_runtime:runtime",
     "ability_runtime:wantagent_innerkits",
+    "c_utils:utils",
     "common_event_service:cesfwk_innerkits",
     "eventhandler:libeventhandler",
     "hiviewdfx_hilog_native:libhilog",

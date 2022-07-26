@@ -34,13 +34,13 @@ ohos_shared_library("systemtime") {
     "${ability_runtime_path}/frameworks/native/ability/native:abilitykit_native",
     "//base/time/time_service/services:time_service",
     "//foundation/arkui/napi/:ace_napi",
-    "//utils/native/base:utils",
   ]
 
   external_deps = [
     "ability_base:want",
     "ability_runtime:runtime",
     "ability_runtime:wantagent_innerkits",
+    "c_utils:utils",
     "hiviewdfx_hilog_native:libhilog",
     "ipc:ipc_core",
   ]
