@@ -28,7 +28,7 @@ describe('TimerTest', function () {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test1', 0, async () => {
+    it('systemTimer_Timer_CallBack_test1', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_0100 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -36,9 +36,7 @@ describe('TimerTest', function () {
             persistent: false
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -61,7 +59,7 @@ describe('TimerTest', function () {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test2', 0, async () => {
+    it('systemTimer_Timer_CallBack_test2', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_0200 start")
         var options = {
             type: TIMER_TYPE_WAKEUP,
@@ -69,9 +67,7 @@ describe('TimerTest', function () {
             persistent: false
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -94,7 +90,7 @@ describe('TimerTest', function () {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test3', 0, async () => {
+    it('systemTimer_Timer_CallBack_test3', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_0300 start")
         var options = {
             type: TIMER_TYPE_EXACT,
@@ -102,9 +98,7 @@ describe('TimerTest', function () {
             persistent: false
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -127,7 +121,7 @@ describe('TimerTest', function () {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test4', 0, async () => {
+    it('systemTimer_Timer_CallBack_test4', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_0400 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -135,9 +129,7 @@ describe('TimerTest', function () {
             persistent: false
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -160,7 +152,7 @@ describe('TimerTest', function () {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test5', 0, async () => {
+    it('systemTimer_Timer_CallBack_test5', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_0500 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -168,9 +160,7 @@ describe('TimerTest', function () {
             persistent: false
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -193,7 +183,7 @@ describe('TimerTest', function () {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test6', 0, async () => {
+    it('systemTimer_Timer_CallBack_test6', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_0600 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -201,9 +191,7 @@ describe('TimerTest', function () {
             persistent: false
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -226,7 +214,7 @@ describe('TimerTest', function () {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test7', 0, async () => {
+    it('systemTimer_Timer_CallBack_test7', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_0700 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -234,9 +222,7 @@ describe('TimerTest', function () {
             persistent: false
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -259,7 +245,7 @@ describe('TimerTest', function () {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test8', 0, async () => {
+    it('systemTimer_Timer_CallBack_test8', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_0800 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -267,9 +253,7 @@ describe('TimerTest', function () {
             persistent: false
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -292,7 +276,7 @@ describe('TimerTest', function () {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test9', 0, async () => {
+    it('systemTimer_Timer_CallBack_test9', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_0900 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -300,9 +284,7 @@ describe('TimerTest', function () {
             persistent: false
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -325,7 +307,7 @@ describe('TimerTest', function () {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test10', 0, async () => {
+    it('systemTimer_Timer_CallBack_test10', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_1000 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -333,9 +315,7 @@ describe('TimerTest', function () {
             persistent: false
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -358,7 +338,7 @@ describe('TimerTest', function () {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test11', 0, async () => {
+    it('systemTimer_Timer_CallBack_test11', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_1100 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -366,9 +346,7 @@ describe('TimerTest', function () {
             persistent: true
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -391,7 +369,7 @@ describe('TimerTest', function () {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test12', 0, async () => {
+    it('systemTimer_Timer_CallBack_test12', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_1200 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -399,9 +377,7 @@ describe('TimerTest', function () {
             persistent: true
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -424,7 +400,7 @@ describe('TimerTest', function () {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test13', 0, async () => {
+    it('systemTimer_Timer_CallBack_test13', 0, async () => {
             console.log("SUB_systemTimer_Timer_JS_API_1300 start")
             var options = {
                 type: TIMER_TYPE_REALTIME,
@@ -433,12 +409,7 @@ describe('TimerTest', function () {
             }
             for (var index = 0; index < 1000; index++) {
                 console.log("create timer")
-                let promise = systemTimer.createTimer(options)
-                expect(timer > 0).assertEqual(true)
-
-
-                promise.then(async timer => {
-                    expect(timer > 0).assertEqual(true)
+                systemTimer.createTimer(options, async (error, timer) => {
 
                     console.log("start timer")
                     await systemTimer.startTimer(timer, 100000)
@@ -448,8 +419,8 @@ describe('TimerTest', function () {
 
                     console.log("destroy timer")
                     await systemTimer.stopTimer(timer)
-                    console.log('SUB_systemTimer_Timer_JS_API_1300 end');
                 })
+                console.log('SUB_systemTimer_Timer_JS_API_1300 end');
             }
         }
     );
@@ -462,7 +433,7 @@ describe('TimerTest', function () {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test14', 0, async () => {
+    it('systemTimer_Timer_CallBack_test14', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_1400 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -471,9 +442,7 @@ describe('TimerTest', function () {
             persistent: false
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -496,7 +465,7 @@ describe('TimerTest', function () {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test15', 0, async () => {
+    it('systemTimer_Timer_CallBack_test15', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_1500 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -505,9 +474,7 @@ describe('TimerTest', function () {
             persistent: false
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -530,7 +497,7 @@ describe('TimerTest', function () {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test16', 0, async () => {
+    it('systemTimer_Timer_CallBack_test16', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_1600 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -539,9 +506,7 @@ describe('TimerTest', function () {
             persistent: false
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -564,7 +529,7 @@ describe('TimerTest', function () {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test17', 0, async () => {
+    it('systemTimer_Timer_CallBack_test17', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_1700 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -573,9 +538,7 @@ describe('TimerTest', function () {
             persistent: false
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -598,7 +561,7 @@ describe('TimerTest', function () {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test18', 0, async () => {
+    it('systemTimer_Timer_CallBack_test18', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_1800 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -607,9 +570,7 @@ describe('TimerTest', function () {
             persistent: false
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -632,7 +593,7 @@ describe('TimerTest', function () {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test19', 0, async () => {
+    it('systemTimer_Timer_CallBack_test19', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_1900 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -641,9 +602,7 @@ describe('TimerTest', function () {
             persistent: false
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -666,7 +625,7 @@ describe('TimerTest', function () {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test20', 0, async () => {
+    it('systemTimer_Timer_CallBack_test20', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_2000 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -676,9 +635,7 @@ describe('TimerTest', function () {
             callback: callbackFunction
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -701,7 +658,7 @@ describe('TimerTest', function () {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test21', 0, async () => {
+    it('systemTimer_Timer_CallBack_test21', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_2100 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -709,9 +666,7 @@ describe('TimerTest', function () {
             persistent: false
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
 
             console.log("start a not exist timer")
             await systemTimer.startTimer(timer + 1, 100000)
@@ -730,7 +685,7 @@ describe('TimerTest', function () {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test22', 0, async () => {
+    it('systemTimer_Timer_CallBack_test22', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_2200 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -738,9 +693,7 @@ describe('TimerTest', function () {
             persistent: false
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -766,7 +719,7 @@ describe('TimerTest', function () {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test23', 0, async () => {
+    it('systemTimer_Timer_CallBack_test23', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_2300 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -774,9 +727,7 @@ describe('TimerTest', function () {
             persistent: false
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -802,7 +753,7 @@ describe('TimerTest', function () {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test24', 0, async () => {
+    it('systemTimer_Timer_CallBack_test24', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_2400 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -810,47 +761,43 @@ describe('TimerTest', function () {
             persistent: false
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
+        systemTimer.createTimer(options, async (error, timer) => {
 
-        console.log("stop a not started timer")
-        await systemTimer.stopTimer(timer)
+            console.log("stop a not started timer")
+            await systemTimer.stopTimer(timer)
 
-        console.log("destroy timer")
-        await systemTimer.destroyTimer(timer)
-    })
-    console.log('SUB_systemTimer_Timer_JS_API_2400 end');
-})
-;
+            console.log("destroy timer")
+            await systemTimer.destroyTimer(timer)
+        })
+        console.log('SUB_systemTimer_Timer_JS_API_2400 end');
+    });
 
-/**
- * @tc.number    SUB_systemTimer_Timer_JS_API_2500
- * @tc.name      Test systemTimer.createTimer destroy a started timer
- * @tc.desc      Test systemTimer_Timer API functionality.
- * @tc.size      : MEDIUM
- * @tc.type      : Function
- * @tc.level     : Level 0
- */
-it('systemTimer_Timer_Promise_test25', 0, async () => {
-    console.log("SUB_systemTimer_Timer_JS_API_2500 start")
-    var options = {
-        type: TIMER_TYPE_REALTIME,
-        repeat: false,
-        persistent: false
-    }
-    console.log("create timer")
-    let promise = systemTimer.createTimer(options)
-    expect(timer > 0).assertEqual(true)
+    /**
+     * @tc.number    SUB_systemTimer_Timer_JS_API_2500
+     * @tc.name      Test systemTimer.createTimer destroy a started timer
+     * @tc.desc      Test systemTimer_Timer API functionality.
+     * @tc.size      : MEDIUM
+     * @tc.type      : Function
+     * @tc.level     : Level 0
+     */
+    it('systemTimer_Timer_CallBack_test25', 0, async () => {
+        console.log("SUB_systemTimer_Timer_JS_API_2500 start")
+        var options = {
+            type: TIMER_TYPE_REALTIME,
+            repeat: false,
+            persistent: false
+        }
+        console.log("create timer")
+        systemTimer.createTimer(options, async (error, timer) => {
+            expect(timer > 0).assertEqual(true)
 
+            console.log("start timer")
+            await systemTimer.startTimer(timer, 100000)
 
-    promise.then(async timer => {
-        expect(timer > 0).assertEqual(true)
-
-        console.log("start timer")
-        await systemTimer.startTimer(timer, 100000)
-
-        console.log("destroy a started timer")
-        await systemTimer.stopTimer(timer)
-        console.log('SUB_systemTimer_Timer_JS_API_2500 end');
+            console.log("destroy a started timer")
+            await systemTimer.stopTimer(timer)
+            console.log('SUB_systemTimer_Timer_JS_API_2500 end');
+        });
     });
 
     /**
@@ -861,7 +808,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test26', 0, async () => {
+    it('systemTimer_Timer_CallBack_test26', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_2600 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -869,9 +816,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
             persistent: false
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -897,7 +842,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test27', 0, async () => {
+    it('systemTimer_Timer_CallBack_test27', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_2700 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -905,9 +850,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
             persistent: false
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -933,7 +876,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test28', 0, async () => {
+    it('systemTimer_Timer_CallBack_test28', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_2800 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -941,9 +884,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
             persistent: false
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -969,7 +910,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test29', 0, async () => {
+    it('systemTimer_Timer_CallBack_test29', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_2900 start")
         var options = {
             type: TIMER_TYPE_IDLE,
@@ -977,9 +918,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
             persistent: false
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -1002,7 +941,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test31', 0, async () => {
+    it('systemTimer_Timer_CallBack_test31', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_0100 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -1010,9 +949,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
             persistent: false
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -1035,7 +972,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test32', 0, async () => {
+    it('systemTimer_Timer_CallBack_test32', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_0200 start")
         var options = {
             type: TIMER_TYPE_WAKEUP,
@@ -1043,9 +980,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
             persistent: false
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -1068,7 +1003,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test33', 0, async () => {
+    it('systemTimer_Timer_CallBack_test33', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_0300 start")
         var options = {
             type: TIMER_TYPE_EXACT,
@@ -1076,9 +1011,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
             persistent: false
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -1101,7 +1034,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test34', 0, async () => {
+    it('systemTimer_Timer_CallBack_test34', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_0400 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -1109,9 +1042,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
             persistent: false
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -1134,7 +1065,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test35', 0, async () => {
+    it('systemTimer_Timer_CallBack_test35', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_0500 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -1142,9 +1073,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
             persistent: false
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -1167,7 +1096,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test36', 0, async () => {
+    it('systemTimer_Timer_CallBack_test36', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_0600 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -1175,9 +1104,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
             persistent: false
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -1200,7 +1127,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test37', 0, async () => {
+    it('systemTimer_Timer_CallBack_test37', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_0700 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -1208,9 +1135,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
             persistent: false
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -1233,7 +1158,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test38', 0, async () => {
+    it('systemTimer_Timer_CallBack_test38', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_0800 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -1241,9 +1166,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
             persistent: false
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -1266,7 +1189,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test39', 0, async () => {
+    it('systemTimer_Timer_CallBack_test39', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_0900 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -1274,9 +1197,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
             persistent: false
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -1299,7 +1220,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test40', 0, async () => {
+    it('systemTimer_Timer_CallBack_test40', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_1000 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -1307,9 +1228,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
             persistent: false
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -1332,7 +1251,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test41', 0, async () => {
+    it('systemTimer_Timer_CallBack_test41', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_1100 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -1340,9 +1259,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
             persistent: true
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -1365,7 +1282,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test42', 0, async () => {
+    it('systemTimer_Timer_CallBack_test42', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_1200 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -1373,9 +1290,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
             persistent: true
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -1398,7 +1313,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test43', 0, async () => {
+    it('systemTimer_Timer_CallBack_test43', 0, async () => {
             console.log("SUB_systemTimer_Timer_JS_API_1300 start")
             var options = {
                 type: TIMER_TYPE_REALTIME,
@@ -1407,12 +1322,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
             }
             for (var index = 0; index < 1000; index++) {
                 console.log("create timer")
-                let promise = systemTimer.createTimer(options)
-                expect(timer > 0).assertEqual(true)
-
-
-                promise.then(async timer => {
-                    expect(timer > 0).assertEqual(true)
+                systemTimer.createTimer(options, async (error, timer) => {
 
                     console.log("start timer")
                     await systemTimer.startTimer(timer, 100000)
@@ -1436,7 +1346,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test44', 0, async () => {
+    it('systemTimer_Timer_CallBack_test44', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_1400 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -1445,9 +1355,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
             persistent: false
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -1470,7 +1378,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test45', 0, async () => {
+    it('systemTimer_Timer_CallBack_test45', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_1500 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -1479,9 +1387,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
             persistent: false
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -1504,7 +1410,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test46', 0, async () => {
+    it('systemTimer_Timer_CallBack_test46', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_1600 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -1513,9 +1419,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
             persistent: false
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -1538,7 +1442,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test47', 0, async () => {
+    it('systemTimer_Timer_CallBack_test47', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_1700 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -1547,9 +1451,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
             persistent: false
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -1572,7 +1474,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test48', 0, async () => {
+    it('systemTimer_Timer_CallBack_test48', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_1800 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -1581,9 +1483,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
             persistent: false
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -1606,7 +1506,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test49', 0, async () => {
+    it('systemTimer_Timer_CallBack_test49', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_1900 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -1615,9 +1515,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
             persistent: false
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -1640,7 +1538,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test50', 0, async () => {
+    it('systemTimer_Timer_CallBack_test50', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_2000 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -1650,9 +1548,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
             callback: callbackFunction
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -1675,7 +1571,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test51', 0, async () => {
+    it('systemTimer_Timer_CallBack_test51', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_2100 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -1683,9 +1579,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
             persistent: false
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
 
             console.log("start a not exist timer")
             await systemTimer.startTimer(timer + 1, 100000)
@@ -1704,7 +1598,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test52', 0, async () => {
+    it('systemTimer_Timer_CallBack_test52', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_2200 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -1712,11 +1606,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
             persistent: false
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-        expect(timer > 0).assertEqual(true)
-
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -1742,7 +1632,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test53', 0, async () => {
+    it('systemTimer_Timer_CallBack_test53', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_2300 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -1750,11 +1640,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
             persistent: false
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-        expect(timer > 0).assertEqual(true)
-
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -1780,7 +1666,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test54', 0, async () => {
+    it('systemTimer_Timer_CallBack_test54', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_2400 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -1788,11 +1674,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
             persistent: false
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-
-        promise.then(async timer => {
-            expect(timer > 0).assertEqual(true)
-
+        systemTimer.createTimer(options, async (error, timer) => {
 
             console.log("stop a not started timer")
             await systemTimer.stopTimer(timer)
@@ -1801,7 +1683,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
             await systemTimer.destroyTimer(timer)
         })
         console.log('SUB_systemTimer_Timer_JS_API_2400 end');
-    })
+    });
 
     /**
      * @tc.number    SUB_systemTimer_Timer_JS_API_2500
@@ -1811,7 +1693,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
      * @tc.type      : Function
      * @tc.level     : Level 0
      */
-    it('systemTimer_Timer_Promise_test55', 0, async () => {
+    it('systemTimer_Timer_CallBack_test55', 0, async () => {
         console.log("SUB_systemTimer_Timer_JS_API_2500 start")
         var options = {
             type: TIMER_TYPE_REALTIME,
@@ -1819,11 +1701,7 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
             persistent: false
         }
         console.log("create timer")
-        let promise = systemTimer.createTimer(options)
-        expect(timer > 0).assertEqual(true)
-
-
-        promise.then(async timer => {
+        systemTimer.createTimer(options, async (error, timer) => {
             expect(timer > 0).assertEqual(true)
 
             console.log("start timer")
@@ -1833,154 +1711,146 @@ it('systemTimer_Timer_Promise_test25', 0, async () => {
             await systemTimer.stopTimer(timer)
             console.log('SUB_systemTimer_Timer_JS_API_2500 end');
         });
+    });
 
-        /**
-         * @tc.number    SUB_systemTimer_Timer_JS_API_2600
-         * @tc.name      Test systemTimer.createTimer repeat to start a timer
-         * @tc.desc      Test systemTimer_Timer API functionality.
-         * @tc.size      : MEDIUM
-         * @tc.type      : Function
-         * @tc.level     : Level 0
-         */
-        it('systemTimer_Timer_Promise_test56', 0, async () => {
-            console.log("SUB_systemTimer_Timer_JS_API_2600 start")
-            var options = {
-                type: TIMER_TYPE_REALTIME,
-                repeat: false,
-                persistent: false
-            }
-            console.log("create timer")
-            let promise = systemTimer.createTimer(options)
-
-            promise.then(async timer => {
-                expect(timer > 0).assertEqual(true)
-
-                console.log("start timer")
-                await systemTimer.startTimer(timer, 100000)
-
-                console.log("start timer again")
-                await systemTimer.startTimer(timer, 100000)
-
-                console.log("stop timer")
-                await systemTimer.stopTimer(timer)
-
-                console.log("destroy timer")
-                await systemTimer.destroyTimer(timer)
-            })
-            console.log('SUB_systemTimer_Timer_JS_API_2600 end');
-        });
-
-        /**
-         * @tc.number    SUB_systemTimer_Timer_JS_API_2700
-         * @tc.name      Test systemTimer.createTimer repeat to stop a timer
-         * @tc.desc      Test systemTimer_Timer API functionality.
-         * @tc.size      : MEDIUM
-         * @tc.type      : Function
-         * @tc.level     : Level 0
-         */
-        it('systemTimer_Timer_Promise_test57', 0, async () => {
-            console.log("SUB_systemTimer_Timer_JS_API_2700 start")
-            var options = {
-                type: TIMER_TYPE_REALTIME,
-                repeat: false,
-                persistent: false
-            }
-            console.log("create timer")
-            let promise = systemTimer.createTimer(options)
-
-            promise.then(async timer => {
-                expect(timer > 0).assertEqual(true)
-
-                console.log("start timer")
-                await systemTimer.startTimer(timer, 100000)
-
-                console.log("stop timer")
-                await systemTimer.stopTimer(timer)
-
-                console.log("stop timer again")
-                await systemTimer.stopTimer(timer)
-
-                console.log("destroy timer")
-                await systemTimer.destroyTimer(timer)
-            })
-            console.log('SUB_systemTimer_Timer_JS_API_2700 end');
-        });
-
-        /**
-         * @tc.number    SUB_systemTimer_Timer_JS_API_2800
-         * @tc.name      Test systemTimer.createTimer repeat to destroy a timer
-         * @tc.desc      Test systemTimer_Timer API functionality.
-         * @tc.size      : MEDIUM
-         * @tc.type      : Function
-         * @tc.level     : Level 0
-         */
-        it('systemTimer_Timer_Promise_test58', 0, async () => {
-            console.log("SUB_systemTimer_Timer_JS_API_2800 start")
-            var options = {
-                type: TIMER_TYPE_REALTIME,
-                repeat: false,
-                persistent: false
-            }
-            console.log("create timer")
-            let promise = systemTimer.createTimer(options)
-
-            promise.then(async timer => {
-                expect(timer > 0).assertEqual(true)
-
-                console.log("start timer")
-                await systemTimer.startTimer(timer, 100000)
-
-                console.log("stop timer")
-                await systemTimer.stopTimer(timer)
-
-                console.log("destroy timer")
-                await systemTimer.destroyTimer(timer)
-            })
-
-            console.log("destroy timer again")
-            await systemTimer.stopTimer(timer)
-            console.log('SUB_systemTimer_Timer_JS_API_2800 end');
-        });
-
-        /**
-         * @tc.number    SUB_systemTimer_Timer_JS_API_2900
-         * @tc.name      Test systemTimer.createTTimer type = TIMER_TYPE_IDLE
-         * @tc.desc      Test systemTimer_Timer API functionality.
-         * @tc.size      : MEDIUM
-         * @tc.type      : Function
-         * @tc.level     : Level 0
-         */
-        it('systemTimer_Timer_Promise_test59', 0, async () => {
-            console.log("SUB_systemTimer_Timer_JS_API_2900 start")
-            var options = {
-                type: TIMER_TYPE_IDLE,
-                repeat: false,
-                persistent: false
-            }
-            console.log("create timer")
-            let promise = systemTimer.createTimer(options)
-
-            promise.then(async timer => {
-                expect(timer > 0).assertEqual(true)
-
-                console.log("start timer")
-                await systemTimer.startTimer(timer, 100000)
-
-                console.log("stop timer")
-                await systemTimer.stopTimer(timer)
-
-                console.log("destroy timer")
-                await systemTimer.destroyTimer(timer)
-            })
-            console.log('SUB_systemTimer_Timer_JS_API_2900 end');
-        });
-
-        /**
-         * @function     Used for callback functions
-         * @tc.name      callbackFunction
-         */
-        function callbackFunction() {
-            console.log("Start to call the callback function")
+    /**
+     * @tc.number    SUB_systemTimer_Timer_JS_API_2600
+     * @tc.name      Test systemTimer.createTimer repeat to start a timer
+     * @tc.desc      Test systemTimer_Timer API functionality.
+     * @tc.size      : MEDIUM
+     * @tc.type      : Function
+     * @tc.level     : Level 0
+     */
+    it('systemTimer_Timer_CallBack_test56', 0, async () => {
+        console.log("SUB_systemTimer_Timer_JS_API_2600 start")
+        var options = {
+            type: TIMER_TYPE_REALTIME,
+            repeat: false,
+            persistent: false
         }
-    })
-}
+        console.log("create timer")
+        systemTimer.createTimer(options, async (error, timer) => {
+            expect(timer > 0).assertEqual(true)
+
+            console.log("start timer")
+            await systemTimer.startTimer(timer, 100000)
+
+            console.log("start timer again")
+            await systemTimer.startTimer(timer, 100000)
+
+            console.log("stop timer")
+            await systemTimer.stopTimer(timer)
+
+            console.log("destroy timer")
+            await systemTimer.destroyTimer(timer)
+        })
+        console.log('SUB_systemTimer_Timer_JS_API_2600 end');
+    });
+
+    /**
+     * @tc.number    SUB_systemTimer_Timer_JS_API_2700
+     * @tc.name      Test systemTimer.createTimer repeat to stop a timer
+     * @tc.desc      Test systemTimer_Timer API functionality.
+     * @tc.size      : MEDIUM
+     * @tc.type      : Function
+     * @tc.level     : Level 0
+     */
+    it('systemTimer_Timer_CallBack_test57', 0, async () => {
+        console.log("SUB_systemTimer_Timer_JS_API_2700 start")
+        var options = {
+            type: TIMER_TYPE_REALTIME,
+            repeat: false,
+            persistent: false
+        }
+        console.log("create timer")
+        systemTimer.createTimer(options, async (error, timer) => {
+            expect(timer > 0).assertEqual(true)
+
+            console.log("start timer")
+            await systemTimer.startTimer(timer, 100000)
+
+            console.log("stop timer")
+            await systemTimer.stopTimer(timer)
+
+            console.log("stop timer again")
+            await systemTimer.stopTimer(timer)
+
+            console.log("destroy timer")
+            await systemTimer.destroyTimer(timer)
+        })
+        console.log('SUB_systemTimer_Timer_JS_API_2700 end');
+    });
+
+    /**
+     * @tc.number    SUB_systemTimer_Timer_JS_API_2800
+     * @tc.name      Test systemTimer.createTimer repeat to destroy a timer
+     * @tc.desc      Test systemTimer_Timer API functionality.
+     * @tc.size      : MEDIUM
+     * @tc.type      : Function
+     * @tc.level     : Level 0
+     */
+    it('systemTimer_Timer_CallBack_test58', 0, async () => {
+        console.log("SUB_systemTimer_Timer_JS_API_2800 start")
+        var options = {
+            type: TIMER_TYPE_REALTIME,
+            repeat: false,
+            persistent: false
+        }
+        console.log("create timer")
+        systemTimer.createTimer(options, async (error, timer) => {
+            expect(timer > 0).assertEqual(true)
+
+            console.log("start timer")
+            await systemTimer.startTimer(timer, 100000)
+
+            console.log("stop timer")
+            await systemTimer.stopTimer(timer)
+
+            console.log("destroy timer")
+            await systemTimer.destroyTimer(timer)
+        })
+
+        console.log("destroy timer again")
+        await systemTimer.stopTimer(timer)
+        console.log('SUB_systemTimer_Timer_JS_API_2800 end');
+    });
+
+    /**
+     * @tc.number    SUB_systemTimer_Timer_JS_API_2900
+     * @tc.name      Test systemTimer.createTTimer type = TIMER_TYPE_IDLE
+     * @tc.desc      Test systemTimer_Timer API functionality.
+     * @tc.size      : MEDIUM
+     * @tc.type      : Function
+     * @tc.level     : Level 0
+     */
+    it('systemTimer_Timer_CallBack_test59', 0, async () => {
+        console.log("SUB_systemTimer_Timer_JS_API_2900 start")
+        var options = {
+            type: TIMER_TYPE_IDLE,
+            repeat: false,
+            persistent: false
+        }
+        console.log("create timer")
+        systemTimer.createTimer(options, async (error, timer) => {
+            expect(timer > 0).assertEqual(true)
+
+            console.log("start timer")
+            await systemTimer.startTimer(timer, 100000)
+
+            console.log("stop timer")
+            await systemTimer.stopTimer(timer)
+
+            console.log("destroy timer")
+            await systemTimer.destroyTimer(timer)
+        })
+        console.log('SUB_systemTimer_Timer_JS_API_2900 end');
+    });
+
+    /**
+     * @function     Used for callback functions
+     * @tc.name      callbackFunction
+     */
+    function callbackFunction() {
+        console.log("Start to call the callback function")
+    }
+})
