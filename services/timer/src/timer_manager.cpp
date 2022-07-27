@@ -715,7 +715,7 @@ bool TimerManager::ShowTimerTriggerById(int fd, uint64_t timerId)
         for (size_t j = 0; j < alarmBatches_[i]->Size(); j++) {
             if (alarmBatches_[i]->Get(j)->id == timerId) {
                 dprintf(fd, " - dump timer id   = %lu\n", alarmBatches_[i]->Get(j)->id);
-                dprintf(fd, " * timer trigger   = %llu\n", alarmBatches_[i]->Get(j)->origWhen);
+                dprintf(fd, " * timer trigger   = %lu\n", alarmBatches_[i]->Get(j)->origWhen);
             }
         }
     }
