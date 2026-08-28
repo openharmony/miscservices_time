@@ -39,6 +39,7 @@
 #include "system_ability_definition.h"
 #include "iservice_registry.h"
 #include "time_service.h"
+#include "parse_rtc_id.h"
 using namespace std::chrono;
 
 namespace OHOS {
@@ -523,9 +524,12 @@ int TimeService::get_wall_clock_rtc_id()
         auto index = name.find(s);
         if (index == std::string::npos) {
             continue;
-        } else {
-            auto rtc_id_str = name.substr(index + s.length());
-            rtc_id_t = std::stoul(rtc_id_str);
+        }
+        auto rtc_id_str = name.substr(index + s.length());
+        // find("rtc") then stoul throws on empty/junk/overflow (e.g. rtc + 40 nines).
+        if (!ParseRtcId(rtc_id_str, rtc_id_t)) {
+            TIME_HILOGE(TIME_MODULE_SERVICE, "invalid rtc name %{public}s, skip", name.c_str());
+            continue;
         }
        
         if (check_rtc(rtc_path, rtc_id_t)) {
